@@ -5,7 +5,7 @@ include('includes/config.php');
 if(strlen($_SESSION['alogin'])==""){  
     header("Location: index.php");
      }else{
-if(isset($_POST['Junayed']))
+if(isset($_POST['submit']))
 {
 $ntitle=$_POST['noticetitle'];
 $ndetails=$_POST['noticedetails']; 
