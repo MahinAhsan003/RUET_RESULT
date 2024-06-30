@@ -3,47 +3,46 @@ session_start();
 error_reporting(0);
 include('includes/config.php');
 if(strlen($_SESSION['alogin'])=="")
-    {   
+{   
     header("Location: index.php"); 
+}
+else{
+    if(isset($_POST['submit']))
+    {
+        $marks = array();
+        $class = $_POST['class'];
+        $studentid = $_POST['studentid']; 
+        $mark = $_POST['marks'];
+
+        $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination JOIN tblsubjects ON tblsubjects.id = tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId = :cid ORDER BY tblsubjects.SubjectName");
+        $stmt->execute(array(':cid' => $class));
+        $sid1 = array();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            array_push($sid1, $row['id']);
+        } 
+
+        for($i = 0; $i < count($mark); $i++){
+            $mar = $mark[$i];
+            $sid = $sid1[$i];
+            $sql = "INSERT INTO tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid, :class, :sid, :marks)";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
+            $query->bindParam(':class', $class, PDO::PARAM_STR);
+            $query->bindParam(':sid', $sid, PDO::PARAM_STR);
+            $query->bindParam(':marks', $mar, PDO::PARAM_STR);
+            $query->execute();
+            $lastInsertId = $dbh->lastInsertId();
+            if($lastInsertId)
+            {
+                $msg = "Result info added successfully";
+            }
+            else 
+            {
+                $error = "Something went wrong. Please try again";
+            }
+        }
     }
-    else{
-if(isset($_POST['submit']))
-{
-    $marks=array();
-$class=$_POST['class'];
-$studentid=$_POST['studentid']; 
-$mark=$_POST['marks'];
-
- $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination join  tblsubjects on  tblsubjects.id=tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId=:cid order by tblsubjects.SubjectName");
- $stmt->execute(array(':cid' => $class));
-  $sid1=array();
- while($row=$stmt->fetch(PDO::FETCH_ASSOC))
- {
-
-array_push($sid1,$row['id']);
-   } 
-  
-for($i=0;$i<count($mark);$i++){
-    $mar=$mark[$i];
-  $sid=$sid1[$i];
-$sql="INSERT INTO  tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid,:class,:sid,:marks)";
-$query = $dbh->prepare($sql);
-$query->bindParam(':studentid',$studentid,PDO::PARAM_STR);
-$query->bindParam(':class',$class,PDO::PARAM_STR);
-$query->bindParam(':sid',$sid,PDO::PARAM_STR);
-$query->bindParam(':marks',$mar,PDO::PARAM_STR);
-$query->execute();
-$lastInsertId = $dbh->lastInsertId();
-if($lastInsertId)
-{
-$msg="Result info added successfully";
-}
-else 
-{
-$error="Something went wrong. Please try again";
-}
-}
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -161,15 +160,17 @@ else if($error){?>
                                                     <select name="class" class="form-control clid" id="classid"
                                                         onChange="getStudent(this.value);" required="required">
                                                         <option value="">Select Department</option>
-                                                        <?php $sql = "SELECT ClassName from tblclasses";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
-                                                        <option value="<?php echo htmlentities($result->id); ?>">
+                                                        <?php 
+                                                        $sql = "SELECT DISTINCT ClassName from tblclasses";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results=$query->fetchAll(PDO::FETCH_OBJ);
+                                                        if($query->rowCount() > 0)
+                                                        {
+                                                            foreach($results as $result)
+                                                            {   
+                                                        ?>
+                                                        <option value="<?php echo htmlentities($result->ClassName); ?>">
                                                             <?php echo htmlentities($result->ClassName);?>
                                                         </option>
                                                         <?php }} ?>
@@ -182,15 +183,17 @@ foreach($results as $result)
                                                     <select name="class" class="form-control clid" id="classid"
                                                         onChange="getStudent(this.value);" required="required">
                                                         <option value="">Select Section</option>
-                                                        <?php $sql = "SELECT Section from tblclasses";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
-                                                        <option value="<?php echo htmlentities($result->id); ?>">
+                                                        <?php 
+                                                        $sql = "SELECT DISTINCT Section from tblclasses";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results=$query->fetchAll(PDO::FETCH_OBJ);
+                                                        if($query->rowCount() > 0)
+                                                        {
+                                                            foreach($results as $result)
+                                                            {   
+                                                        ?>
+                                                        <option value="<?php echo htmlentities($result->Section); ?>">
                                                             Section-<?php echo htmlentities($result->Section); ?>
                                                         </option>
                                                         <?php }} ?>
@@ -204,15 +207,17 @@ foreach($results as $result)
                                                     <select name="class" class="form-control clid" id="classid"
                                                         onChange="getStudent(this.value);" required="required">
                                                         <option value="">Select Series</option>
-                                                        <?php $sql = "SELECT ClassNameNumeric from tblclasses";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
-                                                        <option value="<?php echo htmlentities($result->id); ?>">
+                                                        <?php 
+                                                        $sql = "SELECT DISTINCT ClassNameNumeric from tblclasses";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results=$query->fetchAll(PDO::FETCH_OBJ);
+                                                        if($query->rowCount() > 0)
+                                                        {
+                                                            foreach($results as $result)
+                                                            {   
+                                                        ?>
+                                                        <option value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
                                                             <?php echo htmlentities($result->ClassNameNumeric);?>
                                                         </option>
                                                         <?php }} ?>
@@ -220,7 +225,6 @@ foreach($results as $result)
                                                 </div>
                                             </div>
 
-                                            
                                             <div class="form-group">
                                                 <label for="date" class="col-sm-2 control-label ">Student Name</label>
                                                 <div class="col-sm-10">
