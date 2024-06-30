@@ -15,7 +15,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $date = $_POST['date'];
         $designation = $_POST['designation'];
         $status = $_POST['status'];
-        $sql = "INSERT INTO  tblteachers(TeacherName,TeacherID,TeacherEmail,,TeacherPhone,Gender,Department,JoiningDate,Designation,Status)
+        $sql = "INSERT INTO  tblteachers(TeacherName,TeacherId,TeacherEmail,TeacherPhone,Gender,Department,JoiningDate,Designation,Status)
                  VALUES(:teachername,:teacherid,:teacheremail,:number,:gender,:dept,:date,:designation,:status)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':teachername', $teachername, PDO::PARAM_STR);
@@ -116,7 +116,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Full Name</label>
                                                     <div class="col-sm-10">
-                                                        <input type="text" name="fullanme" class="form-control"
+                                                        <input type="text" name="fullname" class="form-control"
                                                             id="fullanme" required="required" autocomplete="off">
                                                     </div>
                                                 </div>
@@ -227,12 +227,12 @@ if (strlen($_SESSION['alogin']) == "") {
             <script src="js/select2/select2.min.js"></script>
             <script src="js/main.js"></script>
             <script>
-                $(fu nction($) {
+                $(function($) {
                     $(".js-states").select2();
-                    $(".    js-states-limit").select2({
+                    $(".js-states-limit").select2({
                         maximumSelectionLength: 2
                     });
-                    $(".  js-states-hide").select2({
+                    $(".js-states-hide").select2({
                         minimumResultsForSearch: Infinity
                     });
                 });
