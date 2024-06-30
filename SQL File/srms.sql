@@ -70,6 +70,29 @@ INSERT INTO `tblclasses` (`id`, `ClassName`, `ClassNameNumeric`, `Section`, `Cre
 (8, 'Eight', 8, 'A', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
 (9, 'Tenth', 10, 'A', '2024-04-25 10:30:57', NULL);
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbldept`
+--
+
+CREATE TABLE `tbldept` (
+  `deptName` varchar(32) DEFAULT NULL,
+  `deptCode` int(2) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tbldept`
+--
+
+INSERT INTO `tblclasses` (`id`, `deptName`, `deptCode`) VALUES
+('ECE', 10 ),
+('CSE', 03 ),
+('CE', 00 ),
+('ME', 02 );
+
+
 -- --------------------------------------------------------
 
 --
