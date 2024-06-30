@@ -7,27 +7,18 @@ if(strlen($_SESSION['alogin'])=="")
     header("Location: index.php"); 
     }
     else{
-if(isset($_POST['submit']))
+if(isset($_POST['update']))
 {
-$classname=$_POST['classname'];
-$classnamenumeric=$_POST['classnamenumeric']; 
-$section=$_POST['section'];
-$sql="INSERT INTO  tblclasses(ClassName,ClassNameNumeric,Section) VALUES(:classname,:classnamenumeric,:section)";
+$deptname=$_POST['deptname'];
+$deptcode=$_POST['deptcode']; 
+$cid=intval($_GET['classid']);
+$sql="update  tbldept set deptName=:deptname,deptCode=:deptcode where id=:cid ";
 $query = $dbh->prepare($sql);
-$query->bindParam(':classname',$classname,PDO::PARAM_STR);
-$query->bindParam(':classnamenumeric',$classnamenumeric,PDO::PARAM_STR);
-$query->bindParam(':section',$section,PDO::PARAM_STR);
+$query->bindParam(':deptname',$deptname,PDO::PARAM_STR);
+$query->bindParam(':deptcode',$deptcode,PDO::PARAM_STR);
+$query->bindParam(':cid',$cid,PDO::PARAM_STR);
 $query->execute();
-$lastInsertId = $dbh->lastInsertId();
-if($lastInsertId)
-{
-$msg="Class Created successfully";
-}
-else 
-{
-$error="Something went wrong. Please try again";
-}
-
+$msg="Data has been updated successfully";
 }
 ?>
 <!DOCTYPE html>
@@ -36,7 +27,7 @@ $error="Something went wrong. Please try again";
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin Create Class</title>
+        <title>SMS Admin Update Class</title>
         <link rel="stylesheet" href="css/bootstrap.css" media="screen" >
         <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
         <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
@@ -44,24 +35,6 @@ $error="Something went wrong. Please try again";
         <link rel="stylesheet" href="css/prism/prism.css" media="screen" > <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
         <link rel="stylesheet" href="css/main.css" media="screen" >
         <script src="js/modernizr/modernizr.min.js"></script>
-         <style>
-        .errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-        </style>
     </head>
     <body class="top-navbar-fixed">
         <div class="main-wrapper">
@@ -81,7 +54,7 @@ $error="Something went wrong. Please try again";
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
-                                    <h2 class="title">Create Student Class</h2>
+                                    <h2 class="title">Update Department</h2>
                                 </div>
                                 
                             </div>
@@ -90,8 +63,8 @@ $error="Something went wrong. Please try again";
                                 <div class="col-md-6">
                                     <ul class="breadcrumb">
             							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-            							<li><a href="#">Classes</a></li>
-            							<li class="active">Create Class</li>
+            							<li><a href="#">Department</a></li>
+            							<li class="active">Update Department</li>
             						</ul>
                                 </div>
                                
@@ -112,10 +85,10 @@ $error="Something went wrong. Please try again";
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title">
-                                                    <h5>Create Student Class</h5>
+                                                    <h5>Update Department info</h5>
                                                 </div>
                                             </div>
-           <?php if($msg){?>
+<?php if($msg){?>
 <div class="alert alert-success left-icon-alert" role="alert">
  <strong>Well done!</strong><?php echo htmlentities($msg); ?>
  </div><?php } 
@@ -124,35 +97,40 @@ else if($error){?>
                                             <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
                                         </div>
                                         <?php } ?>
-  
-                                            <div class="panel-body">
 
                                                 <form method="post">
+<?php 
+$cid=intval($_GET['classid']);
+$sql = "SELECT * from tbldept where id=:cid";
+$query = $dbh->prepare($sql);
+$query->bindParam(':cid',$cid,PDO::PARAM_STR);
+$query->execute();
+$results=$query->fetchAll(PDO::FETCH_OBJ);
+$cnt=1;
+if($query->rowCount() > 0)
+{
+foreach($results as $result)
+{   ?>
+
                                                     <div class="form-group has-success">
                                                         <label for="success" class="control-label">Department Name</label>
                                                 		<div class="">
-                                                			<input type="text" name="classname" class="form-control" required="required" id="success">
-                                                            <span class="help-block">Eg- ECE, ETE, CSE etc</span>
+                                                			<input type="text" name="deptname" value="<?php echo htmlentities($result->ClassName);?>" required="required" class="form-control" id="success">
+                                                            <span class="help-block">Eg- ECE,ETE,CSE etc</span>
                                                 		</div>
                                                 	</div>
                                                        <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Series</label>
+                                                        <label for="success" class="control-label">Class Name in Numeric</label>
                                                         <div class="">
-                                                            <input type="number" name="classnamenumeric" required="required" class="form-control" id="success">
-                                                            <span class="help-block">Eg- 2020,2021,2022 etc</span>
+                                                            <input type="number" name="deptcode" value="<?php echo htmlentities($result->ClassNameNumeric);?>" required="required" class="form-control" id="success">
+                                                            <span class="help-block">Eg- 10,02,04 etc</span>
                                                         </div>
                                                     </div>
-                                                     <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Section</label>
-                                                        <div class="">
-                                                            <input type="text" name="section" class="form-control" required="required" id="success">
-                                                            <span class="help-block">Eg- A,B,C etc</span>
-                                                        </div>
-                                                    </div>
+                                                    <?php }} ?>
   <div class="form-group has-success">
 
                                                         <div class="">
-                                                           <button type="submit" name="submit" class="btn btn-success btn-labeled">Submit<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span></button>
+                                                           <button type="submit" name="update" class="btn btn-success btn-labeled">Update<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span></button>
                                                     </div>
 
 
@@ -177,6 +155,9 @@ else if($error){?>
 
                     </div>
                     <!-- /.main-page -->
+
+             
+                    <!-- /.right-sidebar -->
 
                 </div>
                 <!-- /.content-container -->

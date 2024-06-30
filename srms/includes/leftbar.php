@@ -21,6 +21,14 @@
                                         <span class="">Appearance</span>
                                     </li>
                                     <li class="has-children">
+                                        <a href="#"><i class="fa fa-file-text"></i> <span>Departments</span> <i class="fa fa-angle-right arrow"></i></a>
+                                        <ul class="child-nav">
+                                            <li><a href="create-dept.php"><i class="fa fa-bars"></i> <span>Create Department</span></a></li>
+                                            <li><a href="manage-dept.php"><i class="fa fa fa-server"></i> <span>Manage Department</span></a></li>
+                                           
+                                        </ul>
+                                    </li>
+                                    <li class="has-children">
                                         <a href="#"><i class="fa fa-file-text"></i> <span>Student Classes</span> <i class="fa fa-angle-right arrow"></i></a>
                                         <ul class="child-nav">
                                             <li><a href="create-class.php"><i class="fa fa-bars"></i> <span>Create Class</span></a></li>

@@ -9,19 +9,17 @@ if(strlen($_SESSION['alogin'])=="")
     else{
 if(isset($_POST['submit']))
 {
-$classname=$_POST['classname'];
-$classnamenumeric=$_POST['classnamenumeric']; 
-$section=$_POST['section'];
-$sql="INSERT INTO  tblclasses(ClassName,ClassNameNumeric,Section) VALUES(:classname,:classnamenumeric,:section)";
+$deptname=$_POST['deptname'];
+$deptcode=$_POST['deptcode']; 
+$sql="INSERT INTO  tbldept(deptName,deptCode) VALUES(:deptname,:deptcode)";
 $query = $dbh->prepare($sql);
-$query->bindParam(':classname',$classname,PDO::PARAM_STR);
-$query->bindParam(':classnamenumeric',$classnamenumeric,PDO::PARAM_STR);
-$query->bindParam(':section',$section,PDO::PARAM_STR);
+$query->bindParam(':deptname',$deptname,PDO::PARAM_STR);
+$query->bindParam(':deptcode',$deptcode,PDO::PARAM_STR);
 $query->execute();
 $lastInsertId = $dbh->lastInsertId();
 if($lastInsertId)
 {
-$msg="Class Created successfully";
+$msg="Department Created successfully";
 }
 else 
 {
@@ -81,7 +79,7 @@ $error="Something went wrong. Please try again";
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
-                                    <h2 class="title">Create Student Class</h2>
+                                    <h2 class="title">Create Department</h2>
                                 </div>
                                 
                             </div>
@@ -90,8 +88,8 @@ $error="Something went wrong. Please try again";
                                 <div class="col-md-6">
                                     <ul class="breadcrumb">
             							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-            							<li><a href="#">Classes</a></li>
-            							<li class="active">Create Class</li>
+            							<li><a href="#">Department</a></li>
+            							<li class="active">Create Department</li>
             						</ul>
                                 </div>
                                
@@ -112,7 +110,7 @@ $error="Something went wrong. Please try again";
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title">
-                                                    <h5>Create Student Class</h5>
+                                                    <h5>Create Department</h5>
                                                 </div>
                                             </div>
            <?php if($msg){?>
@@ -131,24 +129,18 @@ else if($error){?>
                                                     <div class="form-group has-success">
                                                         <label for="success" class="control-label">Department Name</label>
                                                 		<div class="">
-                                                			<input type="text" name="classname" class="form-control" required="required" id="success">
-                                                            <span class="help-block">Eg- ECE, ETE, CSE etc</span>
+                                                			<input type="text" name="deptname" class="form-control" required="required" id="success">
+                                                            <span class="help-block">Eg- ECE,ETE,CSE etc</span>
                                                 		</div>
                                                 	</div>
                                                        <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Series</label>
+                                                        <label for="success" class="control-label">Department Code</label>
                                                         <div class="">
-                                                            <input type="number" name="classnamenumeric" required="required" class="form-control" id="success">
-                                                            <span class="help-block">Eg- 2020,2021,2022 etc</span>
+                                                            <input type="number" name="deptcode" required="required" class="form-control" id="success">
+                                                            <span class="help-block">Eg- 10,03,01 etc</span>
                                                         </div>
                                                     </div>
-                                                     <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Section</label>
-                                                        <div class="">
-                                                            <input type="text" name="section" class="form-control" required="required" id="success">
-                                                            <span class="help-block">Eg- A,B,C etc</span>
-                                                        </div>
-                                                    </div>
+                                                     
   <div class="form-group has-success">
 
                                                         <div class="">
