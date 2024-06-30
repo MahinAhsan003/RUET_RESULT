@@ -11,18 +11,17 @@ if (strlen($_SESSION['tlogin']) == "") {
         $studentid = $_POST['studentid'];
         $mark = $_POST['marks'];
 
-        $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination join  tblsubjects on  tblsubjects.id=tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId=:cid order by tblsubjects.SubjectName");
+        $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination JOIN tblsubjects ON tblsubjects.id = tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId = :cid ORDER BY tblsubjects.SubjectName");
         $stmt->execute(array(':cid' => $class));
         $sid1 = array();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-
             array_push($sid1, $row['id']);
         }
 
         for ($i = 0; $i < count($mark); $i++) {
             $mar = $mark[$i];
             $sid = $sid1[$i];
-            $sql = "INSERT INTO  tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid,:class,:sid,:marks)";
+            $sql = "INSERT INTO tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid, :class, :sid, :marks)";
             $query = $dbh->prepare($sql);
             $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
             $query->bindParam(':class', $class, PDO::PARAM_STR);
@@ -62,7 +61,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                     data: 'classid=' + val,
                     success: function (data) {
                         $("#studentid").html(data);
-
                     }
                 });
                 $.ajax({
@@ -71,14 +69,12 @@ if (strlen($_SESSION['tlogin']) == "") {
                     data: 'classid1=' + val,
                     success: function (data) {
                         $("#subject").html(data);
-
                     }
                 });
             }
         </script>
         <script>
             function getresult(val, clid) {
-
                 var clid = $(".clid").val();
                 var val = $(".stid").val();;
                 var abh = clid + '$' + val;
@@ -89,12 +85,10 @@ if (strlen($_SESSION['tlogin']) == "") {
                     data: 'studclass=' + abh,
                     success: function (data) {
                         $("#reslt").html(data);
-
                     }
                 });
             }
         </script>
-
 
     </head>
 
@@ -108,45 +102,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 <div class="content-container">
 
                     <!-- ========== LEFT SIDEBAR ========== -->
-                    <div class="left-sidebar bg-black-300 box-shadow ">
-                        <div class="sidebar-content">
-                            <div class="user-info closed">
-                                <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
-                                    class="img-circle profile-img">
-                                <h6 class="title">Admin</h6>
-                                <small class="info">Administrator</small>
-                            </div>
-                            <!-- /.user-info -->
-
-                            <div class="sidebar-nav">
-                                <ul class="side-nav color-gray">
-                                    <li class="nav-header">
-                                        <span class="">Main Category</span>
-                                    </li>
-                                    <li>
-                                        <a href="teacher-dashboard.php"><i class="fa fa-dashboard"></i>
-                                            <span>Dashboard</span> </a>
-
-                                    </li>
-
-
-                                    <li class="has-children">
-                                        <a href="#"><i class="fa fa-info-circle"></i> <span>Result</span> <i
-                                                class="fa fa-angle-right arrow"></i></a>
-                                        <ul class="child-nav">
-                                            <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
-                                                        Result</span></a>
-                                            </li>
-                                            <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
-                                                        Result</span></a></li>
-
-                                        </ul>
-                                    </li>
-                            </div>
-                            <!-- /.sidebar-nav -->
-                        </div>
-                        <!-- /.sidebar-content -->
-                    </div>
+                    <?php include ('includes/leftbar.php'); ?>
                     <!-- /.left-sidebar -->
 
                     <div class="main-page">
@@ -191,26 +147,74 @@ if (strlen($_SESSION['tlogin']) == "") {
                                             <form class="form-horizontal" method="post">
 
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Class</label>
+                                                    <label for="default" class="col-sm-2 control-label">Department</label>
                                                     <div class="col-sm-10">
                                                         <select name="class" class="form-control clid" id="classid"
                                                             onChange="getStudent(this.value);" required="required">
-                                                            <option value="">Select Class</option>
-                                                            <?php $sql = "SELECT * from tblclasses";
+                                                            <option value="">Select Department</option>
+                                                            <?php
+                                                            $sql = "SELECT DISTINCT ClassName from tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->id); ?>">
-                                                                        <?php echo htmlentities($result->ClassName); ?>&nbsp;
-                                                                        Section-<?php echo htmlentities($result->Section); ?>
+                                                                foreach ($results as $result) {
+                                                                    ?>
+                                                                    <option value="<?php echo htmlentities($result->ClassName); ?>">
+                                                                        <?php echo htmlentities($result->ClassName); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>
                                                         </select>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Section</label>
+                                                    <div class="col-sm-10">
+                                                        <select name="class" class="form-control clid" id="classid"
+                                                            onChange="getStudent(this.value);" required="required">
+                                                            <option value="">Select Section</option>
+                                                            <?php
+                                                            $sql = "SELECT DISTINCT Section from tblclasses";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) {
+                                                                    ?>
+                                                                    <option value="<?php echo htmlentities($result->Section); ?>">
+                                                                        <?php echo htmlentities($result->Section); ?>
+                                                                    </option>
+                                                                <?php }
+                                                            } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Series</label>
+                                                    <div class="col-sm-10">
+                                                        <select name="class" class="form-control clid" id="classid"
+                                                            onChange="getStudent(this.value);" required="required">
+                                                            <option value="">Select Series</option>
+                                                            <?php
+                                                            $sql = "SELECT DISTINCT ClassNameNumeric from tblclasses";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) {
+                                                                    ?>
+                                                                    <option
+                                                                        value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
+                                                                        <?php echo htmlentities($result->ClassNameNumeric); ?>
+                                                                    </option>
+                                                                <?php }
+                                                            } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="form-group">
                                                     <label for="date" class="col-sm-2 control-label ">Student Name</label>
                                                     <div class="col-sm-10">
@@ -235,8 +239,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                         </div>
                                                     </div>
                                                 </div>
-
-
 
                                                 <div class="form-group">
                                                     <div class="col-sm-offset-2 col-sm-10">

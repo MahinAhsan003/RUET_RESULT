@@ -6,30 +6,48 @@ if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
     if (isset($_POST['submit'])) {
-        $studentname = $_POST['fullanme'];
+        $studentname = $_POST['fullname'];
         $rollid = $_POST['rollid'];
+        $registrationid = $_POST['registrationid'];
         $studentemail = $_POST['emailid'];
         $gender = $_POST['gender'];
-        $classid = $_POST['class'];
+        $department = $_POST['department'];
+        $section = $_POST['section'];
+        $series = $_POST['series'];
         $dob = $_POST['dob'];
         $status = 1;
-        $sql = "INSERT INTO  tblstudents(StudentName,RollId,StudentEmail,Gender,ClassId,DOB,Status) VALUES(:studentname,:rollid,:studentemail,:gender,:classid,:dob,:status)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':studentname', $studentname, PDO::PARAM_STR);
-        $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
-        $query->bindParam(':studentemail', $studentemail, PDO::PARAM_STR);
-        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
-        $query->bindParam(':classid', $classid, PDO::PARAM_STR);
-        $query->bindParam(':dob', $dob, PDO::PARAM_STR);
-        $query->bindParam(':status', $status, PDO::PARAM_STR);
-        $query->execute();
-        $lastInsertId = $dbh->lastInsertId();
-        if ($lastInsertId) {
-            $msg = "Student info added successfully";
-        } else {
-            $error = "Something went wrong. Please try again";
-        }
 
+        // Check if student already exists
+        $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid AND RegistrationId=:registrationid";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
+        $query->bindParam(':registrationid', $registrationid, PDO::PARAM_STR);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $error = "Student Already Exists";
+        } else {
+            $sql = "INSERT INTO tblstudents(StudentName, RollId, RegistrationId, StudentEmail, Gender, Department, Section, Series, DOB, Status) 
+                    VALUES(:studentname, :rollid, :registrationid, :studentemail, :gender, :department, :section, :series, :dob, :status)";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':studentname', $studentname, PDO::PARAM_STR);
+            $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
+            $query->bindParam(':registrationid', $registrationid, PDO::PARAM_STR);
+            $query->bindParam(':studentemail', $studentemail, PDO::PARAM_STR);
+            $query->bindParam(':gender', $gender, PDO::PARAM_STR);
+            $query->bindParam(':department', $department, PDO::PARAM_STR);
+            $query->bindParam(':section', $section, PDO::PARAM_STR);
+            $query->bindParam(':series', $series, PDO::PARAM_STR);
+            $query->bindParam(':dob', $dob, PDO::PARAM_STR);
+            $query->bindParam(':status', $status, PDO::PARAM_STR);
+            $query->execute();
+            $lastInsertId = $dbh->lastInsertId();
+            if ($lastInsertId) {
+                $msg = "Student info added successfully";
+            } else {
+                $error = "Something went wrong. Please try again";
+            }
+        }
     }
     ?>
     <!DOCTYPE html>
@@ -39,15 +57,15 @@ if (strlen($_SESSION['alogin']) == "") {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin| Student Admission< </title>
-                <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
-                <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
-                <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
-                <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
-                <link rel="stylesheet" href="css/prism/prism.css" media="screen">
-                <link rel="stylesheet" href="css/select2/select2.min.css">
-                <link rel="stylesheet" href="css/main.css" media="screen">
-                <script src="js/modernizr/modernizr.min.js"></script>
+        <title>SMS Admin | Student Admission</title>
+        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
+        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
+        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
+        <link rel="stylesheet" href="css/prism/prism.css" media="screen">
+        <link rel="stylesheet" href="css/select2/select2.min.css">
+        <link rel="stylesheet" href="css/main.css" media="screen">
+        <script src="js/modernizr/modernizr.min.js"></script>
     </head>
 
     <body class="top-navbar-fixed">
@@ -111,8 +129,8 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Full Name</label>
                                                     <div class="col-sm-10">
-                                                        <input type="text" name="fullanme" class="form-control"
-                                                            id="fullanme" required="required" autocomplete="off">
+                                                        <input type="text" name="fullname" class="form-control"
+                                                            id="fullname" required="required" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -120,7 +138,15 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     <label for="default" class="col-sm-2 control-label">Roll Id</label>
                                                     <div class="col-sm-10">
                                                         <input type="text" name="rollid" class="form-control" id="rollid"
-                                                            maxlength="5" required="required" autocomplete="off">
+                                                            maxlength="7" required="required" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Registration Id</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" name="registrationid" class="form-control" id="registrationid"
+                                                            required="required" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -143,18 +169,19 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Class</label>
+                                                    <label for="default" class="col-sm-2 control-label">Department</label>
                                                     <div class="col-sm-10">
-                                                        <select name="class" class="form-control" id="default"
+                                                        <select name="department" class="form-control" id="default"
                                                             required="required">
                                                             <option value="">Select Department</option>
-                                                            <?php $sql = "SELECT * from tbldept";
+                                                            <?php 
+                                                            $sql = "SELECT DISTINCT deptName FROM tbldept";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->id); ?>">
+                                                                    <option value="<?php echo htmlentities($result->deptName); ?>">
                                                                         <?php echo htmlentities($result->deptName); ?>
                                                                     </option>
                                                                 <?php }
@@ -162,6 +189,51 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         </select>
                                                     </div>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Section</label>
+                                                    <div class="col-sm-10">
+                                                        <select name="section" class="form-control" id="default"
+                                                            required="required">
+                                                            <option value="">Select Section</option>
+                                                            <?php 
+                                                            $sql = "SELECT DISTINCT Section FROM tblclasses";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->section); ?>">
+                                                                        <?php echo htmlentities($result->Section); ?>
+                                                                    </option>
+                                                                <?php }
+                                                            } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Series</label>
+                                                    <div class="col-sm-10">
+                                                        <select name="series" class="form-control" id="default"
+                                                            required="required">
+                                                            <option value="">Select Series</option>
+                                                            <?php 
+                                                            $sql = "SELECT DISTINCT ClassNameNumeric FROM tblclasses";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->series); ?>">
+                                                                        <?php echo htmlentities($result->ClassNameNumeric); ?>
+                                                                    </option>
+                                                                <?php }
+                                                            } ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="form-group">
                                                     <label for="date" class="col-sm-2 control-label">DOB</label>
                                                     <div class="col-sm-10">
@@ -211,4 +283,4 @@ if (strlen($_SESSION['alogin']) == "") {
     </body>
 
     </html>
-<?PHP } ?>
+<?php } ?>
