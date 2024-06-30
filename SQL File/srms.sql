@@ -97,10 +97,14 @@ INSERT INTO `tbldept` (`id`, `deptName`, `deptCode`) VALUES
 -- --------------------------------------------------------
 
 CREATE TABLE `tblteachers` (
+  `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `TeacherId` int(11) NOT NULL,
   `TeacherName` varchar(100) DEFAULT NULL,
   `TeacherEmail` varchar(100) DEFAULT NULL,
+  `TeacherPhone` int(11) DEFAULT NULL,
   `Gender` varchar(10) DEFAULT NULL,
+  `Department` varchar(100) DEFAULT NULL,
+  `JoiningDate` varchar(100) DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `Status` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
