@@ -8,7 +8,7 @@ if ($_SESSION['alogin'] != '') {
 if (isset($_POST['login'])) {
     $uname = $_POST['username'];
     $password = md5($_POST['password']);
-    $sql = "SELECT UserName,Password FROM admin WHERE UserName=:uname and Password=:password and id = 1";
+    $sql = "SELECT UserName,Password FROM admin WHERE UserName=:uname and Password=:password and id= 2";
     $query = $dbh->prepare($sql);
     $query->bindParam(':uname', $uname, PDO::PARAM_STR);
     $query->bindParam(':password', $password, PDO::PARAM_STR);
@@ -34,7 +34,7 @@ if (isset($_POST['login'])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Login</title>
+    <title>Teacher's Login</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -61,7 +61,7 @@ if (isset($_POST['login'])) {
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title text-center">
-                                                    <h4>Admin Login</h4>
+                                                    <h4>Teacher's Login</h4>
                                                 </div>
                                             </div>
                                             <div class="panel-body p-20">
@@ -141,7 +141,6 @@ if (isset($_POST['login'])) {
         });
     </script>
 
-    <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
 </body>
 
 </html>

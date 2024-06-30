@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include('includes/config.php'); 
+include ('includes/config.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +29,8 @@ include('includes/config.php');
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="find-result.php">Students</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="teacher-login.php">Teachers</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="admin-login.php">Admin</a></li>
             </div>
         </div>
     </nav>
@@ -46,17 +48,16 @@ include('includes/config.php');
                     <marquee direction="up" onmouseover="this.stop();" onmouseout="this.start();">
                         <ul>
                             <?php $sql = "SELECT * from tblnotice";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
-                            <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id);?>"
-                                    target="_blank"><?php echo htmlentities($result->noticeTitle);?></li>
-                            <?php }} ?>
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            $cnt = 1;
+                            if ($query->rowCount() > 0) {
+                                foreach ($results as $result) { ?>
+                                    <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id); ?>"
+                                            target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
+                                <?php }
+                            } ?>
 
                         </ul>
                     </marquee>
