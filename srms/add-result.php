@@ -194,7 +194,7 @@ else if($error){?>
                                                             {   
                                                         ?>
                                                         <option value="<?php echo htmlentities($result->Section); ?>">
-                                                            Section-<?php echo htmlentities($result->Section); ?>
+                                                            <?php echo htmlentities($result->Section); ?>
                                                         </option>
                                                         <?php }} ?>
                                                     </select>
