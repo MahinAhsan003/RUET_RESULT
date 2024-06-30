@@ -78,6 +78,7 @@ INSERT INTO `tblclasses` (`id`, `ClassName`, `ClassNameNumeric`, `Section`, `Cre
 --
 
 CREATE TABLE `tbldept` (
+  `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `deptName` varchar(32) DEFAULT NULL,
   `deptCode` int(2) DEFAULT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -86,7 +87,7 @@ CREATE TABLE `tbldept` (
 -- Dumping data for table `tbldept`
 --
 
-INSERT INTO `tblclasses` (`id`, `deptName`, `deptCode`) VALUES
+INSERT INTO `tbldept` (`id`, `deptName`, `deptCode`) VALUES
 ('ECE', 10 ),
 ('CSE', 03 ),
 ('CE', 00 ),
@@ -95,6 +96,16 @@ INSERT INTO `tblclasses` (`id`, `deptName`, `deptCode`) VALUES
 
 -- --------------------------------------------------------
 
+CREATE TABLE `tblteachers` (
+  `TeacherId` int(11) NOT NULL,
+  `TeacherName` varchar(100) DEFAULT NULL,
+  `TeacherEmail` varchar(100) DEFAULT NULL,
+  `Gender` varchar(10) DEFAULT NULL,
+  `Designation` varchar(100) DEFAULT NULL,
+  `Status` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
 --
 -- Table structure for table `tblnotice`
 --

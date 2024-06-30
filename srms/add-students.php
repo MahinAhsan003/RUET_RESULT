@@ -1,43 +1,37 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
-if(strlen($_SESSION['alogin'])=="")
-    {   
-    header("Location: index.php"); 
-    }
-    else{
-if(isset($_POST['submit']))
-{
-$studentname=$_POST['fullanme'];
-$roolid=$_POST['rollid']; 
-$studentemail=$_POST['emailid']; 
-$gender=$_POST['gender']; 
-$classid=$_POST['class']; 
-$dob=$_POST['dob']; 
-$status=1;
-$sql="INSERT INTO  tblstudents(StudentName,RollId,StudentEmail,Gender,ClassId,DOB,Status) VALUES(:studentname,:rollid,:studentemail,:gender,:classid,:dob,:status)";
-$query = $dbh->prepare($sql);
-$query->bindParam(':studentname',$studentname,PDO::PARAM_STR);
-$query->bindParam(':rollid',$rollid,PDO::PARAM_STR);
-$query->bindParam(':studentemail',$studentemail,PDO::PARAM_STR);
-$query->bindParam(':gender',$gender,PDO::PARAM_STR);
-$query->bindParam(':classid',$classid,PDO::PARAM_STR);
-$query->bindParam(':dob',$dob,PDO::PARAM_STR);
-$query->bindParam(':status',$status,PDO::PARAM_STR);
-$query->execute();
-$lastInsertId = $dbh->lastInsertId();
-if($lastInsertId)
-{
-$msg="Student info added successfully";
-}
-else 
-{
-$error="Something went wrong. Please try again";
-}
+include ('includes/config.php');
+if (strlen($_SESSION['alogin']) == "") {
+    header("Location: index.php");
+} else {
+    if (isset($_POST['submit'])) {
+        $studentname = $_POST['fullanme'];
+        $roolid = $_POST['rollid'];
+        $studentemail = $_POST['emailid'];
+        $gender = $_POST['gender'];
+        $classid = $_POST['class'];
+        $dob = $_POST['dob'];
+        $status = 1;
+        $sql = "INSERT INTO  tblstudents(StudentName,RollId,StudentEmail,Gender,ClassId,DOB,Status) VALUES(:studentname,:rollid,:studentemail,:gender,:classid,:dob,:status)";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':studentname', $studentname, PDO::PARAM_STR);
+        $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
+        $query->bindParam(':studentemail', $studentemail, PDO::PARAM_STR);
+        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
+        $query->bindParam(':classid', $classid, PDO::PARAM_STR);
+        $query->bindParam(':dob', $dob, PDO::PARAM_STR);
+        $query->bindParam(':status', $status, PDO::PARAM_STR);
+        $query->execute();
+        $lastInsertId = $dbh->lastInsertId();
+        if ($lastInsertId) {
+            $msg = "Student info added successfully";
+        } else {
+            $error = "Something went wrong. Please try again";
+        }
 
-}
-?>
+    }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,7 +39,8 @@ $error="Something went wrong. Please try again";
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SMS Admin| Student Admission< </title> <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+    <title>SMS Admin| Student Admission< </title>
+            <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
             <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
             <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
             <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
@@ -59,13 +54,13 @@ $error="Something went wrong. Please try again";
     <div class="main-wrapper">
 
         <!-- ========== TOP NAVBAR ========== -->
-        <?php include('includes/topbar.php');?>
+        <?php include ('includes/topbar.php'); ?>
         <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
         <div class="content-wrapper">
             <div class="content-container">
 
                 <!-- ========== LEFT SIDEBAR ========== -->
-                <?php include('includes/leftbar.php');?>
+                <?php include ('includes/leftbar.php'); ?>
                 <!-- /.left-sidebar -->
 
                 <div class="main-page">
@@ -103,11 +98,10 @@ $error="Something went wrong. Please try again";
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <?php if($msg){?>
+                                        <?php if ($msg) { ?>
                                         <div class="alert alert-success left-icon-alert" role="alert">
                                             <strong>Well done!</strong><?php echo htmlentities($msg); ?>
-                                        </div><?php } 
-else if($error){?>
+                                        </div><?php } else if ($error) { ?>
                                         <div class="alert alert-danger left-icon-alert" role="alert">
                                             <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
                                         </div>
@@ -153,20 +147,18 @@ else if($error){?>
                                                 <div class="col-sm-10">
                                                     <select name="class" class="form-control" id="default"
                                                         required="required">
-                                                        <option value="">Select Class</option>
-                                                        <?php $sql = "SELECT * from tblclasses";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
+                                                        <option value="">Select Department</option>
+                                                        <?php $sql = "SELECT * from tbldept";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
                                                         <option value="<?php echo htmlentities($result->id); ?>">
-                                                            <?php echo htmlentities($result->ClassName); ?>&nbsp;
-                                                            Section-<?php echo htmlentities($result->Section); ?>
+                                                            <?php echo htmlentities($result->deptName); ?>
                                                         </option>
-                                                        <?php }} ?>
+                                                        <?php }
+                                                            } ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -206,15 +198,15 @@ foreach($results as $result)
         <script src="js/select2/select2.min.js"></script>
         <script src="js/main.js"></script>
         <script>
-            $(function($) {
-                $(".js-states").select2();
-                $(".js-states-limit").select2({
-                    maximumSelectionLength: 2
-                });
-                $(".js-states-hide").select2({
-                    minimumResultsForSearch: Infinity
-                });
+        $(function($) {
+            $(".js-states").select2();
+            $(".js-states-limit").select2({
+                maximumSelectionLength: 2
             });
+            $(".js-states-hide").select2({
+                minimumResultsForSearch: Infinity
+            });
+        });
         </script>
 </body>
 
