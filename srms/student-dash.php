@@ -79,7 +79,7 @@ if (!isset($_SESSION['login'])) {
                                         <div class="panel-body">
                                             <h3>Student Information</h3>
                                             <p><strong>Roll ID:</strong> <?php echo htmlentities($result->RollId); ?></p>
-                                            <p><strong>Class:</strong> <?php echo htmlentities($result->ClassName); ?></p>
+                                            <p><strong>Registration ID:</strong> <?php echo htmlentities($result->RegistrationId); ?></p>
                                             <p><strong>Name:</strong> <?php echo htmlentities($result->StudentName); ?></p>
                                             <p><strong>Email:</strong> <?php echo htmlentities($result->StudentEmail); ?></p>
                                             <p><strong>Department:</strong> <?php echo htmlentities($result->Department); ?></p>
