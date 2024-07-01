@@ -18,7 +18,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $status = 1;
 
         // Check if student already exists
-        $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid AND RegistrationId=:registrationid";
+        $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid OR RegistrationId=:registrationid";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
         $query->bindParam(':registrationid', $registrationid, PDO::PARAM_STR);
@@ -204,10 +204,17 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
+<<<<<<< HEAD
                                                         <option value="<?php echo htmlentities($result->section); ?>">
                                                             <?php echo htmlentities($result->Section); ?>
                                                         </option>
                                                         <?php }
+=======
+                                                                    <option value="<?php echo htmlentities($result->Section); ?>">
+                                                                        <?php echo htmlentities($result->Section); ?>
+                                                                    </option>
+                                                                <?php }
+>>>>>>> origin/junayed
                                                             } ?>
                                                     </select>
                                                 </div>
@@ -226,10 +233,17 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
+<<<<<<< HEAD
                                                         <option value="<?php echo htmlentities($result->series); ?>">
                                                             <?php echo htmlentities($result->ClassNameNumeric); ?>
                                                         </option>
                                                         <?php }
+=======
+                                                                    <option value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
+                                                                        <?php echo htmlentities($result->ClassNameNumeric); ?>
+                                                                    </option>
+                                                                <?php }
+>>>>>>> origin/junayed
                                                             } ?>
                                                     </select>
                                                 </div>

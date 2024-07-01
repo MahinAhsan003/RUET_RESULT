@@ -108,7 +108,7 @@ $totalclasses=$query2->rowCount();
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:1%">
                                     <a class="dashboard-stat bg-success" href="manage-results.php">
                                         <?php 
-$sql3="SELECT  distinct StudentId from  tblresult ";
+$sql3="SELECT distinct StudentId from tblresult ";
 $query3 = $dbh -> prepare($sql3);
 $query3->execute();
 $results3=$query3->fetchAll(PDO::FETCH_OBJ);
@@ -123,29 +123,23 @@ $totalresults=$query3->rowCount();
                                 </div>
                                 <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
 
-
-
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:1%;">
-                                    <a class="dashboard-stat bg-primary" href="manage-classes.php">
+                                    <a class="dashboard-stat bg-primary" href="manage-dept.php">
 
                                         <?php 
-$sql2 ="SELECT id from  tblclasses ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totalclasses=$query2->rowCount();
+$sql4 ="SELECT COUNT(DISTINCT id) as totaldepts from tbldept";
+$query4 = $dbh -> prepare($sql4);
+$query4->execute();
+$result4=$query4->fetch(PDO::FETCH_OBJ);
+$totaldepts=$result4->totaldepts;
 ?>
-                                        <span class="number counter"><?php echo htmlentities($totalclasses);?></span>
+                                        <span class="number counter"><?php echo htmlentities($totaldepts);?></span>
                                         <span class="name">Department</span>
                                         <span class="bg-icon"><i class="fa fa-bank"></i></span>
                                     </a>
                                     <!-- /.dashboard-stat -->
                                 </div>
                                 <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-
-                                
-
                             </div>
                             <!-- /.row -->
                         </div>
