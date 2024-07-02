@@ -94,13 +94,13 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     <select name="department" id="department" class="form-control">
                                                         <option value="">Select Department</option>
                                                         <?php 
-                                                        $sql = "SELECT DISTINCT ClassName FROM tblclasses";
+                                                        $sql = "SELECT DISTINCT Department FROM tblclasses";
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                         if ($query->rowCount() > 0) {
                                                             foreach ($results as $result) { ?>
-                                                                <option value="<?php echo htmlentities($result->ClassName); ?>"><?php echo htmlentities($result->ClassName); ?></option>
+                                                                <option value="<?php echo htmlentities($result->Department); ?>"><?php echo htmlentities($result->Department); ?></option>
                                                             <?php }
                                                         } ?>
                                                     </select>
@@ -110,13 +110,13 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     <select name="series" id="series" class="form-control">
                                                         <option value="">Select Series</option>
                                                         <?php 
-                                                        $sql = "SELECT DISTINCT ClassNameNumeric FROM tblclasses";
+                                                        $sql = "SELECT DISTINCT Series FROM tblclasses";
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                         if ($query->rowCount() > 0) {
                                                             foreach ($results as $result) { ?>
-                                                                <option value="<?php echo htmlentities($result->ClassNameNumeric); ?>"><?php echo htmlentities($result->ClassNameNumeric); ?></option>
+                                                                <option value="<?php echo htmlentities($result->Series); ?>"><?php echo htmlentities($result->Series); ?></option>
                                                             <?php }
                                                         } ?>
                                                     </select>
