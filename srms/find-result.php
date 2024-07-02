@@ -4,12 +4,12 @@ include('includes/config.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rollid = $_POST['rollid'];
-    $class = $_POST['class'];
+    $department = $_POST['department'];
 
-    $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid AND Department=:class";
+    $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid AND Department=:department";
     $query = $dbh->prepare($sql);
     $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
-    $query->bindParam(':class', $class, PDO::PARAM_STR);
+    $query->bindParam(':department', $department, PDO::PARAM_STR);
     $query->execute();
     $result = $query->fetch(PDO::FETCH_OBJ);
 
@@ -57,10 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 </div>
                                 <div class="form-group">
                                     <label for="default" class="col-sm-2 control-label">Department</label>
-                                    <select name="class" class="form-control" id="default" required="required">
+                                    <select name="department" class="form-control" id="default" required="required">
                                         <option value="">Select Department</option>
                                         <?php 
-                                        $sql = "SELECT DISTINCT ClassName from tblclasses";
+                                        $sql = "SELECT DISTINCT Department from tbldept";
                                         $query = $dbh->prepare($sql);
                                         $query->execute();
                                         $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             foreach($results as $result)
                                             {   
                                                 ?>
-                                                <option value="<?php echo htmlentities($result->ClassName); ?>">
-                                                    <?php echo htmlentities($result->ClassName); ?>
+                                                <option value="<?php echo htmlentities($result->Department); ?>">
+                                                    <?php echo htmlentities($result->Department); ?>
                                                 </option>
                                             <?php 
                                             }

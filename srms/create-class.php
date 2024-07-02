@@ -9,14 +9,16 @@ if(strlen($_SESSION['alogin'])=="")
     else{
 if(isset($_POST['submit']))
 {
-$classname=$_POST['classname'];
-$classnamenumeric=$_POST['classnamenumeric']; 
+$deptname=$_POST['deptname'];
+$series=$_POST['series']; 
 $section=$_POST['section'];
-$sql="INSERT INTO  tblclasses(ClassName,ClassNameNumeric,Section) VALUES(:classname,:classnamenumeric,:section)";
+$semester=$_POST['semester'];
+$sql="INSERT INTO  tblclasses(Department,Series,Section,Semester) VALUES(:deptname,:series,:section,:semester)";
 $query = $dbh->prepare($sql);
-$query->bindParam(':classname',$classname,PDO::PARAM_STR);
-$query->bindParam(':classnamenumeric',$classnamenumeric,PDO::PARAM_STR);
+$query->bindParam(':deptname',$deptname,PDO::PARAM_STR);
+$query->bindParam(':series',$series,PDO::PARAM_STR);
 $query->bindParam(':section',$section,PDO::PARAM_STR);
+$query->bindParam(':semester',$semester,PDO::PARAM_STR);
 $query->execute();
 $lastInsertId = $dbh->lastInsertId();
 if($lastInsertId)
@@ -131,14 +133,14 @@ else if($error){?>
                                                     <div class="form-group has-success">
                                                         <label for="success" class="control-label">Department Name</label>
                                                 		<div class="">
-                                                			<input type="text" name="classname" class="form-control" required="required" id="success">
+                                                			<input type="text" name="deptname" class="form-control" required="required" id="success">
                                                             <span class="help-block">Eg- ECE, ETE, CSE etc</span>
                                                 		</div>
                                                 	</div>
                                                        <div class="form-group has-success">
                                                         <label for="success" class="control-label">Series</label>
                                                         <div class="">
-                                                            <input type="number" name="classnamenumeric" required="required" class="form-control" id="success">
+                                                            <input type="number" name="series" required="required" class="form-control" id="success">
                                                             <span class="help-block">Eg- 2020,2021,2022 etc</span>
                                                         </div>
                                                     </div>
@@ -147,6 +149,13 @@ else if($error){?>
                                                         <div class="">
                                                             <input type="text" name="section" class="form-control" required="required" id="success">
                                                             <span class="help-block">Eg- A,B,C etc</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group has-success">
+                                                        <label for="success" class="control-label">Semester</label>
+                                                        <div class="">
+                                                            <input type="number" name="semester" class="form-control" required="required" id="success">
+                                                            <span class="help-block">Eg- 1,2,3 etc</span>
                                                         </div>
                                                     </div>
   <div class="form-group has-success">
@@ -205,4 +214,4 @@ else if($error){?>
         <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
     </body>
 </html>
-<?php  } ?>
+<?php } ?>

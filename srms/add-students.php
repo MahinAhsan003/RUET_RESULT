@@ -18,7 +18,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $status = 1;
 
         // Check if student already exists
-        $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid OR RegistrationId=:registrationid";
+        $sql = "SELECT * FROM tblstudents WHERE RollId=:rollid AND RegistrationId=:registrationid";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollid', $rollid, PDO::PARAM_STR);
         $query->bindParam(':registrationid', $registrationid, PDO::PARAM_STR);
@@ -57,7 +57,7 @@ if (strlen($_SESSION['alogin']) == "") {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin | Student Admission</title>
+        <title>SRMS Admin | Student Admission</title>
         <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
         <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -175,14 +175,14 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             required="required">
                                                             <option value="">Select Department</option>
                                                             <?php 
-                                                            $sql = "SELECT DISTINCT deptName FROM tbldept";
+                                                            $sql = "SELECT DISTINCT Department FROM tbldept";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->deptName); ?>">
-                                                                        <?php echo htmlentities($result->deptName); ?>
+                                                                    <option value="<?php echo htmlentities($result->Department); ?>">
+                                                                        <?php echo htmlentities($result->Department); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>
@@ -219,14 +219,14 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             required="required">
                                                             <option value="">Select Series</option>
                                                             <?php 
-                                                            $sql = "SELECT DISTINCT ClassNameNumeric FROM tblclasses";
+                                                            $sql = "SELECT DISTINCT Series FROM tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
-                                                                        <?php echo htmlentities($result->ClassNameNumeric); ?>
+                                                                    <option value="<?php echo htmlentities($result->Series); ?>">
+                                                                        <?php echo htmlentities($result->Series); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>

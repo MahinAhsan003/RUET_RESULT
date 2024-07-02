@@ -48,10 +48,10 @@ INSERT INTO `admin` (`id`, `UserName`, `Password`, `updationDate`) VALUES
 --
 
 CREATE TABLE `tblclasses` (
-  `id` int(11) NOT NULL,
-  `ClassName` varchar(80) DEFAULT NULL,
-  `ClassNameNumeric` int(4) DEFAULT NULL,
+  `Department` varchar(80) DEFAULT NULL,
+  `Series` int(4) DEFAULT NULL,
   `Section` varchar(5) DEFAULT NULL,
+  `Semester` int(5) DEFAULT NULL,
   `CreationDate` timestamp NULL DEFAULT current_timestamp(),
   `UpdationDate` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -60,15 +60,15 @@ CREATE TABLE `tblclasses` (
 -- Dumping data for table `tblclasses`
 --
 
-INSERT INTO `tblclasses` (`id`, `ClassName`, `ClassNameNumeric`, `Section`, `CreationDate`, `UpdationDate`) VALUES
-(1, 'First', 1, 'C', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(2, 'Second', 2, 'A', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(4, 'Fourth', 4, 'C', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(5, 'Sixth', 6, 'A', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(6, 'Sixth', 6, 'B', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(7, 'Seventh', 7, 'B', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(8, 'Eight', 8, 'A', '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(9, 'Tenth', 10, 'A', '2024-04-25 10:30:57', NULL);
+INSERT INTO `tblclasses` (`Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
+('ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('CE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('MTE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('MSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('EEE', 2020, 'A', 1, '2024-04-25 10:30:57', NULL);
 
 
 -- --------------------------------------------------------
@@ -79,8 +79,8 @@ INSERT INTO `tblclasses` (`id`, `ClassName`, `ClassNameNumeric`, `Section`, `Cre
 
 CREATE TABLE `tbldept` (
   `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `deptName` varchar(32) NOT NULL,
-  `deptCode` int(2) NOT NULL
+  `Department` varchar(32) NOT NULL,
+  `deptCode` varchar(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
@@ -88,11 +88,15 @@ CREATE TABLE `tbldept` (
 -- Dumping data for table `tbldept`
 --
 
-INSERT INTO `tbldept` (`id`, `deptName`, `deptCode`) VALUES
-('ECE', 10 ),
-('CSE', 03 ),
-('CE', 00 ),
-('ME', 02 );
+INSERT INTO `tbldept` (`id`, `Department`, `deptCode`) VALUES
+(1, 'ECE', '10' ),
+(2, 'CSE', '03' ),
+(3, 'CE', '00' ),
+(4, 'ME', '02' ),
+(5, 'ETE', '01' ),
+(6, 'EEE', '04' ),
+(7, 'MTE', '05' ),
+(8, 'MSE', '06' );
 
 
 -- --------------------------------------------------------

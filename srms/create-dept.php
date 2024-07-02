@@ -9,13 +9,13 @@ if(strlen($_SESSION['alogin'])=="")
 else {
     if(isset($_POST['submit']))
     {
-        $deptname = $_POST['deptname'];
+        $department = $_POST['department'];
         $deptcode = $_POST['deptcode']; 
 
         // Check if the department already exists
-        $sql = "SELECT * FROM tbldept WHERE deptName=:deptname AND deptCode=:deptcode";
+        $sql = "SELECT * FROM tbldept WHERE Department=:department AND deptCode=:deptcode";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':deptname', $deptname, PDO::PARAM_STR);
+        $query->bindParam(':department', $department, PDO::PARAM_STR);
         $query->bindParam(':deptcode', $deptcode, PDO::PARAM_STR);
         $query->execute();
         $result = $query->fetch(PDO::FETCH_ASSOC);
@@ -24,9 +24,9 @@ else {
             $error = "Department already exists";
         } else {
             // If not, insert the new department
-            $sql = "INSERT INTO tbldept(deptName, deptCode) VALUES(:deptname, :deptcode)";
+            $sql = "INSERT INTO tbldept(Department, deptCode) VALUES(:department, :deptcode)";
             $query = $dbh->prepare($sql);
-            $query->bindParam(':deptname', $deptname, PDO::PARAM_STR);
+            $query->bindParam(':department', $department, PDO::PARAM_STR);
             $query->bindParam(':deptcode', $deptcode, PDO::PARAM_STR);
             $query->execute();
             $lastInsertId = $dbh->lastInsertId();
@@ -133,14 +133,14 @@ else {
                                             <div class="form-group has-success">
                                                 <label for="success" class="control-label">Department Name</label>
                                                 <div class="">
-                                                    <input type="text" name="deptname" class="form-control" required="required" id="success">
+                                                    <input type="text" name="department" class="form-control" required="required" id="success">
                                                     <span class="help-block">Eg- ECE,ETE,CSE etc</span>
                                                 </div>
                                             </div>
                                             <div class="form-group has-success">
                                                 <label for="success" class="control-label">Department Code</label>
                                                 <div class="">
-                                                    <input type="number" name="deptcode" required="required" class="form-control" id="success">
+                                                    <input type="text" name="deptcode" required="required" class="form-control" id="success">
                                                     <span class="help-block">Eg- 10,03,01 etc</span>
                                                 </div>
                                             </div>
