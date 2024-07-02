@@ -23,7 +23,7 @@ echo "<script>window.location.href ='manage-dept.php'</script>";
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Admin Manage Classes</title>
+        <title>Admin Manage Department</title>
         <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
         <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
         <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
@@ -65,7 +65,7 @@ echo "<script>window.location.href ='manage-dept.php'</script>";
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
-                                    <h2 class="title">Manage Classes</h2>
+                                    <h2 class="title">Manage Departments</h2>
                                 
                                 </div>
                                 
@@ -77,7 +77,7 @@ echo "<script>window.location.href ='manage-dept.php'</script>";
                                     <ul class="breadcrumb">
             							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
                                         <li> Deptarment </li>
-            							<li class="active">Manage Department</li>
+            							<li class="active">Manage Departments</li>
             						</ul>
                                 </div>
                              
@@ -140,7 +140,7 @@ foreach($results as $result)
 {   ?>
 <tr>
  <td><?php echo htmlentities($cnt);?></td>
-                                                            <td><?php echo htmlentities($result->deptName);?></td>
+                                                            <td><?php echo htmlentities($result->Department);?></td>
                                                             <td><?php echo htmlentities($result->deptCode);?></td>
 <td>
 <a href="edit-dept.php?classid=<?php echo htmlentities($result->id);?>" class="btn btn-info btn-xs"> Edit </a> 
