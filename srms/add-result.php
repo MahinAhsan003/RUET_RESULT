@@ -149,39 +149,38 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Department</label>
                                                     <div class="col-sm-10">
-                                                        <select name="class" class="form-control clid" id="classid"
-                                                            onChange="getStudent(this.value);" required="required">
+                                                        <select name="department" class="form-control" id="default"
+                                                            required="required">
                                                             <option value="">Select Department</option>
                                                             <?php
-                                                            $sql = "SELECT DISTINCT ClassName from tblclasses";
+                                                            $sql = "SELECT DISTINCT deptName FROM tbldept";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) {
-                                                                    ?>
-                                                                    <option value="<?php echo htmlentities($result->ClassName); ?>">
-                                                                        <?php echo htmlentities($result->ClassName); ?>
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->deptName); ?>">
+                                                                        <?php echo htmlentities($result->deptName); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>
                                                         </select>
                                                     </div>
                                                 </div>
+
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Section</label>
                                                     <div class="col-sm-10">
-                                                        <select name="class" class="form-control clid" id="classid"
-                                                            onChange="getStudent(this.value);" required="required">
+                                                        <select name="section" class="form-control" id="default"
+                                                            required="required">
                                                             <option value="">Select Section</option>
                                                             <?php
-                                                            $sql = "SELECT DISTINCT Section from tblclasses";
+                                                            $sql = "SELECT DISTINCT Section FROM tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) {
-                                                                    ?>
+                                                                foreach ($results as $result) { ?>
                                                                     <option value="<?php echo htmlentities($result->Section); ?>">
                                                                         <?php echo htmlentities($result->Section); ?>
                                                                     </option>
@@ -194,17 +193,16 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Series</label>
                                                     <div class="col-sm-10">
-                                                        <select name="class" class="form-control clid" id="classid"
-                                                            onChange="getStudent(this.value);" required="required">
+                                                        <select name="series" class="form-control" id="default"
+                                                            required="required">
                                                             <option value="">Select Series</option>
                                                             <?php
-                                                            $sql = "SELECT DISTINCT ClassNameNumeric from tblclasses";
+                                                            $sql = "SELECT DISTINCT ClassNameNumeric FROM tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) {
-                                                                    ?>
+                                                                foreach ($results as $result) { ?>
                                                                     <option
                                                                         value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
                                                                         <?php echo htmlentities($result->ClassNameNumeric); ?>
@@ -220,6 +218,20 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                     <div class="col-sm-10">
                                                         <select name="studentid" class="form-control stid" id="studentid"
                                                             required="required" onChange="getresult(this.value);">
+                                                            <option value="">Select Series</option>
+                                                            <?php
+                                                            $sql = "SELECT DISTINCT StudentName FROM tblstudents";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option
+                                                                        value="<?php echo htmlentities($result->StudentName); ?>">
+                                                                        <?php echo htmlentities($result->StudentName); ?>
+                                                                    </option>
+                                                                <?php }
+                                                            } ?>
                                                         </select>
                                                     </div>
                                                 </div>
