@@ -143,10 +143,11 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Registration Id</label>
+                                                    <label for="default" class="col-sm-2 control-label">Registration
+                                                        Id</label>
                                                     <div class="col-sm-10">
-                                                        <input type="text" name="registrationid" class="form-control" id="registrationid"
-                                                            required="required" autocomplete="off">
+                                                        <input type="text" name="registrationid" class="form-control"
+                                                            id="registrationid" required="required" autocomplete="off">
                                                     </div>
                                                 </div>
 
@@ -196,7 +197,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         <select name="section" class="form-control" id="default"
                                                             required="required">
                                                             <option value="">Select Section</option>
-                                                            <?php 
+                                                            <?php
                                                             $sql = "SELECT DISTINCT Section FROM tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
@@ -219,14 +220,14 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             required="required">
                                                             <option value="">Select Series</option>
                                                             <?php 
-                                                            $sql = "SELECT DISTINCT Series FROM tblclasses";
+                                                            $sql = "SELECT DISTINCT ClassNameNumeric FROM tblclasses";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Series); ?>">
-                                                                        <?php echo htmlentities($result->Series); ?>
+                                                                    <option value="<?php echo htmlentities($result->ClassNameNumeric); ?>">
+                                                                        <?php echo htmlentities($result->ClassNameNumeric); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>
