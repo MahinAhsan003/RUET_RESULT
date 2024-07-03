@@ -266,19 +266,22 @@ INSERT INTO `tblsubjectcombination` (`id`, `ClassId`, `SubjectId`, `status`, `Cr
 --
 
 CREATE TABLE `tblsubjects` (
-  `id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
-  `SubjectName` varchar(100) NOT NULL,
-  `SubjectCode` varchar(100) DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `CourseName` varchar(100) NOT NULL,
+  `CourseCode` varchar(100) DEFAULT NULL,
+  `CourseCredit` decimal(3,2) DEFAULT NULL,
   `deptName` varchar(100) NOT NULL,
+  `Semester` int(1) DEFAULT NULL,
   `Creationdate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL,
-  
+  `UpdationDate` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tblsubjects`
 --
 
+INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `deptName`, `Semester`, `Creationdate`, `UpdationDate`) VALUES
+(1, 'Circuit and Systems-1', 'ECE-1101', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL);
 
 --
 -- Indexes for dumped tables

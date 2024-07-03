@@ -6,18 +6,22 @@ if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
     if (isset($_POST['submit'])) {
-        $subjectname = $_POST['subjectname'];
-        $subjectcode = $_POST['subjectcode'];
+        $coursename = $_POST['coursename'];
+        $coursecode = $_POST['coursecode'];
+        $coursecredit = $_POST['coursecredit'];
         $deptname = $_POST['deptname'];
-        $sql = "INSERT INTO  tblsubjects(SubjectName,SubjectCode,deptName) VALUES(:subjectname,:subjectcode,:deptname)";
+        $semester = $_POST['semester'];
+        $sql = "INSERT INTO  tblsubjects(CourseName,CourseCode,CourseCredit,deptName,Semester) VALUES(:coursename,:coursecode,:coursecredit,:deptname,:semester)";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':subjectname', $subjectname, PDO::PARAM_STR);
-        $query->bindParam(':subjectcode', $subjectcode, PDO::PARAM_STR);
+        $query->bindParam(':coursename', $coursename, PDO::PARAM_STR);
+        $query->bindParam(':coursecode', $coursecode, PDO::PARAM_STR);
+        $query->bindParam(':coursecredit', $coursecredit, PDO::PARAM_STR);
         $query->bindParam(':deptname', $deptname, PDO::PARAM_STR);
+        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
         $query->execute();
         $lastInsertId = $dbh->lastInsertId();
         if ($lastInsertId) {
-            $msg = "Subject Created successfully";
+            $msg = "Course Created successfully";
         } else {
             $error = "Something went wrong. Please try again";
         }
@@ -31,7 +35,7 @@ if (strlen($_SESSION['alogin']) == "") {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SMS Admin Subject Creation </title>
+    <title>SRMS Admin Course Creation </title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -60,7 +64,7 @@ if (strlen($_SESSION['alogin']) == "") {
                     <div class="container-fluid">
                         <div class="row page-title-div">
                             <div class="col-md-6">
-                                <h2 class="title">Subject Creation</h2>
+                                <h2 class="title">Course Creation</h2>
 
                             </div>
 
@@ -71,8 +75,8 @@ if (strlen($_SESSION['alogin']) == "") {
                             <div class="col-md-6">
                                 <ul class="breadcrumb">
                                     <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                    <li> Subjects</li>
-                                    <li class="active">Create Subject</li>
+                                    <li> Courses</li>
+                                    <li class="active">Create Course</li>
                                 </ul>
                             </div>
 
@@ -100,17 +104,25 @@ if (strlen($_SESSION['alogin']) == "") {
                                         <?php } ?>
                                         <form class="form-horizontal" method="post">
                                             <div class="form-group">
-                                                <label for="default" class="col-sm-2 control-label">Subject Name</label>
+                                                <label for="default" class="col-sm-2 control-label">Course Name</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="subjectname" class="form-control"
-                                                        id="default" placeholder="Subject Name" required="required">
+                                                    <input type="text" name="coursename" class="form-control"
+                                                        id="default" placeholder="Course Name" required="required">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="default" class="col-sm-2 control-label">Subject Code</label>
+                                                <label for="default" class="col-sm-2 control-label">Course Code</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="subjectcode" class="form-control"
-                                                        id="default" placeholder="Subject Code" required="required">
+                                                    <input type="text" name="coursecode" class="form-control"
+                                                        id="default" placeholder="Course Code" required="required">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="default" class="col-sm-2 control-label">Course
+                                                    Credit</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" name="coursecredit" class="form-control"
+                                                        id="default" placeholder="Credit" required="required">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -134,7 +146,13 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     </select>
                                                 </div>
                                             </div>
-
+                                            <div class="form-group">
+                                                <label for="default" class="col-sm-2 control-label">Semester</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" name="semester" class="form-control"
+                                                        id="default" placeholder="Semester" required="required">
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <div class="col-sm-offset-2 col-sm-10">
                                                     <button type="submit" name="submit"

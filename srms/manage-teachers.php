@@ -128,7 +128,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         </tr>
                                                     </tfoot>
                                                     <tbody>
-                                                        <?php $sql = "SELECT tblstudents.StudentName,tblstudents.RollId,tblstudents.RegDate,tblstudents.StudentId,tblstudents.Status,tblclasses.ClassName,tblclasses.Section from tblstudents join tblclasses on tblclasses.id=tblstudents.ClassId";
+                                                        <?php $sql = "SELECT * from tblteachers";
                                                         $query = $dbh->prepare($sql);
                                                         $query->execute();
                                                         $results = $query->fetchAll(PDO::FETCH_OBJ);
