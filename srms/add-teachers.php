@@ -167,7 +167,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->id); ?>">
+                                                                    <option value="<?php echo htmlentities($result->deptName); ?>">
                                                                         <?php echo htmlentities($result->deptName); ?>
                                                                     </option>
                                                                 <?php }
@@ -227,7 +227,7 @@ if (strlen($_SESSION['alogin']) == "") {
             <script src="js/select2/select2.min.js"></script>
             <script src="js/main.js"></script>
             <script>
-                $(function($) {
+                $(function ($) {
                     $(".js-states").select2();
                     $(".js-states-limit").select2({
                         maximumSelectionLength: 2
