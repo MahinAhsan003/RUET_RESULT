@@ -11,7 +11,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $teacheremail = $_POST['emailid'];
         $number = $_POST['phonenumber'];
         $gender = $_POST['gender'];
-        $dept = $_POST['dept'];
+        $deptartment = $_POST['department'];
         $date = $_POST['date'];
         $designation = $_POST['designation'];
         $status = $_POST['status'];
@@ -23,7 +23,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $query->bindParam(':teacheremail', $teacheremail, PDO::PARAM_STR);
         $query->bindParam(':number', $number, PDO::PARAM_STR);
         $query->bindParam(':gender', $gender, PDO::PARAM_STR);
-        $query->bindParam(':dept', $dept, PDO::PARAM_STR);
+        $query->bindParam(':department', $department, PDO::PARAM_STR);
         $query->bindParam(':date', $date, PDO::PARAM_STR);
         $query->bindParam(':designation', $designation, PDO::PARAM_STR);
         $query->bindParam(':status', $status, PDO::PARAM_STR);
@@ -158,7 +158,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Department</label>
                                                     <div class="col-sm-10">
-                                                        <select name="dept" class="form-control" id="default"
+                                                        <select name="department" class="form-control" id="default"
                                                             required="required">
                                                             <option value="">Select Department</option>
                                                             <?php $sql = "SELECT * from tbldept";
@@ -167,8 +167,8 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->deptName); ?>">
-                                                                        <?php echo htmlentities($result->deptName); ?>
+                                                                    <option value="<?php echo htmlentities($result->Department); ?>">
+                                                                        <?php echo htmlentities($result->Department); ?>
                                                                     </option>
                                                                 <?php }
                                                             } ?>
