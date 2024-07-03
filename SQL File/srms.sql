@@ -104,7 +104,7 @@ INSERT INTO `tbldept` (`id`, `Department`, `deptCode`) VALUES
 
 CREATE TABLE `tblteachers` (
   `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `TeacherId` int(11) NOT NULL,
+  `TeacherId` varchar(80) NOT NULL,
   `TeacherName` varchar(100) DEFAULT NULL,
   `TeacherEmail` varchar(100) DEFAULT NULL,
   `TeacherPhone` int(11) DEFAULT NULL,

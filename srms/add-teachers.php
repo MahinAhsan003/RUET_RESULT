@@ -125,7 +125,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     <label for="default" class="col-sm-2 control-label">Teacher Id</label>
                                                     <div class="col-sm-10">
                                                         <input type="text" name="teacherid" class="form-control" id="rollid"
-                                                            maxlength="5" required="required" autocomplete="off">
+                                                            maxlength="10" required="required" autocomplete="off">
                                                     </div>
                                                 </div>
 
