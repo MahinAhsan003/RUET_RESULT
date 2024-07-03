@@ -266,25 +266,19 @@ INSERT INTO `tblsubjectcombination` (`id`, `ClassId`, `SubjectId`, `status`, `Cr
 --
 
 CREATE TABLE `tblsubjects` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTOINCREMENT,
   `SubjectName` varchar(100) NOT NULL,
   `SubjectCode` varchar(100) DEFAULT NULL,
+  `deptName` varchar(100) NOT NULL,
   `Creationdate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL
+  `UpdationDate` timestamp NULL DEFAULT NULL,
+  
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Dumping data for table `tblsubjects`
 --
 
-INSERT INTO `tblsubjects` (`id`, `SubjectName`, `SubjectCode`, `Creationdate`, `UpdationDate`) VALUES
-(1, 'Maths', 'MTH01', '2024-04-25 10:30:57', NULL),
-(2, 'English', 'ENG11', '2024-04-25 10:30:57', NULL),
-(4, 'Science', 'SC1', '2024-04-25 10:30:57', NULL),
-(5, 'Music', 'MS', '2024-04-25 10:30:57', NULL),
-(6, 'Social Studies', 'SS08', '2024-04-25 10:30:57', NULL),
-(7, 'Physics', 'PH03', '2024-04-25 10:30:57', NULL),
-(8, 'Chemistry', 'CH65', '2024-04-25 10:30:57', NULL);
 
 --
 -- Indexes for dumped tables
@@ -330,7 +324,7 @@ ALTER TABLE `tblsubjectcombination`
 -- Indexes for table `tblsubjects`
 --
 ALTER TABLE `tblsubjects`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY AUTOINCREMENT (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
