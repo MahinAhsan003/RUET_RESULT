@@ -16,7 +16,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $designation = $_POST['designation'];
         $status = $_POST['status'];
         $sql = "INSERT INTO  tblteachers(TeacherName,TeacherId,TeacherEmail,TeacherPhone,Gender,Department,JoiningDate,Designation,Status)
-                 VALUES(:teachername,:teacherid,:teacheremail,:number,:gender,:dept,:date,:designation,:status)";
+                 VALUES(:teachername,:teacherid,:teacheremail,:number,:gender,:department,:date,:designation,:status)";
         $query = $dbh->prepare($sql);
         $query->bindParam(':teachername', $teachername, PDO::PARAM_STR);
         $query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
