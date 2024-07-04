@@ -215,62 +215,15 @@ INSERT INTO `tblstudents` (`StudentName`, `RollId`, `RegistrationId`, `StudentEm
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblsubjectcombination`
---
-
-CREATE TABLE `tblsubjectcombination` (
-  `id` int(11) NOT NULL,
-  `ClassId` int(11) DEFAULT NULL,
-  `SubjectId` int(11) DEFAULT NULL,
-  `status` int(1) DEFAULT NULL,
-  `CreationDate` timestamp NULL DEFAULT current_timestamp(),
-  `Updationdate` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tblsubjectcombination`
---
-
-INSERT INTO `tblsubjectcombination` (`id`, `ClassId`, `SubjectId`, `status`, `CreationDate`, `Updationdate`) VALUES
-(3, 2, 5, 0, '2024-05-01 10:30:57', '2024-06-07 05:25:49'),
-(4, 1, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(5, 1, 4, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(6, 1, 5, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(8, 4, 4, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(10, 4, 1, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(12, 4, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(13, 4, 5, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(14, 6, 1, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(15, 6, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(16, 6, 4, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(17, 6, 6, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(18, 7, 1, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(19, 7, 7, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(20, 7, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(21, 7, 6, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(22, 7, 5, 0, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(23, 8, 1, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(24, 8, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(25, 8, 4, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(26, 8, 6, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(27, 8, 5, 0, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(28, 9, 1, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(29, 9, 2, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(30, 9, 8, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00'),
-(31, 9, 8, 1, '2024-05-01 10:30:57', '2024-06-07 04:28:00');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tblsubjects`
 --
 
 CREATE TABLE `tblsubjects` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `CourseName` varchar(100) NOT NULL,
   `CourseCode` varchar(100) DEFAULT NULL,
   `CourseCredit` decimal(3,2) DEFAULT NULL,
-  `deptName` varchar(100) NOT NULL,
+  `Department` varchar(100) NOT NULL, 
   `Semester` int(1) DEFAULT NULL,
   `Creationdate` timestamp NULL DEFAULT current_timestamp(),
   `UpdationDate` timestamp NULL DEFAULT NULL
@@ -280,7 +233,7 @@ CREATE TABLE `tblsubjects` (
 -- Dumping data for table `tblsubjects`
 --
 
-INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `deptName`, `Semester`, `Creationdate`, `UpdationDate`) VALUES
+INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `Department`, `Semester`, `Creationdate`, `UpdationDate`) VALUES
 (1, 'Circuit and Systems-1', 'ECE-1101', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL);
 
 --
@@ -327,7 +280,7 @@ ALTER TABLE `tblsubjectcombination`
 -- Indexes for table `tblsubjects`
 --
 ALTER TABLE `tblsubjects`
-  ADD PRIMARY KEY AUTOINCREMENT (`id`);
+  ADD PRIMARY KEY AUTO_INCREMENT (`id`);
 
 --
 -- AUTO_INCREMENT for dumped tables

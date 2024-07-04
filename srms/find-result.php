@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('includes/config.php');
+include ('includes/config.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rollid = $_POST['rollid'];
@@ -53,38 +53,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <form action="" method="post">
                                 <div class="form-group">
                                     <label for="rollid">Enter your Roll Id</label>
-                                    <input type="text" class="form-control" id="rollid" placeholder="Enter Your Roll Id" autocomplete="off" name="rollid" required>
+                                    <input type="text" class="form-control" id="rollid" placeholder="Enter Your Roll Id"
+                                        autocomplete="off" name="rollid" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="default" class="col-sm-2 control-label">Department</label>
                                     <select name="department" class="form-control" id="default" required="required">
                                         <option value="">Select Department</option>
-                                        <?php 
+                                        <?php
                                         $sql = "SELECT DISTINCT Department from tbldept";
                                         $query = $dbh->prepare($sql);
                                         $query->execute();
-                                        $results=$query->fetchAll(PDO::FETCH_OBJ);
-                                        if($query->rowCount() > 0)
-                                        {
-                                            foreach($results as $result)
-                                            {   
+                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                        if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
                                                 ?>
-                                                <option value="<?php echo htmlentities($result->Department); ?>">
-                                                    <?php echo htmlentities($result->Department); ?>
-                                                </option>
-                                            <?php 
+                                        <option value="<?php echo htmlentities($result->Department); ?>">
+                                            <?php echo htmlentities($result->Department); ?>
+                                        </option>
+                                        <?php
                                             }
-                                        } 
+                                        }
                                         ?>
                                     </select>
                                 </div>
-                                <?php if(isset($error)) { ?>
-                                    <div class="alert alert-danger">
-                                        <?php echo $error; ?>
-                                    </div>
+                                <?php if (isset($error)) { ?>
+                                <div class="alert alert-danger">
+                                    <?php echo $error; ?>
+                                </div>
                                 <?php } ?>
                                 <div class="form-group mt-20">
-                                    <button type="submit" class="btn btn-success btn-labeled pull-right">Search<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span></button>
+                                    <button type="submit" class="btn btn-success btn-labeled pull-right">Search<span
+                                            class="btn-label btn-label-right"><i
+                                                class="fa fa-check"></i></span></button>
                                     <div class="col-sm-6">
                                         <a href="index.php">Back to Home</a>
                                     </div>
@@ -107,11 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="js/icheck/icheck.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-        $(function() {
-            $('input.flat-blue-style').iCheck({
-                checkboxClass: 'icheckbox_flat-blue'
-            });
+    $(function() {
+        $('input.flat-blue-style').iCheck({
+            checkboxClass: 'icheckbox_flat-blue'
         });
+    });
     </script>
 </body>
 

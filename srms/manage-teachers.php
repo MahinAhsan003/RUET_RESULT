@@ -108,10 +108,13 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <thead>
                                                     <tr>
                                                         <th>#</th>
-                                                        <th>Student Name</th>
-                                                        <th>Roll Id</th>
-                                                        <th>Class</th>
-                                                        <th>Reg Date</th>
+                                                        <th>ID</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone</th>
+                                                        <th>Gender</th>
+                                                        <th>Department</th>
+                                                        <th>Desigation</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -124,6 +127,8 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         <th>Email</th>
                                                         <th>Phone</th>
                                                         <th>Gender</th>
+                                                        <th>Department</th>
+                                                        <th>Desigation</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -138,9 +143,14 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             foreach ($results as $result) { ?>
                                                     <tr>
                                                         <td><?php echo htmlentities($cnt); ?></td>
+                                                        <td><?php echo htmlentities($result->TeacherId); ?></td>
                                                         <td><?php echo htmlentities($result->TeacherName); ?></td>
-                                                        <td><?php echo htmlentities($result->RollId); ?></td>
-                                                        <td><?php echo htmlentities($result->ClassName); ?>(<?php echo htmlentities($result->Section); ?>)
+                                                        <td><?php echo htmlentities($result->TeacherEmail); ?></td>
+                                                        <td><?php echo htmlentities($result->TeacherPhone); ?></td>
+                                                        <td><?php echo htmlentities($result->Gender); ?></td>
+                                                        <td><?php echo htmlentities($result->Department); ?></td>
+                                                        <td><?php echo htmlentities($result->Designation); ?></td>
+                                                        <td><?php echo htmlentities($result->Status); ?></td>
                                                         </td>
                                                         <td><?php echo htmlentities($result->RegDate); ?></td>
                                                         <td><?php if ($result->Status == 1) {

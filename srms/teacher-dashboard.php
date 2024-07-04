@@ -14,7 +14,7 @@ if (strlen($_SESSION['tlogin']) == "") {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Student Result Management System | Teacher's Dashboard</title>
+        <title>Tacher's Portal | Dashboard</title>
         <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
         <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -38,8 +38,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                             <div class="user-info closed">
                                 <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
                                     class="img-circle profile-img">
-                                <h6 class="title">Admin</h6>
-                                <small class="info">Administrator</small>
+                                <h6 class="title">Teacher</h6>
                             </div>
                             <!-- /.user-info -->
 
