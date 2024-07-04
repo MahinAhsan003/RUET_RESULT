@@ -53,7 +53,151 @@ if (strlen($_SESSION['tlogin']) == "") {
         <link rel="stylesheet" href="css/select2/select2.min.css">
         <link rel="stylesheet" href="css/main.css" media="screen">
         <script src="js/modernizr/modernizr.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Populate Series based on Department
+                $('#department').change(function () {
+                    var department = $(this).val();
+                    if (department) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getSeries.php',
+                            data: 'departmentId=' + department,
+                            success: function (html) {
+                                $('#series').html(html);
+                                $('#section').html('<option value="">Select Section</option>');
+                                $('#semester').html('<option value="">Select Semester</option>');
+                                $('#course').html('<option value="">Select Course</option>');
+                                $('#student').html('<option value="">Select Student</option>');
+                            }
+                        });
+                    } else {
+                        $('#series').html('<option value="">Select Series</option>');
+                        $('#section').html('<option value="">Select Section</option>');
+                        $('#semester').html('<option value="">Select Semester</option>');
+                        $('#course').html('<option value="">Select Course</option>');
+                        $('#student').html('<option value="">Select Student</option>');
+                    }
+                });
 
+                // Populate Section based on Series
+                $('#series').change(function () {
+                    var series = $(this).val();
+                    if (series) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getSections.php',
+                            data: 'seriesId=' + series,
+                            success: function (html) {
+                                $('#section').html(html);
+                                $('#semester').html('<option value="">Select Semester</option>');
+                                $('#course').html('<option value="">Select Course</option>');
+                                $('#student').html('<option value="">Select Student</option>');
+                            }
+                        });
+                    } else {
+                        $('#section').html('<option value="">Select Section</option>');
+                        $('#semester').html('<option value="">Select Semester</option>');
+                        $('#course').html('<option value="">Select Course</option>');
+                        $('#student').html('<option value="">Select Student</option>');
+                    }
+                });
+
+                // Populate Semester based on Section
+                $('#section').change(function () {
+                    var section = $(this).val();
+                    if (section) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getSemesters.php',
+                            data: 'sectionId=' + section,
+                            success: function (html) {
+                                $('#semester').html(html);
+                                $('#course').html('<option value="">Select Course</option>');
+                                $('#student').html('<option value="">Select Student</option>');
+                            }
+                        });
+                    } else {
+                        $('#semester').html('<option value="">Select Semester</option>');
+                        $('#course').html('<option value="">Select Course</option>');
+                        $('#student').html('<option value="">Select Student</option>');
+                    }
+                });
+
+                // Populate Courses based on Semester
+                $('#semester').change(function () {
+                    var semester = $(this).val();
+                    var department = $('#department').val();
+                    if (semester && department) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getCourses.php',
+                            data: {
+                                semesterId: semester,
+                                departmentId: department
+                            },
+                            success: function (html) {
+                                $('#course').html(html);
+                                $('#student').html('<option value="">Select Student</option>');
+                            }
+                        });
+                    } else {
+                        $('#course').html('<option value="">Select Course</option>');
+                        $('#student').html('<option value="">Select Student</option>');
+                    }
+                });
+
+                // Populate Students based on Department, Series, Section, and Semester
+                $('#course').change(function () {
+                    var semester = $('#semester').val();
+                    var department = $('#department').val();
+                    var series = $('#series').val();
+                    var section = $('#section').val();
+                    if (semester && department && series && section) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getStudents.php',
+                            data: {
+                                semesterId: semester,
+                                departmentId: department,
+                                seriesId: series,
+                                sectionId: section
+                            },
+                            success: function (html) {
+                                $('#student').html(html);
+                            }
+                        });
+                    } else {
+                        $('#student').html('<option value="">Select Student</option>');
+                    }
+                });
+
+                // Show/Hide Marks Section based on Course Credit
+                $('#course').change(function () {
+                    var course = $(this).val();
+                    if (course) {
+                        $.ajax({
+                            type: 'POST',
+                            url: 'getCourseCredit.php',
+                            data: 'courseId=' + course,
+                            success: function (credit) {
+                                if (credit >= 3) {
+                                    $('#marksSection').show();
+                                    $('#theoryMarks').show();
+                                    $('#sessionalMarks').hide();
+                                } else {
+                                    $('#marksSection').show();
+                                    $('#theoryMarks').hide();
+                                    $('#sessionalMarks').show();
+                                }
+                            }
+                        });
+                    } else {
+                        $('#marksSection').hide();
+                    }
+                });
+            });
+        </script>
 
     </head>
 
@@ -130,6 +274,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     </option>
                                                                 <?php }
                                                             } ?>
+                                                        </select>
                                                         </select>
                                                     </div>
                                                 </div>
