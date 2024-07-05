@@ -43,8 +43,10 @@ if (!isset($_SESSION['login'])) {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80vh; /* Adjust this value as needed */
+            min-height: 80vh;
+            /* Adjust this value as needed */
         }
+
         .student-info {
             border: 1px solid #ddd;
             padding: 15px;
@@ -52,14 +54,17 @@ if (!isset($_SESSION['login'])) {
             background-color: #f9f9f9;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .student-info h3 {
             margin-top: 0;
             color: #333;
         }
+
         .student-info p {
             font-size: 14px;
             color: #555;
         }
+
         .student-info p strong {
             color: #000;
         }
@@ -74,63 +79,75 @@ if (!isset($_SESSION['login'])) {
                 <div class="left-sidebar bg-black-300 box-shadow">
                     <div class="sidebar-content">
                         <div class="user-info closed">
-                            <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe" class="img-circle profile-img">
+                            <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
+                                class="img-circle profile-img">
                             <h6 class="title">Student Dashboard</h6>
                         </div>
+                       
                         <div class="sidebar-nav">
-            <ul class="side-nav color-gray">
-                <li class="nav-header">
-                    <span class="">Main Category</span>
-                </li>
-                <li>
-                    <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span>Dashboard</span> </a>
+                            <ul class="side-nav color-gray">
+                                <li class="nav-header">
+                                    <span class="">Main Category</span>
+                                </li>
+                                <li>
+                                    <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span>Dashboard</span> </a>
 
-                </li>
+                                </li>
 
-                <li class="nav-header">
-                    <span class="">Appearance</span>
-                </li>
-                <li class="has-children">
-                    <a href="#"><i class="fa fa-file-text"></i> <span>Course Management</span> <i
-                            class="fa fa-angle-right arrow"></i></a>
-                    <ul class="child-nav">
-                        <li><a href="create-dept.php"><i class="fa fa-bars"></i> <span>Course Registration Notice</span></a></li>
-                        <li><a href="course-registration.php"><i class="fa fa fa-server"></i> <span>Course Registration</span></a></li>
-                        <li><a href="course-registration.php"><i class="fa fa fa-server"></i> <span>Course Registration(SS)</span></a></li>
-                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a></li>
-                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up(SS)</span></a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#"><i class="fa fa-file-text"></i> <span>Backlog</span> <i 
-                            class="fa fa-angle-right arrow"></i></a>
-                    <ul class="child-nav">
-                        <li><a href="#"><i class="fa fa-bars"></i> <span>Backlog Form Fill Up</span></a></li>
-                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Backlog Course Registration</span></a></li>
-                    </ul>
-                </li>
+                                <li class="nav-header">
+                                    <span class="">Appearance</span>
+                                </li>
+                                <li class="has-children">
+                                    <a href="#"><i class="fa fa-file-text"></i> <span>Course Management</span> <i
+                                            class="fa fa-angle-right arrow"></i></a>
+                                    <ul class="child-nav">
+                                        <li><a href="#"><i class="fa fa-bars"></i> <span>Course
+                                                    Registration Notice</span></a></li>
+                                        <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
+                                                <span>Course Registration</span></a></li>
+                                        <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
+                                                <span>Course Registration(SS)</span></a></li>
+                                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a>
+                                        </li>
+                                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill
+                                                    Up(SS)</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class="has-children">
+                                    <a href="#"><i class="fa fa-file-text"></i> <span>Backlog</span> <i
+                                            class="fa fa-angle-right arrow"></i></a>
+                                    <ul class="child-nav">
+                                        <li><a href="#"><i class="fa fa-bars"></i> <span>Backlog Form Fill Up</span></a>
+                                        </li>
+                                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Backlog Course
+                                                    Registration</span></a></li>
+                                    </ul>
+                                </li>
 
-                <li class="has-children">
-                    <a href="#"><i class="fa fa-file-text"></i> <span>Short Semester</span> <i 
-                            class="fa fa-angle-right arrow"></i></a>
-                    <ul class="child-nav">
-                        <li><a href="#"><i class="fa fa-bars"></i> <span>Short Semester Form Fill Up</span></a></li>
-                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Short Semester Course Registration</span></a></li>
-                    </ul>
-                </li>
-                <li class="has-children">
-                    <a href="#"><i class="fa fa-file-text"></i> <span>Result</span> <i 
-                            class="fa fa-angle-right arrow"></i></a>
-                    <ul class="child-nav">
-                        <li><a href="result.php"><i class="fa fa-bars"></i> <span>Check Result</span></a></li>
-                    </ul>
-                </li>
+                                <li class="has-children">
+                                    <a href="#"><i class="fa fa-file-text"></i> <span>Short Semester</span> <i
+                                            class="fa fa-angle-right arrow"></i></a>
+                                    <ul class="child-nav">
+                                        <li><a href="#"><i class="fa fa-bars"></i> <span>Short Semester Form Fill
+                                                    Up</span></a></li>
+                                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Short Semester Course
+                                                    Registration</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class="has-children">
+                                    <a href="#"><i class="fa fa-file-text"></i> <span>Result</span> <i
+                                            class="fa fa-angle-right arrow"></i></a>
+                                    <ul class="child-nav">
+                                        <li><a href="result.php"><i class="fa fa-bars"></i> <span>Check
+                                                    Result</span></a></li>
+                                    </ul>
+                                </li>
 
-                <li><a href="change-password.php"><i class="fa fa fa-server"></i> <span> Admin Change
-                            Password</span></a>
-                </li>
+                                <li><a href="change-password.php"><i class="fa fa fa-server"></i> <span> Admin Change
+                                            Password</span></a>
+                                </li>
 
-        </div>
+                        </div>
                     </div>
                 </div>
                 <div class="main-page">
@@ -139,7 +156,8 @@ if (!isset($_SESSION['login'])) {
                             <div class="col-sm-6">
                                 <h2 class="title">Student Dashboard</h2>
                             </div>
-                            <ul class="nav navbar-nav navbar-right" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+                            <ul class="nav navbar-nav navbar-right" data-dropdown-in="fadeIn"
+                                data-dropdown-out="fadeOut">
                                 <li class="hidden-xs">
                                     <a href="#">Welcome, <?php echo htmlentities($result->StudentName); ?></a>
                                 </li>
@@ -153,16 +171,25 @@ if (!isset($_SESSION['login'])) {
                                     <div class="panel student-info">
                                         <div class="panel-body">
                                             <h3>Student Information</h3>
-                                            <p><strong>Name:</strong> <?php echo htmlentities($result->StudentName); ?></p>
-                                            <p><strong>Father's Name:</strong> <?php echo htmlentities($result->FatherName); ?></p>
-                                            <p><strong>Mother's Name:</strong> <?php echo htmlentities($result->MotherName); ?></p>
-                                            <p><strong>Roll ID:</strong> <?php echo htmlentities($result->RollId); ?></p>
-                                            <p><strong>Registration ID:</strong> <?php echo htmlentities($result->RegistrationId); ?></p>
-                                            <p><strong>Email:</strong> <?php echo htmlentities($result->StudentEmail); ?></p>
-                                            <p><strong>Department:</strong> <?php echo htmlentities($result->Department); ?></p>
-                                            <p><strong>Section:</strong> <?php echo htmlentities($result->Section); ?></p>
+                                            <p><strong>Name:</strong> <?php echo htmlentities($result->StudentName); ?>
+                                            </p>
+                                            <p><strong>Father's Name:</strong>
+                                                <?php echo htmlentities($result->FatherName); ?></p>
+                                            <p><strong>Mother's Name:</strong>
+                                                <?php echo htmlentities($result->MotherName); ?></p>
+                                            <p><strong>Roll ID:</strong> <?php echo htmlentities($result->RollId); ?>
+                                            </p>
+                                            <p><strong>Registration ID:</strong>
+                                                <?php echo htmlentities($result->RegistrationId); ?></p>
+                                            <p><strong>Email:</strong>
+                                                <?php echo htmlentities($result->StudentEmail); ?></p>
+                                            <p><strong>Department:</strong>
+                                                <?php echo htmlentities($result->Department); ?></p>
+                                            <p><strong>Section:</strong> <?php echo htmlentities($result->Section); ?>
+                                            </p>
                                             <p><strong>Series:</strong> <?php echo htmlentities($result->Series); ?></p>
-                                            <p><strong>Date of Birth:</strong> <?php echo htmlentities($result->DOB); ?></p>
+                                            <p><strong>Date of Birth:</strong> <?php echo htmlentities($result->DOB); ?>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

@@ -6,6 +6,18 @@ if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
 
+if(isset($_GET['id']))
+{ 
+$classid=$_GET['id'];
+$sql="delete from tblstudent where id = :studentid";
+$query = $dbh->prepare($sql);
+$query->bindParam(':studentid',$studentid,PDO::PARAM_STR);
+$query->execute();
+echo '<script>alert("Data deleted.")</script>';
+echo "<script>window.location.href ='manage-classes.php'</script>";
+}    
+?>
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -193,7 +205,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                 <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?></td>
                                                                 <td>
                                                                     <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>" class="btn btn-primary btn-xs" target="_blank">Edit</a>
-                                                                    <a href="edit-result.php?stid=<?php echo htmlentities($result->StudentId); ?>" class="btn btn-warning btn-xs" target="_blank">View Result</a>
+                                                                    <a href="delete-student.php?classid=<?php echo htmlentities($result->id); ?>" class="btn btn-danger btn-xs" target="_blank" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
                                                                 </td>
                                                             </tr>
                                                         <?php $cnt++;

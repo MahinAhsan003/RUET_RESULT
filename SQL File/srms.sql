@@ -332,6 +332,25 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 (37, 'Legal Issues, Industrial & Operational Management', 'ECE-2217', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
 (38, 'Electronic Shop Practice', 'ECE-2200', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblsubjects`
+--
+
+CREATE TABLE tblregistration (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    StudentId VARCHAR(20) NOT NULL,
+    RegisteredCourses TEXT NOT NULL,
+    Semester VARCHAR(20) NOT NULL,
+    RegistrationStatus INT DEFAULT 0
+);
+
+
+--
+-- Dumping data for table `tblsubjects`
+--
+
 
 --
 -- Indexes for dumped tables
