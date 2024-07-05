@@ -52,6 +52,9 @@ if (strlen($_SESSION['tlogin']) == "") {
                                             <span>Dashboard</span> </a>
 
                                     </li>
+                                    <li class="nav-header">
+                                        <span class="">Appearance</span>
+                                    </li>
 
 
                                     <li class="has-children">
