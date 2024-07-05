@@ -293,7 +293,45 @@ CREATE TABLE `tblsubjects` (
 --
 
 INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `Department`, `Semester`, `Creationdate`, `UpdationDate`) VALUES
-(1, 'Circuit and Systems-1', 'ECE-1101', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL);
+(1, 'Circuit and Systems-I', 'ECE-1101', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(2, 'Circuit and Systems-I Sessional', 'ECE-1102', '1.5', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(3, 'Computer Programming', 'ECE-1103', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(4, 'Computer Programming Sessional', 'ECE-1104', '1.5', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(5, 'Calculus and Ordinary Differential Equation', 'MATH-1117', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(6, 'Optics and Modern Physics', 'PHY-1117', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(7, 'Optics and Modern', 'PHY-1118', '0.75', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(8, 'Technical English', 'HUM-117', '3.00', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(9, 'Technical English Sessional', 'HUM-1118', '0.75', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(10, 'Introduction to Computer System', 'ECE-1100', '0.75', 'ECE', 1, '2024-07-03 17:49:58', NULL),
+(11, 'Circuits and Systems-II', 'ECE-1201', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(12, 'Circuit and Systems-II Sessional', 'ECE-1202', '0.75', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(13, 'Object Oriented Programming', 'ECE-1203', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(14, 'Object Oriented Programming Sessional', 'ECE-1104', '1.5', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(15, 'Analog Electronic Circuits-I', 'ECE-1205', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(16, 'Analog Electronic Circuits-I Sessional', 'ECE-1206', '0.75', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(17, 'Transform Methods, Statistics & Complex Variable', 'MATH-1217', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(18, 'Government, Sociology, Environment Protection & History of Independence', 'HUM-1217', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(19, 'Engineering Ethics', 'ECE-1200', '0.75', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(20, 'Data Structure & Algorithms', 'ECE-2101', '3.00', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(21, 'Data Structure & Algorithms Sessional', 'ECE-2102', '1.5', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(22, 'Analog Electronic Circuits-II', 'ECE-2105', '3.00', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(23, 'Analog Electronic Circuits-II Sessional', 'ECE-2106', '0.75', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(24, 'Digital Techniques', 'ECE-2111', '3.00', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(25, 'Digital Techniques Sessional', 'ECE-2112', '0.75', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(26, 'Vector Analysis & Linear Algebra', 'MATH-2117', '3.00', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(27, 'Inorganic and Physical Chemistry', 'CHEM-2117', '3.00', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(28, 'Inorganic and Physical Chemistry Sessional', 'CHEM-2118', '0.75', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(29, 'Software Development Project- I', 'ECE-2100', '0.75', 'ECE', 3, '2024-07-03 17:49:58', NULL),
+(30, 'Electrical Machine-I', 'ECE-2207', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(31, 'Electrical Machine-I Sessional', 'ECE-2208', '0.75', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(32, 'Numerical Methods & Discrete Mathematics', 'ECE-2213', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(33, 'Numerical Methods & Discrete Mathematics Sessional', 'ECE-2214', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(34, 'Data Base Systems', 'ECE-2215', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(35, 'Data Base Systems Sessional', 'ECE-2216', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(36, 'Co-ordinate Geometry & Partial Differential Equations', 'MATH-2217', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(37, 'Legal Issues, Industrial & Operational Management', 'ECE-2217', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
+(38, 'Electronic Shop Practice', 'ECE-2200', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL);
+
 
 --
 -- Indexes for dumped tables
