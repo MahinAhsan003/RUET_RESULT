@@ -183,26 +183,26 @@ INSERT INTO `tblresult` (`id`, `StudentId`, `ClassId`, `SubjectId`, `marks`, `Po
 -- Table structure for table `tblstudents`
 --
 
-CREATE TABLE `tblstudents` (
-  `StudentId` int(11) NOT NULL AUTO_INCREMENT,
-  `StudentName` varchar(100) DEFAULT NULL,
-  `RollId` int(11) NOT NULL,
-  `RegistrationId` varchar(100) NOT NULL,
-  `StudentEmail` varchar(100) DEFAULT NULL,
-  `Gender` varchar(10) DEFAULT NULL,
-  `Department` varchar(10) NOT NULL,
-  `Section` varchar(10) NOT NULL,
-  `Series` int(10) NOT NULL,
-  `DOB` varchar(100) DEFAULT NULL,
-  `FatherName` varchar(100) DEFAULT NULL,
-  `MotherName` varchar(100) DEFAULT NULL,
-  `Contact` varchar(110) DEFAULT NULL,
-  `RegDate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL,
-  `Status` int(1) DEFAULT NULL,
-  PRIMARY KEY (`StudentId`)
+CREATE TABLE tblstudents (
+  StudentId INT(11) NOT NULL AUTO_INCREMENT,
+  StudentName VARCHAR(100) DEFAULT NULL,
+  RollId INT(11) NOT NULL,
+  RegistrationId VARCHAR(100) NOT NULL,
+  StudentEmail VARCHAR(100) DEFAULT NULL,
+  Gender VARCHAR(10) DEFAULT NULL,
+  Department VARCHAR(10) NOT NULL,
+  Section VARCHAR(10) NOT NULL,
+  Series INT(10) NOT NULL,
+  DOB VARCHAR(100) DEFAULT NULL,
+  FatherName VARCHAR(100) DEFAULT NULL,
+  MotherName VARCHAR(100) DEFAULT NULL,
+  Contact VARCHAR(110) DEFAULT NULL,
+  RegDate TIMESTAMP NULL DEFAULT current_timestamp(),
+  UpdationDate TIMESTAMP NULL DEFAULT NULL,
+  Status INT(1) DEFAULT NULL,
+  PRIMARY KEY (StudentId),
+  UNIQUE KEY (RollId)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 --
 -- Dumping data for table `tblstudents`
 --
@@ -339,12 +339,13 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 --
 
 CREATE TABLE tblregistration (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    StudentId VARCHAR(20) NOT NULL,
-    RegisteredCourses TEXT NOT NULL,
+    RollId INT NOT NULL,
     Semester VARCHAR(20) NOT NULL,
-    RegistrationStatus INT DEFAULT 0
-);
+    RegisteredCourses TEXT NOT NULL,
+    RegistrationStatus INT DEFAULT 0,
+    PRIMARY KEY (RollId, Semester),
+    FOREIGN KEY (RollId) REFERENCES tblstudents(RollId)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
 --
