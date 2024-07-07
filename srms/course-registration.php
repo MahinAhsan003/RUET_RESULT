@@ -2,24 +2,37 @@
 session_start();
 error_reporting(0);
 include ('includes/config.php');
-if (strlen($_SESSION['alogin']) == "") {
+if (strlen($_SESSION['login']) == "") {
     header("Location: index.php");
 } else {
+    $rollId = $_SESSION['login'];
 
     if (isset($_POST['register'])) {
-        $studentId = $_SESSION['alogin']; // Assuming student ID is stored in session
         $semester = $_POST['semester'];
         $registeredCourses = implode(",", $_POST['selected_courses']);
-        $sql = "INSERT INTO tblregistration (StudentId, RegisteredCourses, Semester, RegistrationStatus) VALUES (:studentId, :registeredCourses, :semester, 1)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':studentId', $studentId, PDO::PARAM_STR);
-        $query->bindParam(':registeredCourses', $registeredCourses, PDO::PARAM_STR);
-        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-        $query->execute();
-        $msg = "Registration successful!";
 
+        // Check if the registration already exists
+        $sql_check = "SELECT * FROM tblregistration WHERE RollId = :rollId AND Semester = :semester";
+        $query_check = $dbh->prepare($sql_check);
+        $query_check->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+        $query_check->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query_check->execute();
+        $count = $query_check->rowCount();
+
+        if ($count > 0) {
+            $error = "Registration for this semester already exists!";
+        } else {
+            // Insert new registration
+            $sql = "INSERT INTO tblregistration (RollId, Semester, RegisteredCourses, RegistrationStatus) 
+                    VALUES (:rollId, :semester, :registeredCourses, 1)";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+            $query->bindParam(':registeredCourses', $registeredCourses, PDO::PARAM_STR);
+            $query->execute();
+            $msg = "Registration successful!";
+        }
     }
-
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -307,15 +320,15 @@ if (strlen($_SESSION['alogin']) == "") {
         <script src="js/bootstrap/bootstrap.min.js"></script>
         <script src="js/pace/pace.min.js"></script>
         <script sr c="js/lobipanel/lobipanel.min.js"></script>
-          <scr   ipt src=" js/iscroll/iscroll.js">
-               </sc ript>
-                <script src="js/prism/prism.js"></script>
+        <scr ipt src=" js/iscroll/iscroll.js">
+            </sc ript>
+            <script src="js/prism/prism.js"></script>
             <script src="js/DataTables/datatables.min.js"></script>
             <script src="js/main.js"></script>
             <script>
-            $(function($) {
-                $('#example').DataTable();
-            });
+                $(function ($) {
+                    $('#example').DataTable();
+                });
             </script>
     </body>
 

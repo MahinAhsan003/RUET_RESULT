@@ -105,12 +105,8 @@ if (!isset($_SESSION['login'])) {
                                                     Registration Notice</span></a></li>
                                         <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
                                                 <span>Course Registration</span></a></li>
-                                        <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
-                                                <span>Course Registration(SS)</span></a></li>
                                         <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a>
                                         </li>
-                                        <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill
-                                                    Up(SS)</span></a></li>
                                     </ul>
                                 </li>
                                 <li class="has-children">
