@@ -2,21 +2,21 @@
 session_start();
 error_reporting(0);
 include ('includes/config.php');
-if ($_SESSION['alogin'] != '') {
-    $_SESSION['alogin'] = '';
+if ($_SESSION['tlogin'] != '') {
+    $_SESSION['tlogin'] = '';
 }
 if (isset($_POST['login'])) {
-    $uname = $_POST['username'];
-    $password = md5($_POST['password']);
-    $sql = "SELECT UserName,Password FROM admin WHERE UserName=:uname and Password=:password";
+    $temail = $_POST['email'];
+    $id = $_POST['id'];
+    $sql = "SELECT TeacherEmail,TeacherId FROM tblteachers WHERE TeacherEmail =:temail and TeacherId=:id";
     $query = $dbh->prepare($sql);
-    $query->bindParam(':uname', $uname, PDO::PARAM_STR);
-    $query->bindParam(':password', $password, PDO::PARAM_STR);
+    $query->bindParam(':temail', $temail, PDO::PARAM_STR);
+    $query->bindParam(':id', $id, PDO::PARAM_STR);
     $query->execute();
     $results = $query->fetchAll(PDO::FETCH_OBJ);
     if ($query->rowCount() > 0) {
-        $_SESSION['alogin'] = $_POST['username'];
-        echo "<script type='text/javascript'> document.location = 'dashboard.php'; </script>";
+        $_SESSION['tlogin'] = $_POST['temail'];
+        echo "<script type='text/javascript'> document.location = 'teacher-dashboard.php'; </script>";
     } else {
 
         echo "<script>alert('Invalid Details');</script>";
@@ -34,11 +34,11 @@ if (isset($_POST['login'])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Login</title>
+    <title>Teacher's Login</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
-    <link rel="stylesheet" href="css/prism/prism.css" media="screen"> <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
+    <link rel="stylesheet" href="css/prism/prism.css" media="screen">
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
 </head>
@@ -61,7 +61,7 @@ if (isset($_POST['login'])) {
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title text-center">
-                                                    <h4>Admin Login</h4>
+                                                    <h4>Teacher's Login</h4>
                                                 </div>
                                             </div>
                                             <div class="panel-body p-20">
@@ -69,17 +69,17 @@ if (isset($_POST['login'])) {
                                                 <form class="form-horizontal" method="post">
                                                     <div class="form-group">
                                                         <label for="inputEmail3"
-                                                            class="col-sm-2 control-label">Username</label>
+                                                            class="col-sm-2 control-label">Email</label>
                                                         <div class="col-sm-10">
-                                                            <input type="text" name="username" class="form-control"
-                                                                id="inputEmail3" placeholder="UserName">
+                                                            <input type="text" name="email" class="form-control"
+                                                                id="InputEmail3" placeholder="UserName">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="inputPassword3"
                                                             class="col-sm-2 control-label">Password</label>
                                                         <div class="col-sm-10">
-                                                            <input type="password" name="password" class="form-control"
+                                                            <input type="password" name="id" class="form-control"
                                                                 id="inputPassword3" placeholder="Password">
                                                         </div>
                                                     </div>
@@ -141,7 +141,6 @@ if (isset($_POST['login'])) {
         });
     </script>
 
-    <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
 </body>
 
 </html>

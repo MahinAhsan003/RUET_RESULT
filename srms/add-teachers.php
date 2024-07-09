@@ -6,18 +6,31 @@ if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
     if (isset($_POST['submit'])) {
-        $class = $_POST['class'];
-        $subject = $_POST['subject'];
-        $status = 1;
-        $sql = "INSERT INTO  tblsubjectcombination(ClassId,SubjectId,status) VALUES(:class,:subject,:status)";
+        $teachername = $_POST['fullname'];
+        $teacherid = $_POST['teacherid'];
+        $teacheremail = $_POST['emailid'];
+        $number = $_POST['phonenumber'];
+        $gender = $_POST['gender'];
+        $deptartment = $_POST['department'];
+        $date = $_POST['date'];
+        $designation = $_POST['designation'];
+        $status = $_POST['status'];
+        $sql = "INSERT INTO  tblteachers(TeacherName,TeacherId,TeacherEmail,TeacherPhone,Gender,Department,JoiningDate,Designation,Status)
+                 VALUES(:teachername,:teacherid,:teacheremail,:number,:gender,:department,:date,:designation,:status)";
         $query = $dbh->prepare($sql);
-        $query->bindParam(':class', $class, PDO::PARAM_STR);
-        $query->bindParam(':subject', $subject, PDO::PARAM_STR);
+        $query->bindParam(':teachername', $teachername, PDO::PARAM_STR);
+        $query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
+        $query->bindParam(':teacheremail', $teacheremail, PDO::PARAM_STR);
+        $query->bindParam(':number', $number, PDO::PARAM_STR);
+        $query->bindParam(':gender', $gender, PDO::PARAM_STR);
+        $query->bindParam(':department', $department, PDO::PARAM_STR);
+        $query->bindParam(':date', $date, PDO::PARAM_STR);
+        $query->bindParam(':designation', $designation, PDO::PARAM_STR);
         $query->bindParam(':status', $status, PDO::PARAM_STR);
         $query->execute();
         $lastInsertId = $dbh->lastInsertId();
         if ($lastInsertId) {
-            $msg = "Combination added successfully";
+            $msg = "Teacher info added successfully";
         } else {
             $error = "Something went wrong. Please try again";
         }
@@ -31,7 +44,7 @@ if (strlen($_SESSION['alogin']) == "") {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin Subject Combination< </title>
+        <title>SRMS Admin| Teacher's Information< </title>
                 <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
                 <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
                 <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -60,7 +73,7 @@ if (strlen($_SESSION['alogin']) == "") {
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
-                                    <h2 class="title">Add Subject Combination</h2>
+                                    <h2 class="title">Teachers</h2>
 
                                 </div>
 
@@ -71,8 +84,8 @@ if (strlen($_SESSION['alogin']) == "") {
                                 <div class="col-md-6">
                                     <ul class="breadcrumb">
                                         <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                        <li> Subjects</li>
-                                        <li class="active">Add Subject Combination</li>
+
+                                        <li class="active">Teachers</li>
                                     </ul>
                                 </div>
 
@@ -86,7 +99,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                     <div class="panel">
                                         <div class="panel-heading">
                                             <div class="panel-title">
-                                                <h5>Add Subject Combination</h5>
+                                                <h5>Fill the Teachers info</h5>
                                             </div>
                                         </div>
                                         <div class="panel-body">
@@ -99,21 +112,62 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     </div>
                                             <?php } ?>
                                             <form class="form-horizontal" method="post">
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Full Name</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" name="fullname" class="form-control"
+                                                            id="fullanme" required="required" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Teacher Id</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" name="teacherid" class="form-control" id="rollid"
+                                                            maxlength="10" required="required" autocomplete="off">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Email id</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="email" name="emailid" class="form-control" id="email"
+                                                            required="required" autocomplete="off"
+                                                            placeholder="x@teacher.ruet.ac.bd">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Phone Number</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" name="phonenumber" class="form-control"
+                                                            id="number" required="required" autocomplete="off"
+                                                            placeholder="01XXXXXXXXX">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="default" class="col-sm-2 control-label">Gender</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="radio" name="gender" value="Male" required="required"
+                                                            checked="">Male <input type="radio" name="gender" value="Female"
+                                                            required="required">Female <input type="radio" name="gender"
+                                                            value="Other" required="required">Other
+                                                    </div>
+                                                </div>
+
                                                 <div class="form-group">
                                                     <label for="default" class="col-sm-2 control-label">Department</label>
                                                     <div class="col-sm-10">
                                                         <select name="department" class="form-control" id="default"
                                                             required="required">
                                                             <option value="">Select Department</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Department FROM tblclasses";
+                                                            <?php $sql = "SELECT * from tbldept";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) { ?>
-                                                                    <option
-                                                                        value="<?php echo htmlentities($result->Department); ?>">
+                                                                    <option value="<?php echo htmlentities($result->Department); ?>">
                                                                         <?php echo htmlentities($result->Department); ?>
                                                                     </option>
                                                                 <?php }
@@ -122,68 +176,28 @@ if (strlen($_SESSION['alogin']) == "") {
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Series</label>
+                                                    <label for="default" class="col-sm-2 control-label">Joining Date
+                                                    </label>
                                                     <div class="col-sm-10">
-                                                        <select name="series" class="form-control" id="default"
-                                                            required="required">
-                                                            <option value="">Select Series</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Series FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Series); ?>">
-                                                                        <?php echo htmlentities($result->Series); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
+                                                        <input type="date" name="date" class="form-control" id="date"
+                                                            required="required" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Semester</label>
+                                                    <label for="default" class="col-sm-2 control-label">Desigation</label>
                                                     <div class="col-sm-10">
-                                                        <select name="series" class="form-control" id="default"
-                                                            required="required">
-                                                            <option value="">Select Semester</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Semester FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Semester); ?>">
-                                                                        <?php echo htmlentities($result->Semester); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
+                                                        <input type="text" name="designation" class="form-control"
+                                                            id="designation" required="required" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Subject</label>
+                                                    <label for="default" class="col-sm-2 control-label">Status</label>
                                                     <div class="col-sm-10">
-                                                        <select name="subject" class="form-control" id="default"
-                                                            required="required">
-                                                            <option value="">Select Subject</option>
-                                                            <?php $sql = "SELECT * from tblsubjects";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->id); ?>">
-                                                                        <?php echo htmlentities($result->SubjectName); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
+                                                        <input type="radio" name="status" value="Employed"
+                                                            required="required" checked="">Employed <input type="radio"
+                                                            name="status" value="On Leave" required="required">On Leave
                                                     </div>
                                                 </div>
-
                                                 <div class="form-group">
                                                     <div class="col-sm-offset-2 col-sm-10">
                                                         <button type="submit" name="submit"

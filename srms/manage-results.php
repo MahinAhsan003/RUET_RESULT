@@ -1,79 +1,117 @@
-
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
-if(strlen($_SESSION['alogin'])=="")
-    {   
-    header("Location: index.php"); 
-    }
-    else{
+include ('includes/config.php');
+if (strlen($_SESSION['tlogin']) == "") {
+    header("Location: index.php");
+} else {
 
-?>
-<!DOCTYPE html>
-<html lang="en">
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Admin Manage Students</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" > <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
-        <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css"/>
-        <link rel="stylesheet" href="css/main.css" media="screen" >
+        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
+        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
+        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
+        <link rel="stylesheet" href="css/prism/prism.css" media="screen"> <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
+        <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css" />
+        <link rel="stylesheet" href="css/main.css" media="screen">
         <script src="js/modernizr/modernizr.min.js"></script>
-          <style>
-        .errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
+        <style>
+            .errorWrap {
+                padding: 10px;
+                margin: 0 0 20px 0;
+                background: #fff;
+                border-left: 4px solid #dd3d36;
+                -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+                box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            }
+
+            .succWrap {
+                padding: 10px;
+                margin: 0 0 20px 0;
+                background: #fff;
+                border-left: 4px solid #5cb85c;
+                -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+                box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            }
         </style>
     </head>
+
     <body class="top-navbar-fixed">
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-   <?php include('includes/topbar.php');?> 
+            <?php include ('includes/topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
-<?php include('includes/leftbar.php');?>  
+                    <div class="left-sidebar bg-black-300 box-shadow ">
+                        <div class="sidebar-content">
+                            <div class="user-info closed">
+                                <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
+                                    class="img-circle profile-img">
+                                <h6 class="title">Admin</h6>
+                                <small class="info">Administrator</small>
+                            </div>
+                            <!-- /.user-info -->
+
+                            <div class="sidebar-nav">
+                                <ul class="side-nav color-gray">
+                                    <li class="nav-header">
+                                        <span class="">Main Category</span>
+                                    </li>
+                                    <li>
+                                        <a href="teacher-dashboard.php"><i class="fa fa-dashboard"></i>
+                                            <span>Dashboard</span> </a>
+
+                                    </li>
+
+
+                                    <li class="has-children">
+                                        <a href="#"><i class="fa fa-info-circle"></i> <span>Result</span> <i
+                                                class="fa fa-angle-right arrow"></i></a>
+                                        <ul class="child-nav">
+                                            <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
+                                                        Result</span></a>
+                                            </li>
+                                            <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
+                                                        Result</span></a></li>
+
+                                        </ul>
+                                    </li>
+                            </div>
+                            <!-- /.sidebar-nav -->
+                        </div>
+                        <!-- /.sidebar-content -->
+                    </div>
 
                     <div class="main-page">
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
                                     <h2 class="title">Manage Results</h2>
-                                
+
                                 </div>
-                                
+
                                 <!-- /.col-md-6 text-right -->
                             </div>
                             <!-- /.row -->
                             <div class="row breadcrumb-div">
                                 <div class="col-md-6">
                                     <ul class="breadcrumb">
-            							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                        <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
                                         <li> Results</li>
-            							<li class="active">Manage Results</li>
-            						</ul>
+                                        <li class="active">Manage Results</li>
+                                    </ul>
                                 </div>
-                             
+
                             </div>
                             <!-- /.row -->
                         </div>
@@ -82,7 +120,7 @@ if(strlen($_SESSION['alogin'])=="")
                         <section class="section">
                             <div class="container-fluid">
 
-                             
+
 
                                 <div class="row">
                                     <div class="col-md-12">
@@ -93,18 +131,18 @@ if(strlen($_SESSION['alogin'])=="")
                                                     <h5>View Students Result Info</h5>
                                                 </div>
                                             </div>
-<?php if($msg){?>
-<div class="alert alert-success left-icon-alert" role="alert">
- <strong>Well done!</strong><?php echo htmlentities($msg); ?>
- </div><?php } 
-else if($error){?>
-    <div class="alert alert-danger left-icon-alert" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                        </div>
-                                        <?php } ?>
+                                            <?php if ($msg) { ?>
+                                                <div class="alert alert-success left-icon-alert" role="alert">
+                                                    <strong>Well done!</strong><?php echo htmlentities($msg); ?>
+                                                </div><?php } else if ($error) { ?>
+                                                    <div class="alert alert-danger left-icon-alert" role="alert">
+                                                        <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
+                                                    </div>
+                                            <?php } ?>
                                             <div class="panel-body p-20">
 
-                                                <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
+                                                <table id="example" class="display table table-striped table-bordered"
+                                                    cellspacing="0" width="100%">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
@@ -118,7 +156,7 @@ else if($error){?>
                                                     </thead>
                                                     <tfoot>
                                                         <tr>
-                                                          <th>#</th>
+                                                            <th>#</th>
                                                             <th>Student Name</th>
                                                             <th>Roll Id</th>
                                                             <th>Class</th>
@@ -128,72 +166,73 @@ else if($error){?>
                                                         </tr>
                                                     </tfoot>
                                                     <tbody>
-<?php $sql = "SELECT  distinct tblstudents.StudentName,tblstudents.RollId,tblstudents.RegDate,tblstudents.StudentId,tblstudents.Status,tblclasses.ClassName,tblclasses.Section from tblresult join tblstudents on tblstudents.StudentId=tblresult.StudentId  join tblclasses on tblclasses.id=tblresult.ClassId";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
-<tr>
- <td><?php echo htmlentities($cnt);?></td>
-                                                            <td><?php echo htmlentities($result->StudentName);?></td>
-                                                            <td><?php echo htmlentities($result->RollId);?></td>
-                                                            <td><?php echo htmlentities($result->ClassName);?>(<?php echo htmlentities($result->Section);?>)</td>
-                                                            <td><?php echo htmlentities($result->RegDate);?></td>
-                                                             <td><?php if($result->Status==1){
-echo htmlentities('Active');
-}
-else{
-   echo htmlentities('Blocked'); 
-}
-                                                                ?></td>
-<td>
-<a href="edit-result.php?stid=<?php echo htmlentities($result->StudentId);?>" class="btn btn-primary btn-xs">Edit</a> 
+                                                        <?php $sql = "SELECT  distinct tblstudents.StudentName,tblstudents.RollId,tblstudents.RegDate,tblstudents.StudentId,tblstudents.Status,tblclasses.ClassName,tblclasses.Section from tblresult join tblstudents on tblstudents.StudentId=tblresult.StudentId  join tblclasses on tblclasses.id=tblresult.ClassId";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        $cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($results as $result) { ?>
+                                                                <tr>
+                                                                    <td><?php echo htmlentities($cnt); ?></td>
+                                                                    <td><?php echo htmlentities($result->StudentName); ?></td>
+                                                                    <td><?php echo htmlentities($result->RollId); ?></td>
+                                                                    <td><?php echo htmlentities($result->ClassName); ?>(<?php echo htmlentities($result->Section); ?>)
+                                                                    </td>
+                                                                    <td><?php echo htmlentities($result->RegDate); ?></td>
+                                                                    <td><?php if ($result->Status == 1) {
+                                                                        echo htmlentities('Active');
+                                                                    } else {
+                                                                        echo htmlentities('Blocked');
+                                                                    }
+                                                                    ?></td>
+                                                                    <td>
+                                                                        <a href="edit-result.php?stid=<?php echo htmlentities($result->StudentId); ?>"
+                                                                            class="btn btn-primary btn-xs">Edit</a>
 
-</td>
-</tr>
-<?php $cnt=$cnt+1;}} ?>
-                                                       
-                                                    
+                                                                    </td>
+                                                                </tr>
+                                                                <?php $cnt = $cnt + 1;
+                                                            }
+                                                        } ?>
+
+
                                                     </tbody>
                                                 </table>
 
-                                         
+
                                                 <!-- /.col-md-12 -->
                                             </div>
                                         </div>
                                     </div>
                                     <!-- /.col-md-6 -->
 
-                                                               
-                                                </div>
-                                                <!-- /.col-md-12 -->
-                                            </div>
-                                        </div>
-                                        <!-- /.panel -->
-                                    </div>
-                                    <!-- /.col-md-6 -->
 
                                 </div>
-                                <!-- /.row -->
-
+                                <!-- /.col-md-12 -->
                             </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
-
                     </div>
-                    <!-- /.main-page -->
-
-                    
-
+                    <!-- /.panel -->
                 </div>
-                <!-- /.content-container -->
+                <!-- /.col-md-6 -->
+
             </div>
-            <!-- /.content-wrapper -->
+            <!-- /.row -->
+
+        </div>
+        <!-- /.container-fluid -->
+        </section>
+        <!-- /.section -->
+
+        </div>
+        <!-- /.main-page -->
+
+
+
+        </div>
+        <!-- /.content-container -->
+        </div>
+        <!-- /.content-wrapper -->
 
         </div>
         <!-- /.main-wrapper -->
@@ -212,19 +251,19 @@ else{
         <!-- ========== THEME JS ========== -->
         <script src="js/main.js"></script>
         <script>
-            $(function($) {
+            $(function ($) {
                 $('#example').DataTable();
 
-                $('#example2').DataTable( {
-                    "scrollY":        "300px",
+                $('#example2').DataTable({
+                    "scrollY": "300px",
                     "scrollCollapse": true,
-                    "paging":         false
-                } );
+                    "paging": false
+                });
 
                 $('#example3').DataTable();
             });
         </script>
     </body>
-</html>
-<?php } ?>
 
+    </html>
+<?php } ?>
