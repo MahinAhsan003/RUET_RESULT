@@ -1,26 +1,22 @@
 <?php
 session_start();
-error_reporting(0);
-include ('includes/config.php');
-if ($_SESSION['tlogin'] != '') {
-    $_SESSION['tlogin'] = '';
-}
-if (isset($_POST['login'])) {
-    $temail = $_POST['email'];
+include('includes/config.php');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
     $id = $_POST['id'];
-    $sql = "SELECT TeacherEmail,TeacherId FROM tblteachers WHERE TeacherEmail =:temail and TeacherId=:id";
+    $sql = "SELECT * FROM tblteachers WHERE TeacherEmail =:email and TeacherId=:id";
+
     $query = $dbh->prepare($sql);
-    $query->bindParam(':temail', $temail, PDO::PARAM_STR);
+    $query->bindParam(':email', $email, PDO::PARAM_STR);
     $query->bindParam(':id', $id, PDO::PARAM_STR);
     $query->execute();
-    $results = $query->fetchAll(PDO::FETCH_OBJ);
-    if ($query->rowCount() > 0) {
-        $_SESSION['tlogin'] = $_POST['temail'];
-        echo "<script type='text/javascript'> document.location = 'teacher-dashboard.php'; </script>";
+    $result = $query->fetch(PDO::FETCH_OBJ);
+    if ($result) {
+        $_SESSION['login'] = $result->TeacherId;
+        header("Location: teacher-dashboard.php");
+        exit();
     } else {
-
-        echo "<script>alert('Invalid Details');</script>";
-
+        $error = "Invalid  ID or Email";
     }
 
 }

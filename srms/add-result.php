@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 if (strlen($_SESSION['tlogin']) == "") {
     header("Location: index.php");
 } else {
@@ -53,165 +53,62 @@ if (strlen($_SESSION['tlogin']) == "") {
         <link rel="stylesheet" href="css/select2/select2.min.css">
         <link rel="stylesheet" href="css/main.css" media="screen">
         <script src="js/modernizr/modernizr.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                // Populate Series based on Department
-                $('#department').change(function () {
-                    var department = $(this).val();
-                    if (department) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getSeries.php',
-                            data: 'departmentId=' + department,
-                            success: function (html) {
-                                $('#series').html(html);
-                                $('#section').html('<option value="">Select Section</option>');
-                                $('#semester').html('<option value="">Select Semester</option>');
-                                $('#course').html('<option value="">Select Course</option>');
-                                $('#student').html('<option value="">Select Student</option>');
-                            }
-                        });
-                    } else {
-                        $('#series').html('<option value="">Select Series</option>');
-                        $('#section').html('<option value="">Select Section</option>');
-                        $('#semester').html('<option value="">Select Semester</option>');
-                        $('#course').html('<option value="">Select Course</option>');
-                        $('#student').html('<option value="">Select Student</option>');
-                    }
-                });
-
-                // Populate Section based on Series
-                $('#series').change(function () {
-                    var series = $(this).val();
-                    if (series) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getSections.php',
-                            data: 'seriesId=' + series,
-                            success: function (html) {
-                                $('#section').html(html);
-                                $('#semester').html('<option value="">Select Semester</option>');
-                                $('#course').html('<option value="">Select Course</option>');
-                                $('#student').html('<option value="">Select Student</option>');
-                            }
-                        });
-                    } else {
-                        $('#section').html('<option value="">Select Section</option>');
-                        $('#semester').html('<option value="">Select Semester</option>');
-                        $('#course').html('<option value="">Select Course</option>');
-                        $('#student').html('<option value="">Select Student</option>');
-                    }
-                });
-
-                // Populate Semester based on Section
-                $('#section').change(function () {
-                    var section = $(this).val();
-                    if (section) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getSemesters.php',
-                            data: 'sectionId=' + section,
-                            success: function (html) {
-                                $('#semester').html(html);
-                                $('#course').html('<option value="">Select Course</option>');
-                                $('#student').html('<option value="">Select Student</option>');
-                            }
-                        });
-                    } else {
-                        $('#semester').html('<option value="">Select Semester</option>');
-                        $('#course').html('<option value="">Select Course</option>');
-                        $('#student').html('<option value="">Select Student</option>');
-                    }
-                });
-
-                // Populate Courses based on Semester
-                $('#semester').change(function () {
-                    var semester = $(this).val();
-                    var department = $('#department').val();
-                    if (semester && department) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getCourses.php',
-                            data: {
-                                semesterId: semester,
-                                departmentId: department
-                            },
-                            success: function (html) {
-                                $('#course').html(html);
-                                $('#student').html('<option value="">Select Student</option>');
-                            }
-                        });
-                    } else {
-                        $('#course').html('<option value="">Select Course</option>');
-                        $('#student').html('<option value="">Select Student</option>');
-                    }
-                });
-
-                // Populate Students based on Department, Series, Section, and Semester
-                $('#course').change(function () {
-                    var semester = $('#semester').val();
-                    var department = $('#department').val();
-                    var series = $('#series').val();
-                    var section = $('#section').val();
-                    if (semester && department && series && section) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getStudents.php',
-                            data: {
-                                semesterId: semester,
-                                departmentId: department,
-                                seriesId: series,
-                                sectionId: section
-                            },
-                            success: function (html) {
-                                $('#student').html(html);
-                            }
-                        });
-                    } else {
-                        $('#student').html('<option value="">Select Student</option>');
-                    }
-                });
-
-                // Show/Hide Marks Section based on Course Credit
-                $('#course').change(function () {
-                    var course = $(this).val();
-                    if (course) {
-                        $.ajax({
-                            type: 'POST',
-                            url: 'getCourseCredit.php',
-                            data: 'courseId=' + course,
-                            success: function (credit) {
-                                if (credit >= 3) {
-                                    $('#marksSection').show();
-                                    $('#theoryMarks').show();
-                                    $('#sessionalMarks').hide();
-                                } else {
-                                    $('#marksSection').show();
-                                    $('#theoryMarks').hide();
-                                    $('#sessionalMarks').show();
-                                }
-                            }
-                        });
-                    } else {
-                        $('#marksSection').hide();
-                    }
-                });
-            });
-        </script>
 
     </head>
 
     <body class="top-navbar-fixed">
+
+
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-            <?php include ('includes/topbar.php'); ?>
+            <?php include('includes/topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
 
                     <!-- ========== LEFT SIDEBAR ========== -->
-                    <?php include ('includes/leftbar.php'); ?>
+                    <div class="left-sidebar bg-black-300 box-shadow ">
+                        <div class="sidebar-content">
+                            <div class="user-info closed">
+                                <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
+                                    class="img-circle profile-img">
+                                <h6 class="title">Teacher</h6>
+                            </div>
+                            <!-- /.user-info -->
+
+                            <div class="sidebar-nav">
+                                <ul class="side-nav color-gray">
+                                    <li class="nav-header">
+                                        <span class="">Main Category</span>
+                                    </li>
+                                    <li>
+                                        <a href="teacher-dashboard.php"><i class="fa fa-dashboard"></i>
+                                            <span>Dashboard</span> </a>
+
+                                    </li>
+                                    <li class="nav-header">
+                                        <span class="">Appearance</span>
+                                    </li>
+
+
+                                    <li class="has-children">
+                                        <a href="#"><i class="fa fa-info-circle"></i> <span>Result</span> <i
+                                                class="fa fa-angle-right arrow"></i></a>
+                                        <ul class="child-nav">
+                                            <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
+                                                        Result</span></a>
+                                            </li>
+                                            <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
+                                                        Result</span></a></li>
+
+                                        </ul>
+                                    </li>
+                            </div>
+                            <!-- /.sidebar-nav -->
+                        </div>
+                        <!-- /.sidebar-content -->
+                    </div>
                     <!-- /.left-sidebar -->
 
                     <div class="main-page">
@@ -388,11 +285,23 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="date" class="col-sm-2 control-label ">Course Type:</label>
+                                                    <label class="radio-container m-r-45">Theory
+                                                        <input type="radio" name="coursetype" value="Theory"
+                                                            onclick="text(0)" />
+                                                    </label>
+                                                    <label class="radio-container">Sessional
+                                                        <input type="radio" name="coursetype" value="Sessional"
+                                                            onclick="text(1)" />
+                                                    </label>
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label for="date" class="col-sm-2 control-label ">Marks Section</label>
                                                     <div class="col-sm-10">
-                                                        <div id="marksSection" style="display:none;">
+                                                        <div id="marksSection">
                                                             <!-- Marks fields will be shown here based on course credit -->
-                                                            <div id="theoryFields" style="display:none;"><br>
+                                                            <div id="theoryFields"><br>
                                                                 <label for="termFinal">Term Final:</label>
                                                                 <input type="number" step="0.001" id="termFinal"
                                                                     name="termFinal">
@@ -403,7 +312,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     name="attendance">
                                                             </div>
 
-                                                            <div id="sessionalFields" style="display:none;">
+                                                            <div id="sessionalFields">
                                                                 <label for="labPerformance">Lab Performance:</label>
                                                                 <input type="text" id="labPerformance"
                                                                     name="labPerformance"><br>
@@ -423,40 +332,56 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             class="btn btn-primary">Declare Result</button>
                                                     </div>
                                                 </div>
-                                            </form>
-
                                         </div>
+                                        </form>
+                                        <script>
+                                            function text(x) {
+                                                if (x == 0) {
+                                                    document.getElementById("theoryFields").style.display = "block";
+                                                    document.getElementById("sessionalFields").style.display = "none";
+                                                } else {
+                                                    document.getElementById("sessionalFields").style.display = "block";
+                                                    document.getElementById("theoryFields").style.display = "none";
+                                                }
+                                            }
+                                            return;
+                                        </script>
                                     </div>
                                 </div>
-                                <!-- /.col-md-12 -->
                             </div>
+                            <!-- /.col-md-12 -->
                         </div>
                     </div>
-                    <!-- /.content-container -->
                 </div>
-                <!-- /.content-wrapper -->
+                <!-- /.content-container -->
             </div>
-            <!-- /.main-wrapper -->
-            <script src="js/jquery/jquery-2.2.4.min.js"></script>
-            <script src="js/bootstrap/bootstrap.min.js"></script>
-            <script src="js/pace/pace.min.js"></script>
-            <script src="js/lobipanel/lobipanel.min.js"></script>
+            <!-- /.content-wrapper -->
+        </div>
+        <!--     /.main-wrapper -->
+        <script src="js/jquery/jquery-2.2.4.min.js">
+        < /s               cr iscr ipt    <script src="js/bootstrap / bootstrap.min.js script
+        </script>
+        script i pt src="js/pace/pace.min.js">
+        </script>
+        <scr ipt src="js/lobipanel/lobipanel.min.js">
+            </sc ript>
             <script src="js/iscroll/iscroll.js"></script>
-            <script src="js/prism/prism.js"></script>
-            <script src="js/select2/select2.min.js"></script>
-            <script src="js/main.js"></script>
-            <script src="js/DataTables/datatables.min.js"></script>
-            <script>
-                $(function ($) {
-                    $(".js-states").select2();
-                    $(".js-states-limit").select2({
-                        maximumSelectionLength: 2
+            <scr ipt src="js/prism/prism.js">
+                </script>
+                <script src="js/select2/select2.min.js"></script>
+                <script src="js/main.js"></script>
+                <script src="js/DataTables/datatables.min.js"></script>
+                <script>
+                    $(function ($) {
+                        $(".js-states").select2();
+                        $(".js-states-limit").select2({
+                            maximumSelectionLength: 2
+                        });
+                        $(".js-states-hide").select2({
+                            minimumResultsForSearch: Infinity
+                        });
                     });
-                    $(".js-states-hide").select2({
-                        minimumResultsForSearch: Infinity
-                    });
-                });
-            </script>
+                </script>
     </body>
 
     </html>

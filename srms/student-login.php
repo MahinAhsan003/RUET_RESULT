@@ -1,7 +1,6 @@
 <?php
 session_start();
 include('includes/config.php');
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rollid = $_POST['rollid'];
     $department = $_POST['department'];
@@ -68,19 +67,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         if ($query->rowCount() > 0) {
                                             foreach ($results as $result) {
                                                 ?>
-                                        <option value="<?php echo htmlentities($result->Department); ?>">
-                                            <?php echo htmlentities($result->Department); ?>
-                                        </option>
-                                        <?php
+                                                <option value="<?php echo htmlentities($result->Department); ?>">
+                                                    <?php echo htmlentities($result->Department); ?>
+                                                </option>
+                                                <?php
                                             }
                                         }
                                         ?>
                                     </select>
                                 </div>
                                 <?php if (isset($error)) { ?>
-                                <div class="alert alert-danger">
-                                    <?php echo $error; ?>
-                                </div>
+                                    <div class="alert alert-danger">
+                                        <?php echo $error; ?>
+                                    </div>
                                 <?php } ?>
                                 <div class="form-group mt-20">
                                     <button type="submit" class="btn btn-success btn-labeled pull-right">Search<span
@@ -108,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="js/icheck/icheck.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-    $(function() {
-        $('input.flat-blue-style').iCheck({
-            checkboxClass: 'icheckbox_flat-blue'
+        $(function () {
+            $('input.flat-blue-style').iCheck({
+                checkboxClass: 'icheckbox_flat-blue'
+            });
         });
-    });
     </script>
 </body>
 
