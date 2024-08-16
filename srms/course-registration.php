@@ -84,76 +84,10 @@ if (strlen($_SESSION['login']) == "") {
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
-                    <div class="left-sidebar bg-black-300 box-shadow">
-                        <div class="sidebar-content">
-                            <div class="user-info closed">
-                                <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
-                                    class="img-circle profile-img">
-                                <h6 class="title">Student Dashboard</h6>
-                            </div>
-
-                            <div class="sidebar-nav">
-                                <ul class="side-nav color-gray">
-                                    <li class="nav-header">
-                                        <span class="">Main Category</span>
-                                    </li>
-                                    <li>
-                                        <a href="dashboard.php"><i class="fa fa-dashboard"></i> <span>Dashboard</span> </a>
-
-                                    </li>
-
-                                    <li class="nav-header">
-                                        <span class="">Appearance</span>
-                                    </li>
-                                    <li class="has-children">
-                                        <a href="#"><i class="fa fa-file-text"></i> <span>Course Management</span> <i
-                                                class="fa fa-angle-right arrow"></i></a>
-                                        <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Course
-                                                        Registration Notice</span></a></li>
-                                            <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
-                                                    <span>Course Registration</span></a></li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="has-children">
-                                        <a href="#"><i class="fa fa-file-text"></i> <span>Backlog</span> <i
-                                                class="fa fa-angle-right arrow"></i></a>
-                                        <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Backlog Form Fill Up</span></a>
-                                            </li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Backlog Course
-                                                        Registration</span></a></li>
-                                        </ul>
-                                    </li>
-
-                                    <li class="has-children">
-                                        <a href="#"><i class="fa fa-file-text"></i> <span>Short Semester</span> <i
-                                                class="fa fa-angle-right arrow"></i></a>
-                                        <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Short Semester Form Fill
-                                                        Up</span></a></li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Short Semester Course
-                                                        Registration</span></a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="has-children">
-                                        <a href="#"><i class="fa fa-file-text"></i> <span>Result</span> <i
-                                                class="fa fa-angle-right arrow"></i></a>
-                                        <ul class="child-nav">
-                                            <li><a href="result.php"><i class="fa fa-bars"></i> <span>Check
-                                                        Result</span></a></li>
-                                        </ul>
-                                    </li>
-
-                                    <li><a href="change-password.php"><i class="fa fa fa-server"></i> <span> Student Change
-                                                Password</span></a>
-                                    </li>
-
-                            </div>
-                        </div>
-                    </div>
+                    
+                <!-- ========== LEFT SIDEBAR ========== -->
+                <?php include ('includes/student-leftbar.php'); ?>
+                    <!-- /.left-sidebar -->
 
                     <div class="main-page">
                         <div class="container-fluid">
