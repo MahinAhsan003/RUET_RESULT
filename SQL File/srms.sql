@@ -28,10 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `UserName` varchar(100) DEFAULT NULL,
   `Password` varchar(100) DEFAULT NULL,
-  `updationDate` timestamp NULL DEFAULT NULL
+  `updationDate` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
@@ -44,44 +45,14 @@ INSERT INTO `admin` (`id`, `UserName`, `Password`, `updationDate`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblclasses`
---
-
-CREATE TABLE `tblclasses` (
-  `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `Department` varchar(80) DEFAULT NULL,
-  `Series` int(4) DEFAULT NULL,
-  `Section` varchar(5) DEFAULT NULL,
-  `Semester` int(5) DEFAULT NULL,
-  `CreationDate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tblclasses`
---
-
-INSERT INTO `tblclasses` (`id`, `Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
-(1, 'ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(2, 'ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(3, 'CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(4, 'ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(5, 'CE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(6, 'MTE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(7, 'MSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(8, 'EEE', 2020, 'A', 1, '2024-04-25 10:30:57', NULL);
-
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tbldept`
 --
 
 CREATE TABLE `tbldept` (
-  `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `Department` varchar(32) NOT NULL,
-  `deptCode` varchar(2) NOT NULL
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `Department` varchar(100) NOT NULL,  -- Updated length to match other tables
+  `deptCode` varchar(2) NOT NULL,
+  UNIQUE KEY (`Department`)  -- Added unique constraint for foreign key reference
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
@@ -102,17 +73,55 @@ INSERT INTO `tbldept` (`id`, `Department`, `deptCode`) VALUES
 
 -- --------------------------------------------------------
 
+--
+-- Table structure for table `tblclasses`
+--
+
+CREATE TABLE `tblclasses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `Department` varchar(100) DEFAULT NULL,  -- Updated length to match tbldept
+  `Series` int(4) DEFAULT NULL,
+  `Section` varchar(5) DEFAULT NULL,
+  `Semester` int(5) DEFAULT NULL,
+  `CreationDate` timestamp NULL DEFAULT current_timestamp(),
+  `UpdationDate` timestamp NULL DEFAULT NULL,
+  FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tblclasses`
+--
+
+INSERT INTO `tblclasses` (`id`, `Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
+(1, 'ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(2, 'ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(3, 'CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(4, 'ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(5, 'CE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(6, 'MTE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(7, 'MSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(8, 'EEE', 2020, 'A', 1, '2024-04-25 10:30:57', NULL);
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblteachers`
+--
+
+
 CREATE TABLE `tblteachers` (
-  `id` int(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `TeacherId` varchar(80) NOT NULL,
   `TeacherName` varchar(100) DEFAULT NULL,
   `TeacherEmail` varchar(100) DEFAULT NULL,
-  `TeacherPhone` int(11) DEFAULT NULL,
+  `TeacherPhone` varchar(15) DEFAULT NULL,
   `Gender` varchar(10) DEFAULT NULL,
-  `Department` varchar(100) DEFAULT NULL,
+  `Department` varchar(100) DEFAULT NULL,  -- Updated length to match tbldept
   `JoiningDate` varchar(100) DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
-  `Status` varchar(100) DEFAULT NULL
+  `Status` varchar(100) DEFAULT NULL,
+  FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -121,7 +130,7 @@ CREATE TABLE `tblteachers` (
 --
 
 CREATE TABLE `tblnotice` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `noticeTitle` varchar(255) DEFAULT NULL,
   `noticeDetails` mediumtext DEFAULT NULL,
   `postingDate` timestamp NULL DEFAULT current_timestamp()
@@ -136,72 +145,27 @@ INSERT INTO `tblnotice` (`id`, `noticeTitle`, `noticeDetails`, `postingDate`) VA
 (3, 'Test Notice', 'This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  ', '2024-05-02 14:48:32');
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `tblresult`
---
-
-CREATE TABLE `tblresult` (
-  `id` int(11) NOT NULL,
-  `StudentId` int(11) DEFAULT NULL,
-  `ClassId` int(11) DEFAULT NULL,
-  `SubjectId` int(11) DEFAULT NULL,
-  `marks` int(11) DEFAULT NULL,
-  `PostingDate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
---
--- Dumping data for table `tblresult`
---
-
-INSERT INTO `tblresult` (`id`, `StudentId`, `ClassId`, `SubjectId`, `marks`, `PostingDate`, `UpdationDate`) VALUES
-(2, 1, 1, 2, 100, '2024-05-10 10:30:57', NULL),
-(3, 1, 1, 1, 80, '2024-05-10 10:30:57', NULL),
-(4, 1, 1, 5, 78, '2024-05-10 10:30:57', NULL),
-(5, 1, 1, 4, 60, '2024-05-10 10:30:57', NULL),
-(6, 2, 4, 2, 90, '2024-05-10 10:30:57', NULL),
-(7, 2, 4, 1, 75, '2024-05-10 10:30:57', NULL),
-(8, 2, 4, 5, 56, '2024-05-10 10:30:57', NULL),
-(9, 2, 4, 4, 80, '2024-05-10 10:30:57', NULL),
-(10, 4, 7, 2, 54, '2024-05-10 10:30:57', NULL),
-(11, 4, 7, 1, 85, '2024-05-10 10:30:57', NULL),
-(12, 4, 7, 5, 55, '2024-05-10 10:30:57', NULL),
-(13, 4, 7, 7, 65, '2024-05-10 10:30:57', NULL),
-(14, 5, 8, 2, 75, '2024-05-10 10:30:57', NULL),
-(15, 5, 8, 1, 56, '2024-05-10 10:30:57', NULL),
-(16, 5, 8, 5, 52, '2024-05-10 10:30:57', NULL),
-(17, 5, 8, 4, 80, '2024-05-10 10:30:57', NULL),
-(18, 6, 9, 8, 80, '2024-05-20 15:20:18', NULL),
-(19, 6, 9, 8, 70, '2024-05-20 15:20:18', NULL),
-(20, 6, 9, 2, 90, '2024-05-20 15:20:18', NULL),
-(21, 6, 9, 1, 60, '2024-05-20 15:20:18', NULL);
-
--- --------------------------------------------------------
-
 --
 -- Table structure for table `tblstudents`
 --
 
-CREATE TABLE tblstudents (
-  StudentId INT(11) NOT NULL AUTO_INCREMENT,
-  StudentName VARCHAR(100) DEFAULT NULL,
-  RollId INT(11) NOT NULL,
-  RegistrationId VARCHAR(100) NOT NULL,
-  StudentEmail VARCHAR(100) DEFAULT NULL,
-  Gender VARCHAR(10) DEFAULT NULL,
-  Department VARCHAR(10) NOT NULL,
-  Section VARCHAR(10) NOT NULL,
-  Series INT(10) NOT NULL,
-  DOB VARCHAR(100) DEFAULT NULL,
-  FatherName VARCHAR(100) DEFAULT NULL,
-  MotherName VARCHAR(100) DEFAULT NULL,
-  Contact VARCHAR(110) DEFAULT NULL,
-  RegDate TIMESTAMP NULL DEFAULT current_timestamp(),
-  UpdationDate TIMESTAMP NULL DEFAULT NULL,
-  Status INT(1) DEFAULT NULL,
-  PRIMARY KEY (StudentId),
-  UNIQUE KEY (RollId)
+CREATE TABLE `tblstudents` (
+  `StudentId` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `StudentName` VARCHAR(100) DEFAULT NULL,
+  `RollId` INT(11) NOT NULL UNIQUE,
+  `RegistrationId` VARCHAR(100) NOT NULL,
+  `StudentEmail` VARCHAR(100) DEFAULT NULL,
+  `Gender` VARCHAR(10) DEFAULT NULL,
+  `Department` VARCHAR(10) NOT NULL,
+  `Section` VARCHAR(10) NOT NULL,
+  `Series` INT(10) NOT NULL,
+  `DOB` VARCHAR(100) DEFAULT NULL,
+  `FatherName` VARCHAR(100) DEFAULT NULL,
+  `MotherName` VARCHAR(100) DEFAULT NULL,
+  `Contact` VARCHAR(15) DEFAULT NULL,
+  `RegDate` TIMESTAMP NULL DEFAULT current_timestamp(),
+  `UpdationDate` TIMESTAMP NULL DEFAULT NULL,
+  `Status` INT(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 --
 -- Dumping data for table `tblstudents`
@@ -278,16 +242,16 @@ INSERT INTO `tblstudents` (`StudentName`, `RollId`, `RegistrationId`, `StudentEm
 --
 
 CREATE TABLE `tblsubjects` (
-  `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `CourseName` varchar(100) NOT NULL,
   `CourseCode` varchar(100) DEFAULT NULL,
   `CourseCredit` decimal(3,2) DEFAULT NULL,
-  `Department` varchar(100) NOT NULL, 
+  `Department` varchar(100) NOT NULL,  -- Updated length to match tbldept
   `Semester` int(1) DEFAULT NULL,
   `Creationdate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL
+  `UpdationDate` timestamp NULL DEFAULT NULL,
+  FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 --
 -- Dumping data for table `tblsubjects`
 --
@@ -335,115 +299,76 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tblsubjects`
+-- Table structure for table `tblresult`
 --
 
-CREATE TABLE tblregistration (
-    RollId INT NOT NULL,
-    Semester VARCHAR(20) NOT NULL,
-    RegisteredCourses TEXT NOT NULL,
-    RegistrationStatus INT DEFAULT 0,
-    PRIMARY KEY (RollId, Semester),
-    FOREIGN KEY (RollId) REFERENCES tblstudents(RollId)
+CREATE TABLE `tblresult` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `StudentId` int(11) DEFAULT NULL,
+  `ClassId` int(11) DEFAULT NULL,
+  `SubjectId` int(11) DEFAULT NULL,
+  `marks` int(11) DEFAULT NULL,
+  `PostingDate` timestamp NULL DEFAULT current_timestamp(),
+  `UpdationDate` timestamp NULL DEFAULT NULL,
+  FOREIGN KEY (`StudentId`) REFERENCES `tblstudents`(`StudentId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`ClassId`) REFERENCES `tblclasses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`SubjectId`) REFERENCES `tblsubjects`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Dumping data for table `tblresult`
+--
+
+/* INSERT INTO `tblresult` (`id`, `StudentId`, `ClassId`, `SubjectId`, `marks`, `PostingDate`, `UpdationDate`) VALUES
+(2, 1, 1, 2, 100, '2024-05-10 10:30:57', NULL),
+(3, 1, 1, 1, 80, '2024-05-10 10:30:57', NULL),
+(4, 1, 1, 5, 78, '2024-05-10 10:30:57', NULL),
+(5, 1, 1, 4, 60, '2024-05-10 10:30:57', NULL),
+(6, 2, 4, 2, 90, '2024-05-10 10:30:57', NULL),
+(7, 2, 4, 1, 75, '2024-05-10 10:30:57', NULL),
+(8, 2, 4, 5, 56, '2024-05-10 10:30:57', NULL),
+(9, 2, 4, 4, 80, '2024-05-10 10:30:57', NULL),
+(10, 4, 7, 2, 54, '2024-05-10 10:30:57', NULL),
+(11, 4, 7, 1, 85, '2024-05-10 10:30:57', NULL),
+(12, 4, 7, 5, 55, '2024-05-10 10:30:57', NULL),
+(13, 4, 7, 7, 65, '2024-05-10 10:30:57', NULL),
+(14, 5, 8, 2, 75, '2024-05-10 10:30:57', NULL),
+(15, 5, 8, 1, 56, '2024-05-10 10:30:57', NULL),
+(16, 5, 8, 5, 52, '2024-05-10 10:30:57', NULL),
+(17, 5, 8, 4, 80, '2024-05-10 10:30:57', NULL),
+(18, 6, 9, 8, 80, '2024-05-20 15:20:18', NULL),
+(19, 6, 9, 8, 70, '2024-05-20 15:20:18', NULL),
+(20, 6, 9, 2, 90, '2024-05-20 15:20:18', NULL),
+(21, 6, 9, 1, 60, '2024-05-20 15:20:18', NULL); */
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tblregistration`
+--
+
+CREATE TABLE `tblregistration` (
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `RegisteredCourses` TEXT NOT NULL,
+  `RegistrationStatus` INT DEFAULT 0,
+  PRIMARY KEY (`RollId`, `Semester`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
---
--- Dumping data for table `tblsubjects`
---
 
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tblclasses`
---
 ALTER TABLE `tblclasses`
-  ADD PRIMARY KEY (`id`);
+ADD CONSTRAINT `fk_tblclasses_department`
+FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`)
+ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Indexes for table `tblnotice`
---
-ALTER TABLE `tblnotice`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `tblteachers`
+ADD CONSTRAINT `fk_tblteachers_department`
+FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`)
+ON DELETE CASCADE ON UPDATE CASCADE;
 
---
--- Indexes for table `tblresult`
---
-ALTER TABLE `tblresult`
-  ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `tblstudents`
---
-ALTER TABLE `tblstudents`
-  ADD PRIMARY KEY (`StudentId`);
-
---
--- Indexes for table `tblsubjectcombination`
---
-ALTER TABLE `tblsubjectcombination`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tblsubjects`
---
-ALTER TABLE `tblsubjects`
-  ADD PRIMARY KEY AUTO_INCREMENT (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `admin`
---
-ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `tblclasses`
---
-ALTER TABLE `tblclasses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `tblnotice`
---
-ALTER TABLE `tblnotice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `tblresult`
---
-ALTER TABLE `tblresult`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT for table `tblstudents`
---
-ALTER TABLE `tblstudents`
-  MODIFY `StudentId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `tblsubjectcombination`
---
-ALTER TABLE `tblsubjectcombination`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
-
---
--- AUTO_INCREMENT for table `tblsubjects`
---
-ALTER TABLE `tblsubjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
