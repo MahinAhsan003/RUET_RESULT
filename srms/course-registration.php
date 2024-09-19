@@ -11,7 +11,15 @@ if (strlen($_SESSION['login']) == "") {
         $semester = $_POST['semester'];
         $registeredCourses = implode(",", $_POST['selected_courses']);
 
-        // Check if the registration already exists
+        // Check if the registration request already exists in tblregistrationqueue
+        $sql_check_queue = "SELECT * FROM tblregistrationqueue WHERE RollId = :rollId AND Semester = :semester";
+        $query_check_queue = $dbh->prepare($sql_check_queue);
+        $query_check_queue->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+        $query_check_queue->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query_check_queue->execute();
+        $count_queue = $query_check_queue->rowCount();
+
+        // Check if the student is already registered
         $sql_check = "SELECT * FROM tblregistration WHERE RollId = :rollId AND Semester = :semester";
         $query_check = $dbh->prepare($sql_check);
         $query_check->bindParam(':rollId', $rollId, PDO::PARAM_INT);
@@ -21,16 +29,18 @@ if (strlen($_SESSION['login']) == "") {
 
         if ($count > 0) {
             $error = "Registration for this semester already exists!";
+        } elseif ($count_queue > 0) {
+            $error = "Registration request for this semester is already in queue!";
         } else {
-            // Insert new registration
-            $sql = "INSERT INTO tblregistration (RollId, Semester, RegisteredCourses, RegistrationStatus) 
-                    VALUES (:rollId, :semester, :registeredCourses, 1)";
+            // Insert new registration request into tblregistrationqueue
+            $sql = "INSERT INTO tblregistrationqueue (RollId, Semester, RequestedCourses) 
+                    VALUES (:rollId, :semester, :registeredCourses)";
             $query = $dbh->prepare($sql);
             $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
             $query->bindParam(':semester', $semester, PDO::PARAM_STR);
             $query->bindParam(':registeredCourses', $registeredCourses, PDO::PARAM_STR);
             $query->execute();
-            $msg = "Registration successful!";
+            $msg = "Registration request has been submitted successfully!";
         }
     }
     ?>
