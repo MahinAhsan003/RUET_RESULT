@@ -378,13 +378,13 @@ CREATE TABLE `tblmarks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 ALTER TABLE `tblmarks`  
-   ADD CONSTRAINT `FK_tblmarks_1`
+   ADD CONSTRAINT `FK_tblmark`
   FOREIGN KEY (`RollId`)
    REFERENCES `tblstudents`(`RollId`)
     ON DELETE CASCADE ON UPDATE CASCADE
 
 ALTER TABLE `tblmarks`  
-   ADD CONSTRAINT `FK_tblmarks_1`
+   ADD CONSTRAINT `FK_tblmarks_`
   FOREIGN KEY (`CourseCode`)
    REFERENCES `tblsubjects`(`CourseCode`)
     ON DELETE CASCADE ON UPDATE CASCADE
