@@ -40,10 +40,18 @@ if (strlen($_SESSION['login']) == "") {
             $query->bindParam(':semester', $semester, PDO::PARAM_STR);
             $query->bindParam(':registeredCourses', $registeredCourses, PDO::PARAM_STR);
             $query->execute();
-            $msg = "Registration request has been submitted successfully!";
+
+            // Store success message in session and redirect
+            $_SESSION['msg'] = "Registration request has been submitted successfully! Please wait for the approval.";
+            header("Location: course-registration.php");
+            exit();  // Stop further execution
         }
     }
-    ?>
+
+    // Fetch the success message from session if available
+    $msg = isset($_SESSION['msg']) ? $_SESSION['msg'] : '';
+    unset($_SESSION['msg']);  // Clear the message from session after showing it
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -109,7 +117,7 @@ if (strlen($_SESSION['login']) == "") {
                             <div class="row breadcrumb-div">
                                 <div class="col-md-6">
                                     <ul class="breadcrumb">
-                                        <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                        <li><a href="student-dash.php"><i class="fa fa-home"></i> Home</a></li>
                                         <li>Course Management</li>
                                         <li class="active">Course Registration</li>
                                     </ul>
@@ -132,6 +140,11 @@ if (strlen($_SESSION['login']) == "") {
                                                     <div class="succWrap"><strong>SUCCESS</strong>:
                                                         <?php echo htmlentities($msg); ?>
                                                     </div>
+                                                <?php } ?>
+                                                <?php if ($error) { ?>
+                                                <div class="errorWrap"><strong>ERROR</strong>:
+                                                    <?php echo htmlentities($error); ?>
+                                                </div>
                                                 <?php } ?>
                                                 <form method="post" action="" class="filter-form">
                                                     <div class="form-group">
