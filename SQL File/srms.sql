@@ -92,17 +92,17 @@ CREATE TABLE `tblclasses` (
 -- Dumping data for table `tblclasses`
 --
 
-INSERT INTO `tblclasses` (`id`, `Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
-(1, 'ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(1, 'ECE', 2020, 'A', 2, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(1, 'ECE', 2020, 'A', 3, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(2, 'ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(3, 'CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(4, 'ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(5, 'CE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(6, 'MTE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(7, 'MSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
-(8, 'EEE', 2020, 'A', 1, '2024-04-25 10:30:57', NULL);
+INSERT INTO `tblclasses` ( `Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
+('ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ECE', 2020, 'A', 2, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ECE', 2020, 'A', 3, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('CE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('MTE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('MSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+('EEE', 2020, 'A', 1, '2024-04-25 10:30:57', NULL);
 
 
 -- --------------------------------------------------------
@@ -298,52 +298,9 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 (37, 'Legal Issues, Industrial & Operational Management', 'ECE-2217', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
 (38, 'Electronic Shop Practice', 'ECE-2200', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL);
 
--- --------------------------------------------------------
 
---
--- Table structure for table `tblresult`
---
 
-CREATE TABLE `tblresult` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `StudentId` int(11) DEFAULT NULL,
-  `ClassId` int(11) DEFAULT NULL,
-  `SubjectId` int(11) DEFAULT NULL,
-  `marks` int(11) DEFAULT NULL,
-  `PostingDate` timestamp NULL DEFAULT current_timestamp(),
-  `UpdationDate` timestamp NULL DEFAULT NULL,
-  FOREIGN KEY (`StudentId`) REFERENCES `tblstudents`(`StudentId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`ClassId`) REFERENCES `tblclasses`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`SubjectId`) REFERENCES `tblsubjects`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Dumping data for table `tblresult`
---
-
-/* INSERT INTO `tblresult` (`id`, `StudentId`, `ClassId`, `SubjectId`, `marks`, `PostingDate`, `UpdationDate`) VALUES
-(2, 1, 1, 2, 100, '2024-05-10 10:30:57', NULL),
-(3, 1, 1, 1, 80, '2024-05-10 10:30:57', NULL),
-(4, 1, 1, 5, 78, '2024-05-10 10:30:57', NULL),
-(5, 1, 1, 4, 60, '2024-05-10 10:30:57', NULL),
-(6, 2, 4, 2, 90, '2024-05-10 10:30:57', NULL),
-(7, 2, 4, 1, 75, '2024-05-10 10:30:57', NULL),
-(8, 2, 4, 5, 56, '2024-05-10 10:30:57', NULL),
-(9, 2, 4, 4, 80, '2024-05-10 10:30:57', NULL),
-(10, 4, 7, 2, 54, '2024-05-10 10:30:57', NULL),
-(11, 4, 7, 1, 85, '2024-05-10 10:30:57', NULL),
-(12, 4, 7, 5, 55, '2024-05-10 10:30:57', NULL),
-(13, 4, 7, 7, 65, '2024-05-10 10:30:57', NULL),
-(14, 5, 8, 2, 75, '2024-05-10 10:30:57', NULL),
-(15, 5, 8, 1, 56, '2024-05-10 10:30:57', NULL),
-(16, 5, 8, 5, 52, '2024-05-10 10:30:57', NULL),
-(17, 5, 8, 4, 80, '2024-05-10 10:30:57', NULL),
-(18, 6, 9, 8, 80, '2024-05-20 15:20:18', NULL),
-(19, 6, 9, 8, 70, '2024-05-20 15:20:18', NULL),
-(20, 6, 9, 2, 90, '2024-05-20 15:20:18', NULL),
-(21, 6, 9, 1, 60, '2024-05-20 15:20:18', NULL); */
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `tblregistration`
@@ -352,7 +309,7 @@ CREATE TABLE `tblresult` (
 CREATE TABLE `tblregistration` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `RegisteredCourses ` TEXT NOT NULL,
+  `RegisteredCourses` TEXT NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
   PRIMARY KEY (`RollId`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -384,21 +341,13 @@ CREATE TABLE `tblmarks` (
   `Assignment` INT DEFAULT 0,
   `Semester Final` INT DEFAULT 0,
   PRIMARY KEY (`RollId`, `CourseCode`),
-  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (RollId) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-ALTER TABLE `tblmarks`  
-   ADD CONSTRAINT `FK_tblmark`
-  FOREIGN KEY (`RollId`)
-   REFERENCES `tblstudents`(`RollId`)
-    ON DELETE CASCADE ON UPDATE CASCADE
-
-ALTER TABLE `tblmarks`  
-   ADD CONSTRAINT `FK_tblmarks_`
-  FOREIGN KEY (`CourseCode`)
-   REFERENCES `tblsubjects`(`CourseCode`)
-    ON DELETE CASCADE ON UPDATE CASCADE
+ALTER TABLE `tblmarks`
+ADD CONSTRAINT `fk_tblmarks_students`
+FOREIGN KEY (RollId) REFERENCES tblstudents(RollId) 
+ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `tblclasses`
 ADD CONSTRAINT `fk_tblclasses_department`
