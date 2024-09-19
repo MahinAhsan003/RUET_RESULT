@@ -44,7 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div class="">
             <div class="row">
-                <h1 align="center">Student Result Management System</h1>
+                <h1 align="center">Rajshahi University Of Engineering And Technology
+                </h1>
 
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
@@ -132,9 +133,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- ========== THEME JS ========== -->
     <script src="js/main.js"></script>
     <script>
-        $(function () {
+    $(function() {
 
-        });
+    });
     </script>
 
 </body>

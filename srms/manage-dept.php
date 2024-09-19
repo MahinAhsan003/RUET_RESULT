@@ -1,22 +1,21 @@
 <?php session_start();
 error_reporting(0);
 include('includes/config.php');
-if(strlen($_SESSION['alogin'])=="")
-{   header("Location: index.php"); 
-}else{
+if (strlen($_SESSION['alogin']) == "") {
+    header("Location: index.php");
+} else {
 
-//Code for Deletion
-if(isset($_GET['id']))
-{ 
-$classid=$_GET['id'];
-$sql="delete from tbldept where id = :deptid";
-$query = $dbh->prepare($sql);
-$query->bindParam(':deptid',$deptid,PDO::PARAM_STR);
-$query->execute();
-echo '<script>alert("Data deleted.")</script>';
-echo "<script>window.location.href ='manage-dept.php'</script>";
-}    
-?>
+    //Code for Deletion
+    if (isset($_GET['id'])) {
+        $classid = $_GET['id'];
+        $sql = "delete from tbldept where id = :deptid";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':deptid', $deptid, PDO::PARAM_STR);
+        $query->execute();
+        echo '<script>alert("Data deleted.")</script>';
+        echo "<script>window.location.href ='manage-dept.php'</script>";
+    }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -58,11 +57,11 @@ echo "<script>window.location.href ='manage-dept.php'</script>";
     <div class="main-wrapper">
 
         <!-- ========== TOP NAVBAR ========== -->
-        <?php include('includes/topbar.php');?>
+        <?php include('includes/topbar.php'); ?>
         <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
         <div class="content-wrapper">
             <div class="content-container">
-                <?php include('includes/leftbar.php');?>
+                <?php include('includes/leftbar.php'); ?>
 
                 <div class="main-page">
                     <div class="container-fluid">
@@ -103,11 +102,10 @@ echo "<script>window.location.href ='manage-dept.php'</script>";
                                                 <h5>View Department Info</h5>
                                             </div>
                                         </div>
-                                        <?php if($msg){?>
+                                        <?php if ($msg) { ?>
                                         <div class="alert alert-success left-icon-alert" role="alert">
                                             <strong>Well done!</strong><?php echo htmlentities($msg); ?>
-                                        </div><?php } 
-else if($error){?>
+                                        </div><?php } else if ($error) { ?>
                                         <div class="alert alert-danger left-icon-alert" role="alert">
                                             <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
                                         </div>
@@ -134,29 +132,29 @@ else if($error){?>
                                                 </tfoot>
                                                 <tbody>
                                                     <?php $sql = "SELECT * from tbldept";
-$query = $dbh->prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
-{   ?>
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        $cnt = 1;
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($results as $result) { ?>
                                                     <tr>
-                                                        <td><?php echo htmlentities($cnt);?></td>
-                                                        <td><?php echo htmlentities($result->deptName);?></td>
-                                                        <td><?php echo htmlentities($result->deptCode);?></td>
+                                                        <td><?php echo htmlentities($cnt); ?></td>
+                                                        <td><?php echo htmlentities($result->Department); ?></td>
+                                                        <td><?php echo htmlentities($result->deptCode); ?></td>
                                                         <td>
-                                                            <a href="edit-dept.php?classid=<?php echo htmlentities($result->id);?>"
+                                                            <a href="edit-dept.php?classid=<?php echo htmlentities($result->id); ?>"
                                                                 class="btn btn-info btn-xs"> Edit </a>
 
-                                                            <a href="manage-dept.php?id=<?php echo $result->id;?>&del=delete"
+                                                            <a href="manage-dept.php?id=<?php echo $result->id; ?>&del=delete"
                                                                 onClick="return confirm('Are you sure you want to delete?')"
                                                                 class="btn btn-danger btn-xs">Delete</a>
 
                                                         </td>
                                                     </tr>
-                                                    <?php $cnt=$cnt+1;}} ?>
+                                                    <?php $cnt = $cnt + 1;
+                                                            }
+                                                        } ?>
 
 
                                                 </tbody>

@@ -1,6 +1,6 @@
 <?php
 error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,7 @@ include ('includes/config.php');
     <!-- Responsive navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.php">SRMS-(Student Result Management System)</a>
+            <a class="navbar-brand" href="index.php">Rajshahi University Of Engineering And Technology</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -35,7 +35,7 @@ include ('includes/config.php');
         </div>
     </nav>
     <!-- Header - set the background image for the header in the line below-->
-    <header class="py-5 bg-image-full" style="background-image: url('images/background-image.jpg')">
+    <header class="py-5 bg-image-full" style="background-image: url('images/ruet.jpg')">
 
     </header>
     <!-- Content section-->
@@ -54,9 +54,9 @@ include ('includes/config.php');
                             $cnt = 1;
                             if ($query->rowCount() > 0) {
                                 foreach ($results as $result) { ?>
-                                    <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id); ?>"
-                                            target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
-                                <?php }
+                            <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id); ?>"
+                                    target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
+                            <?php }
                             } ?>
 
                         </ul>
@@ -70,7 +70,7 @@ include ('includes/config.php');
     <!-- Footer-->
     <footer class="py-5 bg-dark">
         <div class="container">
-            <p class="m-0 text-center text-white"> Student Result Management System</p>
+            <p class="m-0 text-center text-white">Rajshahi University Of Engineering And Technology</p>
         </div>
     </footer>
     <!-- Bootstrap core JS-->
