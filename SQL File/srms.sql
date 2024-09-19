@@ -94,6 +94,8 @@ CREATE TABLE `tblclasses` (
 
 INSERT INTO `tblclasses` (`id`, `Department`, `Series`, `Section`, `Semester`, `CreationDate`, `UpdationDate`) VALUES
 (1, 'ECE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(1, 'ECE', 2020, 'A', 2, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
+(1, 'ECE', 2020, 'A', 3, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
 (2, 'ME', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
 (3, 'CSE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
 (4, 'ETE', 2020, 'A', 1, '2024-04-25 10:30:57', '2022-01-01 10:30:57'),
@@ -356,7 +358,36 @@ CREATE TABLE `tblregistration` (
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+--
+-- Table structure for table `tblmarks`
+--
 
+CREATE TABLE `tblmarks` (
+  `RollId` INT(11) NOT NULL,
+  `CourseCode` varchar(100) DEFAULT NULL,
+  `CT_1` INT DEFAULT 0,
+  `CT_2` INT DEFAULT 0,
+  `CT_3` INT DEFAULT 0,
+  `CT_4` INT DEFAULT 0,
+  `Attendance` INT DEFAULT 0,
+  `Assignment` INT DEFAULT 0,
+  `Semester Final` INT DEFAULT 0,
+  PRIMARY KEY (`RollId`, `CourseCode`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `tblmarks`  
+   ADD CONSTRAINT `FK_tblmark`
+  FOREIGN KEY (`RollId`)
+   REFERENCES `tblstudents`(`RollId`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+
+ALTER TABLE `tblmarks`  
+   ADD CONSTRAINT `FK_tblmarks_`
+  FOREIGN KEY (`CourseCode`)
+   REFERENCES `tblsubjects`(`CourseCode`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 
 ALTER TABLE `tblclasses`
 ADD CONSTRAINT `fk_tblclasses_department`

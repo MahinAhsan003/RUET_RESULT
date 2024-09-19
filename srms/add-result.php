@@ -68,263 +68,335 @@ if (strlen($_SESSION['tlogin']) == "") {
                 <div class="content-container">
 
                     <!-- ========== LEFT SIDEBAR ========== -->
-                    <?php include ('includes/teacher-leftbar.php'); ?>
+                    <?php include('includes/teacher-leftbar.php'); ?>
                     <!-- /.left-sidebar -->
 
-                    <div class="main-page">
+                    <div class="content-wrapper">
+                        <div class="content-container">
 
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-6">
-                                    <h2 class="title">Declare Result</h2>
-
-                                </div>
-
-                                <!-- /.col-md-6 text-right -->
-                            </div>
-                            <!-- /.row -->
-                            <div class="row breadcrumb-div">
-                                <div class="col-md-6">
-                                    <ul class="breadcrumb">
-                                        <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-
-                                        <li class="active">Student Result</li>
-                                    </ul>
-                                </div>
-
-                            </div>
-                            <!-- /.row -->
-                        </div>
-                        <div class="container-fluid">
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="panel">
-
-                                        <div class="panel-body">
-                                            <?php if ($msg) { ?>
-                                                <div class="alert alert-success left-icon-alert" role="alert">
-                                                    <strong>Well done!</strong><?php echo htmlentities($msg); ?>
-                                                </div><?php } else if ($error) { ?>
-                                                    <div class="alert alert-danger left-icon-alert" role="alert">
-                                                        <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                                    </div>
-                                            <?php } ?>
-                                            <form class="form-horizontal" method="post">
-
-                                                <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Department</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="department" class="form-control" id="department"
-                                                            required="required">
-                                                            <option value="">Select Department</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Department FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option
-                                                                        value="<?php echo htmlentities($result->Department); ?>">
-                                                                        <?php echo htmlentities($result->Department); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Series</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="series" class="form-control" id="series"
-                                                            required="required">
-                                                            <option value="">Select Series</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Series FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Series); ?>">
-                                                                        <?php echo htmlentities($result->Series); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Section</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="section" class="form-control" id="section"
-                                                            required="required">
-                                                            <option value="">Select Section</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Section FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Section); ?>">
-                                                                        <?php echo htmlentities($result->Section); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="default" class="col-sm-2 control-label">Semester</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="semester" class="form-control" id="semester"
-                                                            required="required">
-                                                            <option value="">Select Semester</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT Semester FROM tblclasses";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->Semester); ?>">
-                                                                        <?php echo htmlentities($result->Semester); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="form-group">
-                                                    <label for="course" class="col-sm-2 control-label">Course</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="course" class="form-control" id="course"
-                                                            required="required">
-                                                            <option value="">Select Course</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT CourseName FROM tblsubjects";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option
-                                                                        value="<?php echo htmlentities($result->CourseName); ?>">
-                                                                        <?php echo htmlentities($result->CourseName); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="date" class="col-sm-2 control-label ">Student Name</label>
-                                                    <div class="col-sm-10">
-                                                        <select name="student" class="form-control" id="student"
-                                                            required="required">
-                                                            <option value="">Select Student</option>
-                                                            <?php
-                                                            $sql = "SELECT DISTINCT StudentName FROM tblstudents";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option
-                                                                        value="<?php echo htmlentities($result->StudentName); ?>">
-                                                                        <?php echo htmlentities($result->StudentName); ?>
-                                                                    </option>
-                                                                <?php }
-                                                            } ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="date" class="col-sm-2 control-label ">Course Type:</label>
-                                                    <label class="radio-container m-r-45">Theory
-                                                        <input type="radio" name="coursetype" value="Theory"
-                                                            onclick="text(0)" />
-                                                    </label>
-                                                    <label class="radio-container">Sessional
-                                                        <input type="radio" name="coursetype" value="Sessional"
-                                                            onclick="text(1)" />
-                                                    </label>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="date" class="col-sm-2 control-label ">Marks Section</label>
-                                                    <div class="col-sm-10">
-                                                        <div id="marksSection">
-                                                            <!-- Marks fields will be shown here based on course credit -->
-                                                            <div id="theoryFields"><br>
-                                                                <label for="termFinal">Term Final:</label>
-                                                                <input type="number" step="0.001" id="termFinal"
-                                                                    name="termFinal">
-                                                                <label for="quiz">Quiz:</label>
-                                                                <input type="number" step="0.001" id="quiz" name="quiz">
-                                                                <label for="attendance">Attendance:</label>
-                                                                <input type="number" step="0.001" id="attendance"
-                                                                    name="attendance">
-                                                            </div>
-
-                                                            <div id="sessionalFields">
-                                                                <label for="labPerformance">Lab Performance:</label>
-                                                                <input type="text" id="labPerformance"
-                                                                    name="labPerformance"><br>
-                                                                <label for="attendanceS">Attendance:</label>
-                                                                <input type="text" id="attendanceS" name="attendanceS"><br>
-                                                                <label for="viva">Viva:</label>
-                                                                <input type="text" id="viva" name="viva"><br>
-                                                                <label for="labQuiz">Lab Quiz:</label>
-                                                                <input type="text" id="labQuiz" name="labQuiz"><br>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <div class="col-sm-offset-2 col-sm-10">
-                                                        <button type="submit" name="submit" id="submit"
-                                                            class="btn btn-primary">Declare Result</button>
-                                                    </div>
-                                                </div>
+                            <div class="main-page">
+                                <div class="container-fluid">
+                                    <div class="row page-title-div">
+                                        <div class="col-md-6">
+                                            <h2 class="title">Add Result</h2>
                                         </div>
-                                        </form>
-                                        <script>
-                                            function text(x) {
-                                                if (x == 0) {
-                                                    document.getElementById("theoryFields").style.display = "block";
-                                                    document.getElementById("sessionalFields").style.display = "none";
-                                                } else {
-                                                    document.getElementById("sessionalFields").style.display = "block";
-                                                    document.getElementById("theoryFields").style.display = "none";
-                                                }
-                                            }
-                                            return;
-                                        </script>
+                                    </div>
+                                    <div class="row breadcrumb-div">
+                                        <div class="col-md-6">
+                                            <ul class="breadcrumb">
+                                                <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                                <li> Result</li>
+                                                <li class="active">Add Result</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <section class="section">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel">
+                                                    <div class="panel-heading">
+                                                        <div class="panel-title">
+                                                            <h5>View Students Info</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-body p-20">
+                                                        <form method="post" action="" class="filter-form">
+                                                            <div class="form-group">
+                                                                <label for="department">Department</label>
+                                                                <select name="department" id="department"
+                                                                    class="form-control" onchange="updateSeries()">
+                                                                    <option value="">Select Department</option>
+                                                                    <?php
+                                                                    $sql = "SELECT DISTINCT Department FROM tblclasses";
+                                                                    $query = $dbh->prepare($sql);
+                                                                    $query->execute();
+                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                    if ($query->rowCount() > 0) {
+                                                                        foreach ($results as $result) { ?>
+                                                                            <option
+                                                                                value="<?php echo htmlentities($result->Department); ?>">
+                                                                                <?php echo htmlentities($result->Department); ?>
+                                                                            </option>
+                                                                        <?php }
+                                                                    } ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="series">Series</label>
+                                                                <select name="series" id="series" class="form-control"
+                                                                    onchange="updateSemesters()">
+                                                                    <option value="">Select Series</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="semester">Semester</label>
+                                                                <select name="semester" id="semester" class="form-control"
+                                                                    onchange="updateCourses()">
+                                                                    <option value="">Select Semester</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="course">Course</label>
+                                                                <select name="course" id="course" class="form-control">
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" name="filter"
+                                                                class="btn btn-primary">Filter</button>
+                                                        </form>
+
+                                                        <table id="example"
+                                                            class="display table table-striped table-bordered"
+                                                            cellspacing="0" width="100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Student Name</th>
+                                                                    <th>Roll Id</th>
+                                                                    <th>CT-1</th>
+                                                                    <th>CT-2</th>
+                                                                    <th>CT-3</th>
+                                                                    <th>CT-4</th>
+                                                                    <th>Attendance</th>
+                                                                    <th>Assignment</th>
+                                                                    <th>Semester Final</th>
+                                                                    <th>Update</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Student Name</th>
+                                                                    <th>Roll Id</th>
+                                                                    <th>CT-1</th>
+                                                                    <th>CT-2</th>
+                                                                    <th>CT-3</th>
+                                                                    <th>CT-4</th>
+                                                                    <th>Attendance</th>
+                                                                    <th>Assignment</th>
+                                                                    <th>Semester Final</th>
+                                                                    <th>Update</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                            <tbody>
+                                                                <?php
+                                                                if (isset($_POST['filter'])) {
+                                                                    $department = $_POST['department'];
+                                                                    $series = $_POST['series'];
+                                                                    $semester = $_POST['semester'];
+                                                                    $course = $_POST['course'];
+                                                                    $sql = "SELECT s.StudentName, s.RollId, m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`
+            FROM tblstudents s
+            LEFT JOIN tblmarks m ON s.RollId = m.RollId
+            WHERE 1=1";
+                                                                    if ($department != "") {
+                                                                        $sql .= " AND Department=:department";
+                                                                    }
+                                                                    if ($series != "") {
+                                                                        $sql .= " AND Series=:series";
+                                                                    }
+                                                                    $sql .= " ORDER BY RollId"; // Sort by RollId
+                                                                    $query = $dbh->prepare($sql);
+                                                                    if ($department != "") {
+                                                                        $query->bindParam(':department', $department, PDO::PARAM_STR);
+                                                                    }
+                                                                    if ($series != "") {
+                                                                        $query->bindParam(':series', $series, PDO::PARAM_STR);
+                                                                    }
+                                                                    $query->execute();
+                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                } else {
+                                                                    $results = [];
+                                                                }
+                                                                $cnt = 1;
+                                                                if (count($results) > 0) {
+                                                                    foreach ($results as $result) { ?>
+                                                                        <tr>
+                                                                            <td><?php echo htmlentities($cnt); ?></td>
+                                                                            <td><?php echo htmlentities($result->StudentName); ?>
+                                                                            </td>
+                                                                            <td><?php echo htmlentities($result->RollId); ?></td>
+                                                                            <td><?php echo htmlentities($result->RegistrationId); ?>
+                                                                            </td>
+                                                                            <td><?php echo htmlentities($result->Department); ?>
+                                                                            </td>
+                                                                            <td><?php echo htmlentities($result->Section); ?></td>
+                                                                            <td><?php echo htmlentities($result->Series); ?></td>
+                                                                            <td><?php echo htmlentities($result->RegDate); ?></td>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
+                                                                                    class="btn btn-primary btn-xs"
+                                                                                    target="_blank">Update</a>
+                                                                                <a href="delete-student.php?classid=<?php echo htmlentities($result->id); ?>"
+                                                                                    class="btn btn-danger btn-xs" target="_blank"
+                                                                                    onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <?php $cnt++;
+                                                                    }
+                                                                } ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
-                            <!-- /.col-md-12 -->
                         </div>
                     </div>
+                    <!-- /.content-container -->
                 </div>
-                <!-- /.content-container -->
+                <!-- /.content-wrapper -->
             </div>
-            <!-- /.content-wrapper -->
-        </div>
-        <!--     /.main-wrapper -->
-        <script src="js/jquery/jquery-2.2.4.min.js">
-        < /s               cr iscr ipt    <script src="js/bootstrap / bootstrap.min.js script
-        </script>
-        script i pt src="js/pace/pace.min.js">
-        </script>
-        <scr ipt src="js/lobipanel/lobipanel.min.js">
-            </sc ript>
+            <!--     /.main-wrapper -->
+            <script>
+                var seriesOptions = {
+                    <?php
+                    // Fetch department and series data from tblclasses
+                    $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                    $departments = [];
+                    if ($query->rowCount() > 0) {
+                        foreach ($results as $result) {
+                            $departments[$result->Department][] = $result->Series;
+                        }
+                    }
+
+                    // Generate the JavaScript object for seriesOptions
+                    foreach ($departments as $department => $series) {
+                        $uniqueSeries = array_unique($series); // Remove duplicate series
+                        echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
+                    }
+                    ?>
+                };
+
+                var semesterOptions = {
+                    <?php
+                    // Fetch department, series, and semester data from tblclasses
+                    $sql = "SELECT Department, Series, Semester FROM tblclasses";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                    $deptSeries = [];
+                    if ($query->rowCount() > 0) {
+                        foreach ($results as $result) {
+                            // Combine Department and Series as the key
+                            $key = $result->Department . '|' . $result->Series;
+                            $deptSeries[$key][] = $result->Semester;
+                        }
+                    }
+
+                    // Generate the JavaScript object for semesterOptions
+                    foreach ($deptSeries as $key => $semesters) {
+                        $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
+                        echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
+                    }
+                    ?>
+                };
+
+                var courseOptions = {
+                    <?php
+                    // Fetch department, semester, and course code data from tblsubjects
+                    $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
+                    $query = $dbh->prepare($sql);
+                    $query->execute();
+                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                    $deptSemesters = [];
+                    if ($query->rowCount() > 0) {
+                        foreach ($results as $result) {
+                            // Combine Department and Semester as the key
+                            $key = $result->Department . '|' . $result->Semester;
+                            $deptSemesters[$key][] = $result->CourseCode;
+                        }
+                    }
+
+                    // Generate the JavaScript object for courseOptions
+                    foreach ($deptSemesters as $key => $courses) {
+                        $uniqueCourses = array_unique($courses); // Remove duplicate courses
+                        echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
+                    }
+                    ?>
+                };
+
+                // Update series dropdown based on department selection
+                function updateSeries() {
+                    var department = document.getElementById("department").value;
+                    var seriesDropdown = document.getElementById("series");
+
+                    seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+
+                    if (seriesOptions[department]) {
+                        seriesOptions[department].forEach(function (series) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = series;
+                            optionElement.text = series;
+                            seriesDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateSemesters(); // Clear the next dropdowns when department changes
+                }
+
+                // Update semesters dropdown based on department and series selection
+                function updateSemesters() {
+                    var department = document.getElementById("department").value;
+                    var series = document.getElementById("series").value;
+                    var semesterDropdown = document.getElementById("semester");
+
+                    semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
+
+                    var key = department + '|' + series;
+
+                    if (semesterOptions[key]) {
+                        semesterOptions[key].forEach(function (semester) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = semester;
+                            optionElement.text = semester;
+                            semesterDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateCourses(); // Clear the next dropdown when series changes
+                }
+
+                // Update courses dropdown based on department and semester selection
+                function updateCourses() {
+                    var department = document.getElementById("department").value;
+                    var semester = document.getElementById("semester").value;
+                    var courseDropdown = document.getElementById("course");
+
+                    courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+
+                    var key = department + '|' + semester;
+
+                    if (courseOptions[key]) {
+                        courseOptions[key].forEach(function (course) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = course;
+                            optionElement.text = course;
+                            courseDropdown.appendChild(optionElement);
+                        });
+                    }
+                }
+            </script>
+
+
+
+
+            <script src="js/jquery/jquery-2.2.4.min.js">
+            < /scriscr ipt < script src = "js/bootstrap / bootstrap.min.js script
+            </script>
+            script i pt src="js/pace/pace.min.js">
+            </script>
+            <script src="js/lobipanel/lobipanel.min.js">
+            </script>
             <script src="js/iscroll/iscroll.js"></script>
             <scr ipt src="js/prism/prism.js">
                 </script>
