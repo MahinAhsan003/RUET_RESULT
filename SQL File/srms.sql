@@ -352,10 +352,21 @@ CREATE TABLE `tblresult` (
 CREATE TABLE `tblregistration` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `RegisteredCourses` TEXT NOT NULL,
+  `RegisteredCourses ` TEXT NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
   PRIMARY KEY (`RollId`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+CREATE TABLE tblregistrationqueue (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    RollId INT(11) NOT NULL,  -- Updated to INT to match tblstudents
+    Semester VARCHAR(20) NOT NULL,
+    RequestedCourses TEXT NOT NULL,
+    RegistrationStatus INT DEFAULT 0,  -- Default to 0 (pending)
+    RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (RollId) REFERENCES tblstudents(RollId) ON DELETE CASCADE ON UPDATE CASCADE  -- Added foreign key constraint
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
