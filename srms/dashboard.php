@@ -140,6 +140,20 @@ $totaldepts=$result4->totaldepts;
                                     <!-- /.dashboard-stat -->
                                 </div>
                                 <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:1%;">
+                                    <a class="dashboard-stat bg-info" href="check-registration.php">
+                                        <?php
+                                        $sql4 = "SELECT COUNT(id) as pendingRequests FROM tblregistrationqueue";
+                                        $query4 = $dbh->prepare($sql4);
+                                        $query4->execute();
+                                        $result4 = $query4->fetch(PDO::FETCH_OBJ);
+                                        $pendingRequests = $result4->pendingRequests;
+                                        ?>
+                                        <span class="number counter"><?php echo htmlentities($pendingRequests); ?></span>
+                                        <span class="name">Pending Requests</span>
+                                        <span class="bg-icon"><i class="fa fa-hourglass-half"></i></span>
+                                    </a>
+                                </div>
                             </div>
                             <!-- /.row -->
                         </div>
