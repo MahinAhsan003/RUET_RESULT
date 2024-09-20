@@ -1,9 +1,6 @@
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
 
 CREATE TABLE `admin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -14,17 +11,12 @@ CREATE TABLE `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
-INSERT INTO `admin` (`id`, `UserName`, `Password`, `updationDate`) VALUES
-(1, 'admin', 'f925916e2754e5e03f75dd58a5733251', '2024-03-10 10:30:57');
-
-
 CREATE TABLE `tbldept` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `Department` varchar(100) NOT NULL,  -- Updated length to match other tables
   `deptCode` varchar(2) NOT NULL,
   UNIQUE KEY (`Department`)  -- Added unique constraint for foreign key reference
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 
 
 CREATE TABLE `tblclasses` (
@@ -37,7 +29,6 @@ CREATE TABLE `tblclasses` (
   `UpdationDate` timestamp NULL DEFAULT NULL,
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 
 
 CREATE TABLE `tblteachers` (
@@ -54,14 +45,12 @@ CREATE TABLE `tblteachers` (
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-
 CREATE TABLE `tblnotice` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `noticeTitle` varchar(255) DEFAULT NULL,
   `noticeDetails` mediumtext DEFAULT NULL,
   `postingDate` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 
 
 CREATE TABLE `tblstudents` (
@@ -83,7 +72,6 @@ CREATE TABLE `tblstudents` (
   `Status` INT(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-
 CREATE TABLE `tblsubjects` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `CourseName` varchar(100) NOT NULL,
@@ -95,8 +83,6 @@ CREATE TABLE `tblsubjects` (
   `UpdationDate` timestamp NULL DEFAULT NULL,
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
-
 
 CREATE TABLE `tblresult` (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -112,27 +98,53 @@ CREATE TABLE `tblresult` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
-
 CREATE TABLE `tblregistration` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `RegisteredCourses` TEXT NOT NULL,
+  `RegisteredCourses ` TEXT NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
   PRIMARY KEY (`RollId`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+
 CREATE TABLE tblregistrationqueue (
     id INT AUTO_INCREMENT PRIMARY KEY,
     RollId INT(11) NOT NULL,  -- Updated to INT to match tblstudents
     Semester VARCHAR(20) NOT NULL,
-    RegisteredCourses TEXT NOT NULL,
+    RequestedCourses TEXT NOT NULL,
     RegistrationStatus INT DEFAULT 0,  -- Default to 0 (pending)
     RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (RollId) REFERENCES tblstudents(RollId) ON DELETE CASCADE ON UPDATE CASCADE  -- Added foreign key constraint
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
+CREATE TABLE `tblmarks` (
+  `RollId` INT(11) NOT NULL,
+  `CourseCode` varchar(100) DEFAULT NULL,
+  `CT_1` INT DEFAULT 0,
+  `CT_2` INT DEFAULT 0,
+  `CT_3` INT DEFAULT 0,
+  `CT_4` INT DEFAULT 0,
+  `Attendance` INT DEFAULT 0,
+  `Assignment` INT DEFAULT 0,
+  `Semester Final` INT DEFAULT 0,
+  PRIMARY KEY (`RollId`, `CourseCode`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+ALTER TABLE `tblmarks`  
+   ADD CONSTRAINT `FK_tblmark`
+  FOREIGN KEY (`RollId`)
+   REFERENCES `tblstudents`(`RollId`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+
+ALTER TABLE `tblmarks`  
+   ADD CONSTRAINT `FK_tblmarks_`
+  FOREIGN KEY (`CourseCode`)
+   REFERENCES `tblsubjects`(`CourseCode`)
+    ON DELETE CASCADE ON UPDATE CASCADE
 
 ALTER TABLE `tblclasses`
 ADD CONSTRAINT `fk_tblclasses_department`

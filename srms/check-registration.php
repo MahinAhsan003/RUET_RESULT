@@ -195,6 +195,10 @@ if (strlen($_SESSION['alogin']) == "") {
         $(function($) {
             $('#example').DataTable();
         });
+
+        setInterval(function() {
+            location.reload();
+        }, 30000); // Refresh every 30 seconds
     </script>
 </body>
 

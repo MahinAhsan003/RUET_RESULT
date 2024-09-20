@@ -375,6 +375,7 @@ CREATE TABLE tblregistrationqueue (
 
 CREATE TABLE `tblmarks` (
   `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
   `CourseCode` varchar(100) DEFAULT NULL,
   `CT_1` INT DEFAULT 0,
   `CT_2` INT DEFAULT 0,
@@ -383,7 +384,19 @@ CREATE TABLE `tblmarks` (
   `Attendance` INT DEFAULT 0,
   `Assignment` INT DEFAULT 0,
   `Semester Final` INT DEFAULT 0,
-  PRIMARY KEY (`RollId`, `CourseCode`),
+  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+CREATE TABLE `tblCGPA` (
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `CourseCode` varchar(100) DEFAULT NULL,
+  `GPA` DECIMAL(1,2),
+  `SGPA` DECIMAL(1,2),
+  `CGPA` DECIMAL(1,2),
+  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
