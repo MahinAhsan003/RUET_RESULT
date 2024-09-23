@@ -23,21 +23,21 @@
                                         <a href="#"><i class="fa fa-file-text"></i> <span>Course Management</span> <i
                                                 class="fa fa-angle-right arrow"></i></a>
                                         <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Course
+                                            <li><a href="notice-details.php"><i class="fa fa-bars"></i> <span>Course
                                                         Registration Notice</span></a></li>
                                             <li><a href="course-registration.php"><i class="fa fa fa-server"></i>
                                                     <span>Course Registration</span></a></li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a>
-                                            </li>
+                                            <!-- <li><a href="#"><i class="fa fa fa-server"></i> <span>Form Fill Up</span></a>
+                                            </li> -->
                                         </ul>
                                     </li>
                                     <li class="has-children">
                                         <a href="#"><i class="fa fa-file-text"></i> <span>Backlog</span> <i
                                                 class="fa fa-angle-right arrow"></i></a>
                                         <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Backlog Form Fill Up</span></a>
-                                            </li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Backlog Course
+                                        <li><a href="notice-details.php"><i class="fa fa-bars"></i> <span>Backlog
+                                        Registration Notice</span></a></li>
+                                            <li><a href="back-registration.php"><i class="fa fa fa-server"></i> <span>Backlog Course
                                                         Registration</span></a></li>
                                         </ul>
                                     </li>
@@ -46,9 +46,8 @@
                                         <a href="#"><i class="fa fa-file-text"></i> <span>Short Semester</span> <i
                                                 class="fa fa-angle-right arrow"></i></a>
                                         <ul class="child-nav">
-                                            <li><a href="#"><i class="fa fa-bars"></i> <span>Short Semester Form Fill
-                                                        Up</span></a></li>
-                                            <li><a href="#"><i class="fa fa fa-server"></i> <span>Short Semester Course
+                                        <li><a href="notice-details.php"><i class="fa fa-bars"></i> <span>Short Semester Notice</span></a></li>
+                                            <li><a href="short-registration.php"><i class="fa fa fa-server"></i> <span>Short Semester
                                                         Registration</span></a></li>
                                         </ul>
                                     </li>
@@ -60,11 +59,6 @@
                                                         Result</span></a></li>
                                         </ul>
                                     </li>
-
-                                    <li><a href="change-password.php"><i class="fa fa fa-server"></i> <span> Student Change
-                                                Password</span></a>
-                                    </li>
-
                             </div>
                         </div>
                     </div>

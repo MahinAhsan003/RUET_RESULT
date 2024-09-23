@@ -10,10 +10,15 @@ if (strlen($_SESSION['alogin']) == "") {
     // Handle Decline action (removal from tblregistration)
     if (isset($_POST['action']) && $_POST['action'] == 'decline') {
         $rollId = intval($_POST['RollId']);
-        $sql = "DELETE FROM tblregistration WHERE RollId = :rollId";
+        $semester = $_POST['Semester'];
+
+        // Delete the specific registration for the given RollId and Semester
+        $sql = "DELETE FROM tblregistration WHERE RollId = :rollId AND Semester = :semester";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
         $query->execute();
+
         $_SESSION['msg'] = "Registration Declined Successfully!";
         header('location: manage-registration.php');
     }
@@ -22,7 +27,8 @@ if (strlen($_SESSION['alogin']) == "") {
     $sql = "SELECT tblregistration.RollId, 
                    tblstudents.StudentName, 
                    tblregistration.RegisteredCourses, 
-                   tblregistration.RegistrationTime
+                   tblregistration.RegistrationTime,
+                   tblregistration.Semester
             FROM tblregistration
             JOIN tblstudents ON tblstudents.RollId = tblregistration.RollId
             WHERE tblregistration.RegistrationStatus = 1
@@ -130,7 +136,8 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         <td><?php echo htmlentities($registration->RegistrationTime); ?></td>
                                                         <td>
                                                             <form method="post" action="">
-                                                                <input type="hidden" name="RollId" value="<?php echo $registration->RollId; ?>">
+                                                                <input type="hidden" name="RollId" value="<?php echo htmlentities($registration->RollId); ?>">
+                                                                <input type="hidden" name="Semester" value="<?php echo htmlentities($registration->Semester); ?>">
                                                                 <button type="submit" name="action" value="decline" class="btn btn-danger btn-xs">Decline</button>
                                                             </form>
                                                         </td>

@@ -9,23 +9,18 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
-
+SET time_zone = "+06:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Database: `srms`
---
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `admin`
---
 
 CREATE TABLE `admin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -44,17 +39,15 @@ INSERT INTO `admin` (`id`, `UserName`, `Password`, `updationDate`) VALUES
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `tbldept`
---
 
 CREATE TABLE `tbldept` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `Department` varchar(100) NOT NULL,  -- Updated length to match other tables
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Department` varchar(100) NOT NULL,
   `deptCode` varchar(2) NOT NULL,
-  UNIQUE KEY (`Department`)  -- Added unique constraint for foreign key reference
+  PRIMARY KEY (`id`),
+  UNIQUE KEY (`Department`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
 
 --
 -- Dumping data for table `tbldept`
@@ -73,18 +66,17 @@ INSERT INTO `tbldept` (`id`, `Department`, `deptCode`) VALUES
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `tblclasses`
---
 
 CREATE TABLE `tblclasses` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `Department` varchar(100) DEFAULT NULL,  -- Updated length to match tbldept
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Department` varchar(100) NOT NULL,
   `Series` int(4) DEFAULT NULL,
   `Section` varchar(5) DEFAULT NULL,
   `Semester` int(5) DEFAULT NULL,
   `CreationDate` timestamp NULL DEFAULT current_timestamp(),
   `UpdationDate` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -107,35 +99,43 @@ INSERT INTO `tblclasses` ( `Department`, `Series`, `Section`, `Semester`, `Creat
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `tblteachers`
---
-
 
 CREATE TABLE `tblteachers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `TeacherId` varchar(80) NOT NULL,
   `TeacherName` varchar(100) DEFAULT NULL,
   `TeacherEmail` varchar(100) DEFAULT NULL,
   `TeacherPhone` varchar(15) DEFAULT NULL,
   `Gender` varchar(10) DEFAULT NULL,
-  `Department` varchar(100) DEFAULT NULL,  -- Updated length to match tbldept
+  `Department` varchar(100) NOT NULL,
   `JoiningDate` varchar(100) DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `Status` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
+
 --
--- Table structure for table `tblnotice`
+-- Dumping data for table `tblclasses`
 --
 
+INSERT INTO `tblteachers` ( `id`, `TeacherId`, `TeacherName`, `TeacherEmail`, `TeacherPhone`, `Gender`,  `Department`, `JoiningDate`, `Designation`, `Status`) VALUES
+(1, 'ECE001', 'Junayed Dewan', 'junayed@teacher.ruet.ac.bd', '01712345678', 'Male', 'ECE', '2010-01-01', 'Professor', 'Active');
+
+
+-- --------------------------------------------------------
+
+-- Table structure for table `tblnotice`
+
 CREATE TABLE `tblnotice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `noticeTitle` varchar(255) DEFAULT NULL,
   `noticeDetails` mediumtext DEFAULT NULL,
-  `postingDate` timestamp NULL DEFAULT current_timestamp()
+  `postingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -147,28 +147,29 @@ INSERT INTO `tblnotice` (`id`, `noticeTitle`, `noticeDetails`, `postingDate`) VA
 (3, 'Test Notice', 'This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  This is for testing purposes only.  ', '2024-05-02 14:48:32');
 
 -- --------------------------------------------------------
---
+
 -- Table structure for table `tblstudents`
---
 
 CREATE TABLE `tblstudents` (
-  `StudentId` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `StudentName` VARCHAR(100) DEFAULT NULL,
-  `RollId` INT(11) NOT NULL UNIQUE,
+  `RollId` INT(11) NOT NULL,
   `RegistrationId` VARCHAR(100) NOT NULL,
   `StudentEmail` VARCHAR(100) DEFAULT NULL,
   `Gender` VARCHAR(10) DEFAULT NULL,
-  `Department` VARCHAR(10) NOT NULL,
+  `Department` VARCHAR(100) NOT NULL,
   `Section` VARCHAR(10) NOT NULL,
-  `Series` INT(10) NOT NULL,
+  `Series` INT(4) NOT NULL,
   `DOB` VARCHAR(100) DEFAULT NULL,
   `FatherName` VARCHAR(100) DEFAULT NULL,
   `MotherName` VARCHAR(100) DEFAULT NULL,
   `Contact` VARCHAR(15) DEFAULT NULL,
   `RegDate` TIMESTAMP NULL DEFAULT current_timestamp(),
   `UpdationDate` TIMESTAMP NULL DEFAULT NULL,
-  `Status` INT(1) DEFAULT NULL
+  `Status` INT(1) DEFAULT NULL,
+  PRIMARY KEY (`RollId`),
+  FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 --
 -- Dumping data for table `tblstudents`
 --
@@ -239,21 +240,23 @@ INSERT INTO `tblstudents` (`StudentName`, `RollId`, `RegistrationId`, `StudentEm
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `tblsubjects`
---
 
 CREATE TABLE `tblsubjects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `CourseName` varchar(100) NOT NULL,
-  `CourseCode` varchar(100) DEFAULT NULL,
+  `CourseCode` varchar(100) NOT NULL,  -- CourseCode must be NOT NULL
   `CourseCredit` decimal(3,2) DEFAULT NULL,
-  `Department` varchar(100) NOT NULL,  -- Updated length to match tbldept
+  `Department` varchar(100) NOT NULL,
   `Semester` int(1) DEFAULT NULL,
   `Creationdate` timestamp NULL DEFAULT current_timestamp(),
   `UpdationDate` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_course_code` (`CourseCode`),  -- Adding unique index for CourseCode
   FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
 --
 -- Dumping data for table `tblsubjects`
 --
@@ -272,7 +275,7 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 (11, 'Circuits and Systems-II', 'ECE-1201', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
 (12, 'Circuit and Systems-II Sessional', 'ECE-1202', '0.75', 'ECE', 2, '2024-07-03 17:49:58', NULL),
 (13, 'Object Oriented Programming', 'ECE-1203', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
-(14, 'Object Oriented Programming Sessional', 'ECE-1104', '1.5', 'ECE', 2, '2024-07-03 17:49:58', NULL),
+(14, 'Object Oriented Programming Sessional', 'ECE-1204', '1.5', 'ECE', 2, '2024-07-03 17:49:58', NULL),
 (15, 'Analog Electronic Circuits-I', 'ECE-1205', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
 (16, 'Analog Electronic Circuits-I Sessional', 'ECE-1206', '0.75', 'ECE', 2, '2024-07-03 17:49:58', NULL),
 (17, 'Transform Methods, Statistics & Complex Variable', 'MATH-1217', '3.00', 'ECE', 2, '2024-07-03 17:49:58', NULL),
@@ -298,69 +301,65 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 (37, 'Legal Issues, Industrial & Operational Management', 'ECE-2217', '3.00', 'ECE', 4, '2024-07-03 17:49:58', NULL),
 (38, 'Electronic Shop Practice', 'ECE-2200', '1.50', 'ECE', 4, '2024-07-03 17:49:58', NULL);
 
+-- --------------------------------------------------------
 
-
-
-
---
 -- Table structure for table `tblregistration`
---
 
 CREATE TABLE `tblregistration` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
   `RegisteredCourses` TEXT NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
+  `RegistrationTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`RollId`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- --------------------------------------------------------
 
-CREATE TABLE tblregistrationqueue (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    RollId INT(11) NOT NULL,  -- Updated to INT to match tblstudents
-    Semester VARCHAR(20) NOT NULL,
-    RequestedCourses TEXT NOT NULL,
-    RegistrationStatus INT DEFAULT 0,  -- Default to 0 (pending)
-    RegistrationTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (RollId) REFERENCES tblstudents(RollId) ON DELETE CASCADE ON UPDATE CASCADE  -- Added foreign key constraint
+-- Table structure for table `tblregistrationqueue`
+
+CREATE TABLE `tblregistrationqueue` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `RequestedCourses` TEXT NOT NULL,
+  `RegistrationStatus` INT DEFAULT 0,
+  `RegistrationTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
---
--- Table structure for table `tblmarks`
---
+-- --------------------------------------------------------
 
+-- Table structure for table `tblmarks`
 CREATE TABLE `tblmarks` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `CourseCode` varchar(100) DEFAULT NULL,
+  `CourseCode` varchar(100) NOT NULL,
   `CT_1` INT DEFAULT 0,
   `CT_2` INT DEFAULT 0,
   `CT_3` INT DEFAULT 0,
   `CT_4` INT DEFAULT 0,
   `Attendance` INT DEFAULT 0,
   `Assignment` INT DEFAULT 0,
-  `Semester Final` INT DEFAULT 0,
-  PRIMARY KEY (`RollId`, `CourseCode`),
+  `Semester_Final` INT DEFAULT 0,
+  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE  -- Correct foreign key reference
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
-ALTER TABLE `tblmarks`
-ADD CONSTRAINT `fk_tblmarks_students`
-FOREIGN KEY (RollId) REFERENCES tblstudents(RollId) 
-ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE `tblclasses`
-ADD CONSTRAINT `fk_tblclasses_department`
-FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`)
-ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE `tblteachers`
-ADD CONSTRAINT `fk_tblteachers_department`
-FOREIGN KEY (`Department`) REFERENCES `tbldept`(`Department`)
-ON DELETE CASCADE ON UPDATE CASCADE;
-
+-- Table structure for table `tblcgpa`
+CREATE TABLE `tblcgpa` (
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `CourseCode` varchar(100) NOT NULL,
+  `GPA` DECIMAL(2,2),
+  `SGPA` DECIMAL(2,2),
+  `CGPA` DECIMAL(2,2),
+  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE  -- Correct foreign key reference
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 COMMIT;
 

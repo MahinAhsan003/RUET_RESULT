@@ -54,7 +54,7 @@ if(strlen($_SESSION['alogin'])=="")
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <a class="dashboard-stat bg-primary" href="manage-students.php">
                                         <?php 
-$sql1 ="SELECT StudentId from tblstudents ";
+$sql1 ="SELECT RollId from tblstudents ";
 $query1 = $dbh -> prepare($sql1);
 $query1->execute();
 $results1=$query1->fetchAll(PDO::FETCH_OBJ);
@@ -100,24 +100,6 @@ $totalclasses=$query2->rowCount();
                                         <span class="number counter"><?php echo htmlentities($totalclasses);?></span>
                                         <span class="name">Total classes listed</span>
                                         <span class="bg-icon"><i class="fa fa-bank"></i></span>
-                                    </a>
-                                    <!-- /.dashboard-stat -->
-                                </div>
-                                <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:1%">
-                                    <a class="dashboard-stat bg-success" href="manage-results.php">
-                                        <?php 
-$sql3="SELECT distinct StudentId from tblresult ";
-$query3 = $dbh -> prepare($sql3);
-$query3->execute();
-$results3=$query3->fetchAll(PDO::FETCH_OBJ);
-$totalresults=$query3->rowCount();
-?>
-
-                                        <span class="number counter"><?php echo htmlentities($totalresults);?></span>
-                                        <span class="name">Results Declared</span>
-                                        <span class="bg-icon"><i class="fa fa-file-text"></i></span>
                                     </a>
                                     <!-- /.dashboard-stat -->
                                 </div>
