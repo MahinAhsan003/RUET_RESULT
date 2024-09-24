@@ -51,6 +51,9 @@ if (strlen($_SESSION['alogin']) == "") {
                 -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
                 box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
             }
+            .filter-form {
+            margin-bottom: 20px;
+        }
         </style>
     </head>
 

@@ -9,9 +9,9 @@ if (strlen($_SESSION['alogin']) == "") {
 if(isset($_GET['id']))
 { 
 $classid=$_GET['id'];
-$sql="delete from tblstudent where id = :studentid";
+$sql="delete from tblstudent where id = :RollId";
 $query = $dbh->prepare($sql);
-$query->bindParam(':studentid',$studentid,PDO::PARAM_STR);
+$query->bindParam(':RollId',$rollid,PDO::PARAM_STR);
 $query->execute();
 echo '<script>alert("Data deleted.")</script>';
 echo "<script>window.location.href ='manage-classes.php'</script>";
@@ -170,7 +170,7 @@ echo "<script>window.location.href ='manage-classes.php'</script>";
                                                     if (isset($_POST['filter'])) {
                                                         $department = $_POST['department'];
                                                         $series = $_POST['series'];
-                                                        $sql = "SELECT StudentName, RollId, RegistrationId, Department, Section, Series, RegDate, Status, StudentId FROM tblstudents WHERE 1=1";
+                                                        $sql = "SELECT StudentName, RollId, RegistrationId, Department, Section, Series, RegDate, Status FROM tblstudents WHERE 1=1";
                                                         if ($department != "") {
                                                             $sql .= " AND Department=:department";
                                                         }
