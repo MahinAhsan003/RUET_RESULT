@@ -48,7 +48,7 @@ if (isset($_POST['login'])) {
 
         <div class="">
             <div class="row">
-                <h1 align="center">Student Result Management System</h1>
+                <h1 align="center">Rajshahi University of Engineering & Technology</h1>
 
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
@@ -101,8 +101,7 @@ if (isset($_POST['login'])) {
                                             </div>
                                         </div>
                                         <!-- /.panel -->
-                                        <p class="text-muted text-center"><small>Student Result Management
-                                                System</small></p>
+                                        <p class="text-muted text-center"><small>Rajshahi University of Engineering & Technology</small></p>
                                     </div>
                                     <!-- /.col-md-11 -->
                                 </div>

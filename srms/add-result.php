@@ -2,6 +2,28 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit();
+} else {
+    $teacherid = $_SESSION['login'];
+    $sql = "SELECT * FROM tblteachers WHERE TeacherId=:teacherid";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+
+    if (!$result) {
+        header("Location: index.php");
+        exit();
+    }
+}
+?>
+<?php
+session_start();
+error_reporting(0);
+include('includes/config.php');
 if (strlen($_SESSION['tlogin']) == "") {
     header("Location: index.php");
 } else {

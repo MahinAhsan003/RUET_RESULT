@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="panel login-box">
                         <div class="panel-heading">
                             <div class="panel-title text-center">
-                                <h4>School Result Management System</h4>
+                                <h4>Rajshahi University of Engineering & Technology</h4>
                             </div>
                         </div>
                         <div class="panel-body p-20">
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <hr>
                         </div>
                     </div>
-                    <p class="text-muted text-center"><small>Student Result Management System</small></p>
+                    <p class="text-muted text-center"><small>Developed by ECE20</small></p>
                 </div>
             </div>
         </div>

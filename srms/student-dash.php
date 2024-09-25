@@ -73,7 +73,7 @@ if (!isset($_SESSION['login'])) {
 
 <body class="top-navbar-fixed">
     <div class="main-wrapper">
-        <?php include('includes/topbar.php'); ?>
+        <?php include('includes/student-topbar.php'); ?>
         <div class="content-wrapper">
             <div class="content-container">
             <?php include('includes/student-leftbar.php');?>
@@ -170,7 +170,7 @@ if (!isset($_SESSION['login'])) {
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             }
-            toastr["success"]("Welcome to student Result Management System!");
+            toastr["success"]("Welcome to RUET Management Systems!");
         });
     </script>
 </body>

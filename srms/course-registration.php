@@ -1,6 +1,28 @@
 <?php
 session_start();
 error_reporting(0);
+include('includes/config.php');
+
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit();
+} else {
+    $rollId = $_SESSION['login'];
+    $sql = "SELECT * FROM tblstudents WHERE RollId=:rollId";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_OBJ);
+
+    if (!$result) {
+        header("Location: index.php");
+        exit();
+    }
+}
+?>
+<?php
+session_start();
+error_reporting(0);
 include ('includes/config.php');
 if (strlen($_SESSION['login']) == "") {
     header("Location: index.php");
@@ -140,7 +162,7 @@ if (strlen($_SESSION['login']) == "") {
 
 <body class="top-navbar-fixed">
     <div class="main-wrapper">
-        <?php include ('includes/topbar.php'); ?>
+        <?php include ('includes/student-topbar.php'); ?>
         <div class="content-wrapper">
             <div class="content-container">
                 <?php include ('includes/student-leftbar.php'); ?>
