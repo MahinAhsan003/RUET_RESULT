@@ -1,8 +1,9 @@
+
 <?php
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if(strlen($_SESSION['alogin'])=="")
+if(strlen($_SESSION['login'])=="")
 {   header("Location: index.php"); }else{
 ?>
 
@@ -13,7 +14,7 @@ if(strlen($_SESSION['alogin'])=="")
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Student Result Management System | Dashboard</title>
+    <title>RUET Management System | Dashboard</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -204,7 +205,7 @@ $totaldepts=$result4->totaldepts;
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             }
-            toastr["success"]("Welcome to student Result Management System!");
+            toastr["success"]("Welcome to RUET Management System!");
         });
     </script>
 </body>

@@ -28,27 +28,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>School Result Management System</title>
+    <title>RUET Student Login</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
     <link rel="stylesheet" href="css/icheck/skins/flat/blue.css">
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
+    <style>
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 100px; /* Adjust the size of the logo as needed */
+        }
+    </style>
 </head>
 
 <body class="">
     <div class="main-wrapper">
-        <div class="login-bg-color bg-black-300">
+        <div class="login-bg-color bg-blue-300">
             <div class="row">
+                <h1>
+                    <center>Rajshahi University of Engineering & Technology</center>
+                </h1>
+                <center><img src="images/RUET.png" alt="RUET Logo" class="logo"></center> <!-- Added logo -->
                 <div class="col-md-4 col-md-offset-4">
                     <div class="panel login-box">
                         <div class="panel-heading">
                             <div class="panel-title text-center">
-                                <h4>Rajshahi University of Engineering & Technology</h4>
+                                <h4>Student Login</h4>
                             </div>
                         </div>
-                        <div class="panel-body p-20">
+                        <div class="panel-body p-10">
                             <form action="" method="post">
                                 <div class="form-group">
                                     <label for="rollid">Enter your Roll Id</label>

@@ -37,6 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="css/prism/prism.css" media="screen">
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
+    <style>
+        .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 100px; /* Adjust the size of the logo as needed */
+        }
+    </style>
 </head>
 
 <body class="">
@@ -46,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="row">
                 <h1 align="center">Rajshahi University Of Engineering And Technology
                 </h1>
+                <center><img src="images/RUET.png" alt="RUET Logo" class="logo"></center>
 
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
@@ -88,18 +96,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                                 class="btn btn-success btn-labeled pull-right">Sign
                                                                 in<span class="btn-label btn-label-right"><i
                                                                         class="fa fa-check"></i></span></button>
+                                                            <div class="col-sm-6">
+                                                                <a href="index.php">Back to Home</a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </form>
 
-
-
-
                                             </div>
                                         </div>
                                         <!-- /.panel -->
-                                        <p class="text-muted text-center"><small>Student Result Management
-                                                System</small></p>
+                                        <p class="text-muted text-center"><small>Developed by ECE-20</small></p>
                                     </div>
                                     <!-- /.col-md-11 -->
                                 </div>
@@ -133,9 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- ========== THEME JS ========== -->
     <script src="js/main.js"></script>
     <script>
-    $(function() {
-
-    });
+        $(function () { });
     </script>
 
 </body>

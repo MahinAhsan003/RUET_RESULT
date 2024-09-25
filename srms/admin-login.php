@@ -91,6 +91,9 @@ if (isset($_POST['login'])) {
                                                                 class="btn btn-success btn-labeled pull-right">Sign
                                                                 in<span class="btn-label btn-label-right"><i
                                                                         class="fa fa-check"></i></span></button>
+                                                                        <div class="col-sm-6">
+                                        <a href="index.php">Back to Home</a>
+                                    </div>
                                                         </div>
                                                     </div>
                                                 </form>
