@@ -19,7 +19,6 @@ if (strlen($_SESSION['tlogin']) == "") {
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             array_push($sid1, $row['id']);
         }
-
         for ($i = 0; $i < count($mark); $i++) {
             $mar = $mark[$i];
             $sid = $sid1[$i];
@@ -66,73 +65,90 @@ if (strlen($_SESSION['tlogin']) == "") {
         generatePDF($studentid, $sgpa, $cgpa);
     }
 
-    // Function to calculate SGPA based on total score
-    function calculateSGPA($score) {
-        // Use grading system logic provided
-        if ($score >= 80) return 4.0;
-        elseif ($score >= 75) return 3.75;
-        elseif ($score >= 70) return 3.5;
-        elseif ($score >= 65) return 3.25;
-        elseif ($score >= 60) return 3.0;
-        elseif ($score >= 55) return 2.75;
-        elseif ($score >= 50) return 2.5;
-        elseif ($score >= 45) return 2.25;
-        elseif ($score >= 40) return 2.0;
-        else return 0;  // Failed
-    }
+}
 
-    // Function to calculate CGPA
-    function calculateCGPA($studentid) {
-        global $dbh;
+// Function to calculate SGPA based on total score
+function calculateSGPA($score)
+{
+    // Use grading system logic provided
+    if ($score >= 80)
+        return 4.0;
+    elseif ($score >= 75)
+        return 3.75;
+    elseif ($score >= 70)
+        return 3.5;
+    elseif ($score >= 65)
+        return 3.25;
+    elseif ($score >= 60)
+        return 3.0;
+    elseif ($score >= 55)
+        return 2.75;
+    elseif ($score >= 50)
+        return 2.5;
+    elseif ($score >= 45)
+        return 2.25;
+    elseif ($score >= 40)
+        return 2.0;
+    else
+        return 0;  // Failed
+}
 
-        $sql = "SELECT SUM(Credits * GradePoints) AS total_grade_points, SUM(Credits) AS total_credits 
+// Function to calculate CGPA
+function calculateCGPA($studentid)
+{
+    global $dbh;
+
+    $sql = "SELECT SUM(Credits * GradePoints) AS total_grade_points, SUM(Credits) AS total_credits 
                 FROM tblresult 
                 WHERE StudentId = :studentid";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
-        $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_ASSOC);
 
-        if ($result['total_credits'] > 0) {
-            return $result['total_grade_points'] / $result['total_credits'];
-        } else {
-            return 0;
-        }
+    if ($result['total_credits'] > 0) {
+        return $result['total_grade_points'] / $result['total_credits'];
+    } else {
+        return 0;
     }
+}
 
-    // Function to generate PDF with results
-    function generatePDF($studentid, $sgpa, $cgpa) {
-        require('fpdf/fpdf.php');
+// Function to generate PDF with results
+function generatePDF($studentid, $sgpa, $cgpa)
+{
+    require('fpdf/fpdf.php');
 
-        $pdf = new FPDF();
-        $pdf->AddPage();
+    $pdf = new FPDF();
+    $pdf->AddPage();
 
-        // Set font and title
-        $pdf->SetFont('Arial', 'B', 16);
-        $pdf->Cell(40, 10, 'Student Results');
+    // Set font and title
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->Cell(40, 10, 'Student Results');
 
-        // Add student information
-        $pdf->SetFont('Arial', '', 12);
-        $pdf->Ln();
-        $pdf->Cell(40, 10, "Student ID: " . $studentid);
-        $pdf->Ln();
-        $pdf->Cell(40, 10, "SGPA: " . number_format($sgpa, 2));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, "CGPA: " . number_format($cgpa, 2));
+    // Add student information
+    $pdf->SetFont('Arial', '', 12);
+    $pdf->Ln();
+    $pdf->Cell(40, 10, "Student ID: " . $studentid);
+    $pdf->Ln();
+    $pdf->Cell(40, 10, "SGPA: " . number_format($sgpa, 2));
+    $pdf->Ln();
+    $pdf->Cell(40, 10, "CGPA: " . number_format($cgpa, 2));
 
-        // Save the file
-        $pdf->Output('F', 'results/student_' . $studentid . '_result.pdf');
-    }
+    // Save the file
+    $pdf->Output('F', 'results/student_' . $studentid . '_result.pdf');
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Result</title>
     <link rel="stylesheet" href="path_to_your_css/bootstrap.css"> <!-- Add the correct path to your Bootstrap -->
 </head>
+
 <body>
     <div class="container">
         <h2>Add Result</h2>
@@ -184,4 +200,5 @@ if (strlen($_SESSION['tlogin']) == "") {
 
     <script src="path_to_your_js/bootstrap.js"></script> <!-- Add the correct path to your Bootstrap JS -->
 </body>
+
 </html>

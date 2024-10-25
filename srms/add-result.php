@@ -205,19 +205,23 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             <tbody>
                                                                 <?php
                                                                 if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['department'];
-                                                                    $series = $_POST['series'];
-                                                                    $semester = $_POST['semester'];
-                                                                    $course = $_POST['course'];
-                                                                    $sql = "SELECT s.StudentName, s.RollId, m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`
-            FROM tblstudents s
-            LEFT JOIN tblmarks m ON s.RollId = m.RollId
-            WHERE 1=1";
+                                                                    $department = $_POST['Department'];
+                                                                    $series = $_POST['Series'];
+                                                                    $semester = $_POST['Semester'];
+                                                                    $course = $_POST['Course'];
+                                                                    // $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, Department, Section, Series, RegDate, m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`
+                                                                    // FROM tblstudents s
+                                                                    // LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                    // WHERE 1=1";
+                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status
+                                                                     FROM tblstudents s 
+                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                     WHERE 1=1";
                                                                     if ($department != "") {
-                                                                        $sql .= " AND Department=:department";
+                                                                        $sql .= " AND s.Department = :department";
                                                                     }
                                                                     if ($series != "") {
-                                                                        $sql .= " AND Series=:series";
+                                                                        $sql .= " AND s.Series = :series";
                                                                     }
                                                                     $sql .= " ORDER BY RollId"; // Sort by RollId
                                                                     $query = $dbh->prepare($sql);
@@ -263,6 +267,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     }
                                                                 } ?>
                                                             </tbody>
+
                                                         </table>
                                                     </div>
                                                 </div>
@@ -279,6 +284,63 @@ if (strlen($_SESSION['tlogin']) == "") {
             </div>
             <!--     /.main-wrapper -->
             <script>
+                // Update series dropdown based on department selection
+                function updateSeries() {
+                    console.log("dknfkn");
+                    var department = document.getElementById("department").value;
+                    var seriesDropdown = document.getElementById("series");
+
+                    seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+
+                    if (seriesOptions[department]) {
+                        seriesOptions[department].forEach(function (series) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = series;
+                            optionElement.text = series;
+                            seriesDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateSemesters(); // Clear the next dropdowns when department changes
+                }
+
+                function updateSemesters() {
+                    var department = document.getElementById("department").value;
+                    var series = document.getElementById("series").value;
+                    var semesterDropdown = document.getElementById("semester");
+
+                    semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
+
+                    var key = department + '|' + series;
+
+                    if (semesterOptions[key]) {
+                        semesterOptions[key].forEach(function (semester) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = semester;
+                            optionElement.text = semester;
+                            semesterDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateCourses(); // Clear the next dropdown when series changes
+                }
+
+                function updateCourses() {
+                    var department = document.getElementById("department").value;
+                    var semester = document.getElementById("semester").value;
+                    var courseDropdown = document.getElementById("course");
+
+                    courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+
+                    var key = department + '|' + semester;
+
+                    if (courseOptions[key]) {
+                        courseOptions[key].forEach(function (course) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = course;
+                            optionElement.text = course;
+                            courseDropdown.appendChild(optionElement);
+                        });
+                    }
+                }
                 var seriesOptions = {
                     <?php
                     // Fetch department and series data from tblclasses
@@ -292,7 +354,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                             $departments[$result->Department][] = $result->Series;
                         }
                     }
-
                     // Generate the JavaScript object for seriesOptions
                     foreach ($departments as $department => $series) {
                         $uniqueSeries = array_unique($series); // Remove duplicate series
@@ -300,7 +361,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                     }
                     ?>
                 };
-
+                // Update semesters dropdown based on department and series selection
                 var semesterOptions = {
                     <?php
                     // Fetch department, series, and semester data from tblclasses
@@ -324,7 +385,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                     }
                     ?>
                 };
-
+                // Update courses dropdown based on department and semester selection
                 var courseOptions = {
                     <?php
                     // Fetch department, semester, and course code data from tblsubjects
@@ -348,94 +409,16 @@ if (strlen($_SESSION['tlogin']) == "") {
                     }
                     ?>
                 };
-
-                // Update series dropdown based on department selection
-                function updateSeries() {
-                    var department = document.getElementById("department").value;
-                    var seriesDropdown = document.getElementById("series");
-
-                    seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
-
-                    if (seriesOptions[department]) {
-                        seriesOptions[department].forEach(function (series) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = series;
-                            optionElement.text = series;
-                            seriesDropdown.appendChild(optionElement);
-                        });
-                    }
-                    updateSemesters(); // Clear the next dropdowns when department changes
-                }
-
-                // Update semesters dropdown based on department and series selection
-                function updateSemesters() {
-                    var department = document.getElementById("department").value;
-                    var series = document.getElementById("series").value;
-                    var semesterDropdown = document.getElementById("semester");
-
-                    semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
-
-                    var key = department + '|' + series;
-
-                    if (semesterOptions[key]) {
-                        semesterOptions[key].forEach(function (semester) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = semester;
-                            optionElement.text = semester;
-                            semesterDropdown.appendChild(optionElement);
-                        });
-                    }
-                    updateCourses(); // Clear the next dropdown when series changes
-                }
-
-                // Update courses dropdown based on department and semester selection
-                function updateCourses() {
-                    var department = document.getElementById("department").value;
-                    var semester = document.getElementById("semester").value;
-                    var courseDropdown = document.getElementById("course");
-
-                    courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
-
-                    var key = department + '|' + semester;
-
-                    if (courseOptions[key]) {
-                        courseOptions[key].forEach(function (course) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = course;
-                            optionElement.text = course;
-                            courseDropdown.appendChild(optionElement);
-                        });
-                    }
-                }
             </script>
-
-
-
-
-            <script src="js/jquery/jquery-2.2.4.min.js">
-            < /scriscr ipt < script src = "js/bootstrap / bootstrap.min.js script
-            </script>
-            script i pt src="js/pace/pace.min.js">
-            </script>
-            <script src="js/lobipanel/lobipanel.min.js">
-            </script>
+            <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+            <script src="js/bootstrap/bootstrap.min.js"></script>
+            <script src="js/pace/pace.min.js"> </script>
+            <script src="js/lobipanel/lobipanel.min.js"></script>
             <script src="js/iscroll/iscroll.js"></script>
-            <scr ipt src="js/prism/prism.js">
-                </script>
-                <script src="js/select2/select2.min.js"></script>
-                <script src="js/main.js"></script>
-                <script src="js/DataTables/datatables.min.js"></script>
-                <script>
-                    $(function ($) {
-                        $(".js-states").select2();
-                        $(".js-states-limit").select2({
-                            maximumSelectionLength: 2
-                        });
-                        $(".js-states-hide").select2({
-                            minimumResultsForSearch: Infinity
-                        });
-                    });
-                </script>
+            <script src="js/prism/prism.js"></script>
+            <script sr c="js/select2/select2.min.js"></script>
+            <script src="js/main.js"></script>
+            <script src="js/DataTables/datatables.min.js"></script>
     </body>
 
     </html>
