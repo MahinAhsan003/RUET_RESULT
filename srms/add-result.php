@@ -209,10 +209,11 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     $series = $_POST['Series'];
                                                                     $semester = $_POST['Semester'];
                                                                     $course = $_POST['Course'];
-                                                                    // $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, Department, Section, Series, RegDate, m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`
-                                                                    // FROM tblstudents s
-                                                                    // LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                    // WHERE 1=1";
+                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, 
+                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`, s.Status
+                                                                    FROM tblstudents s 
+                                                                    LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                    WHERE 1=1";
                                                                     $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status
                                                                      FROM tblstudents s 
                                                                      LEFT JOIN tblmarks m ON s.RollId = m.RollId
@@ -244,13 +245,14 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             <td><?php echo htmlentities($result->StudentName); ?>
                                                                             </td>
                                                                             <td><?php echo htmlentities($result->RollId); ?></td>
-                                                                            <td><?php echo htmlentities($result->RegistrationId); ?>
+                                                                            <td><?php echo htmlentities($result->CT_1); ?>
                                                                             </td>
-                                                                            <td><?php echo htmlentities($result->Department); ?>
+                                                                            <td><?php echo htmlentities($result->CT_2); ?>
                                                                             </td>
-                                                                            <td><?php echo htmlentities($result->Section); ?></td>
-                                                                            <td><?php echo htmlentities($result->Series); ?></td>
-                                                                            <td><?php echo htmlentities($result->RegDate); ?></td>
+                                                                            <td><?php echo htmlentities($result->CT_3); ?></td>
+                                                                            <td><?php echo htmlentities($result->CT_4); ?></td>
+                                                                            <td><?php echo htmlentities($result->Attendance); ?>
+                                                                            </td>
                                                                             <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
                                                                             <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
                                                                             </td>
