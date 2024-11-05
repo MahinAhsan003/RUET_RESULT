@@ -308,21 +308,21 @@ INSERT INTO `tblsubjects` (`id`, `CourseName`, `CourseCode`, `CourseCredit`, `De
 CREATE TABLE `tblregistration` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `RegisteredCourses` TEXT NOT NULL,
+  `RegisteredCourse` TEXT NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
   `RegistrationTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`RollId`, `Semester`),
+  PRIMARY KEY (`RollId`, `RegisteredCourse`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
+
 --
 -- Dumping data for table `tblsubjects`
 --
 
-
-INSERT INTO `tblregistration` (`RollId`, `Semester`, `RegisteredCourses`, `RegistrationStatus`) VALUES
+INSERT INTO `tblregistration` (`RollId`, `Semester`, `RegisteredCourse`, `RegistrationStatus`) VALUES
 -- Semester 1
 (2010001, 1, 'ECE-1101,ECE-1102,ECE-1103,ECE-1104,MATH-1117,PHY-1117,PHY-1118,HUM-117,HUM-1118,ECE-1100', 1),
 (2010002, 1, 'ECE-1101,ECE-1102,ECE-1103,ECE-1104,MATH-1117,PHY-1117,PHY-1118,HUM-117,HUM-1118,ECE-1100', 1),
