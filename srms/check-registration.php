@@ -13,17 +13,33 @@ if (strlen($_SESSION['alogin']) == "") {
         $action = $_POST['action'];
         $rollId = $_POST['rollId'];
         $semester = $_POST['semester'];
-        $courses = $_POST['courses'];
+        $courses = $_POST['courses']; // Comma-separated course list
 
         if ($action == "approve") {
-            // Move the approved request to tblregistration
-            $sql = "INSERT INTO tblregistration (RollId, Semester, RegisteredCourses, RegistrationStatus) 
+            // Split the courses into an array
+            $courseList = explode(',', $courses);
+
+            // Insert each course as a separate entry in tblregistration
+            foreach ($courseList as $course) {
+                $sql = "INSERT INTO tblregistration (RollId, Semester, RegisteredCourse, RegistrationStatus) 
+                        VALUES (:rollId, :semester, :registeredCourse, 1)"; // Status 1 = Approved
+                $query = $dbh->prepare($sql);
+                $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                $query->bindParam(':registeredCourse', $course, PDO::PARAM_STR);
+                $query->execute();
+            }
+
+            // Move the approved request to tblmanageregistration
+            $sql = "INSERT INTO tblmanageregistration (RollId, Semester, RegisteredCourses, RegistrationStatus) 
                     VALUES (:rollId, :semester, :registeredCourses, 1)";  // Status 1 = Approved
             $query = $dbh->prepare($sql);
             $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
             $query->bindParam(':semester', $semester, PDO::PARAM_STR);
             $query->bindParam(':registeredCourses', $courses, PDO::PARAM_STR);
             $query->execute();
+
+            
         }
 
         // Remove the request from tblregistrationqueue (after approval or decline)
@@ -38,14 +54,16 @@ if (strlen($_SESSION['alogin']) == "") {
     }
 
     // Fetch pending registration requests
-    $sql = "SELECT tblregistrationqueue.id, tblstudents.RollId, tblstudents.StudentName, tblregistrationqueue.Semester, tblregistrationqueue.RequestedCourses, tblregistrationqueue.RegistrationTime 
+    $sql = "SELECT tblregistrationqueue.id, tblstudents.RollId, tblstudents.StudentName, 
+                   tblregistrationqueue.Semester, tblregistrationqueue.RequestedCourses, 
+                   tblregistrationqueue.RegistrationTime 
             FROM tblregistrationqueue 
             JOIN tblstudents ON tblregistrationqueue.RollId = tblstudents.RollId
             ORDER BY tblregistrationqueue.RegistrationTime ASC";
     $query = $dbh->prepare($sql);
     $query->execute();
     $requests = $query->fetchAll(PDO::FETCH_OBJ);
-    ?>
+?>
 
     <!DOCTYPE html>
     <html lang="en">
