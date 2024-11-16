@@ -219,7 +219,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                      LEFT JOIN tblmarks m ON s.RollId = m.RollId
                                                                      
                                                                      WHERE 1=1";
-=======
+
                                                                     $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment,m.Semester_Final
                                                                     FROM tblstudents s 
                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
@@ -229,7 +229,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     FROM tblregistration r2 
                                                                     WHERE r2.RollId = r.RollId 
                                                                     AND r2.RegisteredCourses LIKE '%$course,%' )";
->>>>>>> origin/mahin
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -264,7 +263,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 $cnt = 1;
                                                                 if (count($results) > 0) {
                                                                     foreach ($results as $result) { ?>
-                                                            <<<<<<< HEAD <tr>
+                                                            <tr>
                                                                 <td><?php echo htmlentities($cnt); ?></td>
                                                                 <td><?php echo htmlentities($result->StudentName); ?>
                                                                 </td>
@@ -288,9 +287,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         class="btn btn-danger btn-xs" target="_blank"
                                                                         onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
                                                                 </td>
-                                                                </tr>
-                                                                <?php $cnt++;
-=======
+                                                            </tr>
+                                                            <?php $cnt++; ?>
                                                             <tr>
                                                                 <td><?php echo htmlentities($cnt); ?></td>
                                                                 <td><?php echo htmlentities($result->StudentName); ?>
@@ -315,9 +313,9 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         class="btn btn-danger btn-xs" target="_blank"
                                                                         onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
                                                                 </td>
-                                                                </tr>
-                                                                <?php $cnt++;
->>>>>>> origin/mahin
+                                                            </tr>
+                                                            <?php $cnt++;
+
                                                                     }
                                                                 } ?>
                                                         </tbody>
