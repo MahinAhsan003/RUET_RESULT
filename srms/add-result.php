@@ -209,15 +209,16 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     $series = $_POST['Series'];
                                                                     $semester = $_POST['Semester'];
                                                                     $course = $_POST['Course'];
-                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment,m.Semester_Final
+                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, 
+                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final, s.Status
                                                                     FROM tblstudents s 
                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                    WHERE EXISTS (
-                                                                    SELECT 1 
-                                                                    FROM tblregistration r2 
-                                                                    WHERE r2.RollId = r.RollId 
-                                                                    AND r2.RegisteredCourses LIKE '%$course,%' )";
+                                                                    WHERE 1=1";
+                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status
+                                                                     FROM tblstudents s 
+                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                     
+                                                                     WHERE 1=1";
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -265,8 +266,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 <td><?php echo htmlentities($result->CT_4); ?></td>
                                                                 <td><?php echo htmlentities($result->Attendance); ?>
                                                                 </td>
-                                                                <td><?php echo htmlentities($result->Assignment); ?>
-                                                                <td><?php echo htmlentities($result->Semester_Final); ?>
+                                                                <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
                                                                 </td>
                                                                 <td>
                                                                     <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
