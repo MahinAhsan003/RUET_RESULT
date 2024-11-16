@@ -19,20 +19,26 @@ if (strlen($_SESSION['alogin']) == "") {
         $query->bindParam(':semester', $semester, PDO::PARAM_STR);
         $query->execute();
 
+        $sql = "DELETE FROM tblmanageregistration WHERE RollId = :rollId AND Semester = :semester";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query->execute();
+
         $_SESSION['msg'] = "Registration Declined Successfully!";
         header('location: manage-registration.php');
     }
 
     // Fetch approved registrations
-    $sql = "SELECT tblregistration.RollId, 
+    $sql = "SELECT tblmanageregistration.RollId, 
                    tblstudents.StudentName, 
-                   tblregistration.RegisteredCourses, 
-                   tblregistration.RegistrationTime,
-                   tblregistration.Semester
-            FROM tblregistration
-            JOIN tblstudents ON tblstudents.RollId = tblregistration.RollId
-            WHERE tblregistration.RegistrationStatus = 1
-            ORDER BY tblregistration.RollId DESC";
+                   tblmanageregistration.RegisteredCourses, 
+                   tblmanageregistration.RegistrationTime,
+                   tblmanageregistration.Semester
+            FROM tblmanageregistration
+            JOIN tblstudents ON tblstudents.RollId = tblmanageregistration.RollId
+            WHERE tblmanageregistration.RegistrationStatus = 1
+            ORDER BY tblmanageregistration.RollId DESC";
 
     $query = $dbh->prepare($sql);
     $query->execute();

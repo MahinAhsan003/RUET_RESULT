@@ -219,6 +219,17 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                      LEFT JOIN tblmarks m ON s.RollId = m.RollId
                                                                      
                                                                      WHERE 1=1";
+=======
+                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment,m.Semester_Final
+                                                                    FROM tblstudents s 
+                                                                    LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                    WHERE EXISTS (
+                                                                    SELECT 1 
+                                                                    FROM tblregistration r2 
+                                                                    WHERE r2.RollId = r.RollId 
+                                                                    AND r2.RegisteredCourses LIKE '%$course,%' )";
+>>>>>>> origin/mahin
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -253,7 +264,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 $cnt = 1;
                                                                 if (count($results) > 0) {
                                                                     foreach ($results as $result) { ?>
-                                                            <tr>
+                                                            <<<<<<< HEAD <tr>
                                                                 <td><?php echo htmlentities($cnt); ?></td>
                                                                 <td><?php echo htmlentities($result->StudentName); ?>
                                                                 </td>
@@ -277,8 +288,36 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         class="btn btn-danger btn-xs" target="_blank"
                                                                         onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
                                                                 </td>
-                                                            </tr>
-                                                            <?php $cnt++;
+                                                                </tr>
+                                                                <?php $cnt++;
+=======
+                                                            <tr>
+                                                                <td><?php echo htmlentities($cnt); ?></td>
+                                                                <td><?php echo htmlentities($result->StudentName); ?>
+                                                                </td>
+                                                                <td><?php echo htmlentities($result->RollId); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_1); ?>
+                                                                </td>
+                                                                <td><?php echo htmlentities($result->CT_2); ?>
+                                                                </td>
+                                                                <td><?php echo htmlentities($result->CT_3); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_4); ?></td>
+                                                                <td><?php echo htmlentities($result->Attendance); ?>
+                                                                </td>
+                                                                <td><?php echo htmlentities($result->Assignment); ?>
+                                                                <td><?php echo htmlentities($result->Semester_Final); ?>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
+                                                                        class="btn btn-primary btn-xs"
+                                                                        target="_blank">Update</a>
+                                                                    <a href="delete-student.php?classid=<?php echo htmlentities($result->id); ?>"
+                                                                        class="btn btn-danger btn-xs" target="_blank"
+                                                                        onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
+                                                                </td>
+                                                                </tr>
+                                                                <?php $cnt++;
+>>>>>>> origin/mahin
                                                                     }
                                                                 } ?>
                                                         </tbody>
