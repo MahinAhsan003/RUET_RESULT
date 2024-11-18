@@ -88,7 +88,6 @@ if (strlen($_SESSION['tlogin']) == "") {
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
-
                     <!-- ========== LEFT SIDEBAR ========== -->
                     <?php include('includes/teacher-leftbar.php'); ?>
                     <!-- /.left-sidebar -->
@@ -205,18 +204,18 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             <tbody>
                                                                 <?php
                                                                 if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['Department'];
-                                                                    $series = $_POST['Series'];
-                                                                    $semester = $_POST['Semester'];
-                                                                    $course = $_POST['Course'];
-                                                                    ;
-                                                                    print_r($_POST);
+                                                                    $department = $_POST['department'];
+                                                                    $series = $_POST['series'];
+                                                                    $semester = $_POST['semester'];
+                                                                    $course = $_POST['course'];
+                                                                    // print_r($_POST);
                                                                     $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, 
-                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final
+                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final, s.Status
                                                                     FROM tblstudents s 
                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId 
                                                                     WHERE 1=1";
+                                                                    // echo "Department: $department, Series: $series, Course: $course<br>";
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -228,7 +227,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     }
 
                                                                     $sql .= " ORDER BY RollId";
-
+                                                                    // echo "Constructed SQL: " . $sql . "<br>";
                                                                     $query = $dbh->prepare($sql);
 
                                                                     // Bind all parameters at once
@@ -240,16 +239,14 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         $params[':series'] = $series;
                                                                     }
                                                                     if ($course != "") {
-                                                                        $params[':course'] = $course;
+                                                                        $params[':course'] = (string) $course;
+
                                                                     }
-                                                                    echo "Constructed SQL: " . $sql . "<br>";
-                                                                    echo "Parameters: " . json_encode($params) . "<br>";
                                                                     $query->execute($params);
                                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                                 } else {
                                                                     $results = [];
                                                                 }
-
                                                                 $cnt = 1;
                                                                 if (count($results) > 0) {
                                                                     foreach ($results as $result) { ?>
@@ -266,8 +263,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             <td><?php echo htmlentities($result->CT_4); ?></td>
                                                                             <td><?php echo htmlentities($result->Attendance); ?>
                                                                             </td>
-                                                                            <td><?php echo htmlentities($result->Assignment); ?>
-                                                                            <td><?php echo htmlentities($result->Assignment); ?>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
                                                                             </td>
                                                                             <td>
                                                                                 <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
@@ -295,65 +292,65 @@ if (strlen($_SESSION['tlogin']) == "") {
                         </div>
                     </div>
                     <!-- /.content-container -->
-                    </div>
-                    <!-- /.content-wrapper -->
-               </di v>
-              <!--       /.main-wrapper -->
-              <scr  ipt>
+                </div>
+                <!-- /.content-wrapper -->
+            </div>
+            <!--       /.main-wrapper -->
+        </div>
+        <script>
             // Update series dropdown based on department selection
-             func   tion updateSeries() {
-                console.log("dknfkn");
-                    var department = document.getElementById("department").value;
-                   var  seriesDropdown = document.getElementById(" series");
- 
-                       seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+            function updateSeries() {
+                var department = document.getElementById("department").value;
+                var seriesDropdown = document.getElementById("series");
 
-                       if (seri esOptions[department]) {
-                        seriesOptions[department].forEach(function(series) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = series;
-                            optionElement.text = series;
+                seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+
+                if (seriesOptions[department]) {
+                    seriesOptions[department].forEach(function (series) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = series;
+                        optionElement.text = series;
                         seriesDropdown.appendChild(optionElement);
-                        });
-                    }
-                    updateSemesters(); // Clear the next dropdowns when department changes
+                    });
                 }
+                updateSemesters(); // Clear the next dropdowns when department changes
+            }
 
-            func    tion updateSemesters() {
+            function updateSemesters() {
                 var department = document.getElementById("department").value;
-                    var series = document.getElementById("series").value;
+                var series = document.getElementById("series").value;
                 var semesterDropdown = document.getElementById("semester");
-  
-                   seme   sterDropdown.innerHTML = '<option val ue="">--Select a semester--</option>';
-   
-                   var key   = department + '|' + series;
- 
-                       if (semesterOptions[key]) {
-                        semesterOptions[key].forEach(function(semester) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = semester;
-                            optionElement.text = semester;
+
+                semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
+
+                var key = department + '|' + series;
+
+                if (semesterOptions[key]) {
+                    semesterOptions[key].forEach(function (semester) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = semester;
+                        optionElement.text = semester;
                         semesterDropdown.appendChild(optionElement);
-                        });
-                    }
-                    updateCourses(); // Clear the next dropdown when series changes
-               }
- 
-              func  tion updateCourses() {
+                    });
+                }
+                updateCourses(); // Clear the next dropdown when series changes
+            }
+
+            function updateCourses() {
                 var department = document.getElementById("department").value;
-                    var semester = document.getElementById("semester").value;
+                var semester = document.getElementById("semester").value;
                 var courseDropdown = document.getElementById("course");
- 
-                      cour seDropdown.innerHTML = '<option val ue="">--Select a course--</option>';
-  
-                   var key    = department + '|' + semester;
-    
-                if (cour    seOptions[key]) {
-                        courseOptions[key].forEach(function(course) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = course;
-                            optionElement.text = course;
-                         courseDropdown.appendChild(optionElement);
+
+                courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+
+                var key = department + '|' + semester;
+
+                if (courseOptions[key]) {
+                    courseOptions[key].forEach(function (course) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = course;
+                        optionElement.text = course;
+                        courseDropdown.appendChild(optionElement);
                     });
                 }
             }
@@ -425,16 +422,16 @@ if (strlen($_SESSION['tlogin']) == "") {
                 }
                 ?>
             };
-            </script>
-            <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-            <script src="js/bootstrap/bootstrap.min.js"></script>
-            <script src="js/pace/pace.min.js"> </script>
-            <script src="js/lobipanel/lobipanel.min.js"></script>
-            <script src="js/iscroll/iscroll.js"></script>
-            <script src="js/prism/prism.js"></script>
-            <script sr c="js/select2/select2.min.js"></script>
-            <script src="js/main.js"></script>
-            <script src="js/DataTables/datatables.min.js"></script>
+        </script>
+        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="js/pace/pace.min.js"> </script>
+        <script src="js/lobipanel/lobipanel.min.js"></script>
+        <script src="js/iscroll/iscroll.js"></script>
+        <script src="js/prism/prism.js"></script>
+        <script sr c="js/select2/select2.min.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/DataTables/datatables.min.js"></script>
     </body>
 
     </html>
