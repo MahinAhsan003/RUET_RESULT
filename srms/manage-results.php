@@ -23,12 +23,12 @@ if (!isset($_SESSION['login'])) {
 <?php
 session_start();
 error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 if (strlen($_SESSION['tlogin']) == "") {
     header("Location: index.php");
 } else {
 
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -70,7 +70,7 @@ if (strlen($_SESSION['tlogin']) == "") {
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-            <?php include ('includes/topbar.php'); ?>
+            <?php include('includes/teacher-topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
@@ -157,9 +157,9 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                 <div class="alert alert-success left-icon-alert" role="alert">
                                                     <strong>Well done!</strong><?php echo htmlentities($msg); ?>
                                                 </div><?php } else if ($error) { ?>
-                                                    <div class="alert alert-danger left-icon-alert" role="alert">
-                                                        <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                                    </div>
+                                                <div class="alert alert-danger left-icon-alert" role="alert">
+                                                    <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
+                                                </div>
                                             <?php } ?>
                                             <div class="panel-body p-20">
 
@@ -203,18 +203,18 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     </td>
                                                                     <td><?php echo htmlentities($result->RegDate); ?></td>
                                                                     <td><?php if ($result->Status == 1) {
-                                                                        echo htmlentities('Active');
-                                                                    } else {
-                                                                        echo htmlentities('Blocked');
-                                                                    }
-                                                                    ?></td>
+                                                                            echo htmlentities('Active');
+                                                                        } else {
+                                                                            echo htmlentities('Blocked');
+                                                                        }
+                                                                        ?></td>
                                                                     <td>
                                                                         <a href="edit-result.php?stid=<?php echo htmlentities($result->StudentId); ?>"
                                                                             class="btn btn-primary btn-xs">Edit</a>
 
                                                                     </td>
                                                                 </tr>
-                                                                <?php $cnt = $cnt + 1;
+                                                        <?php $cnt = $cnt + 1;
                                                             }
                                                         } ?>
 
@@ -273,7 +273,7 @@ if (strlen($_SESSION['tlogin']) == "") {
         <!-- ========== THEME JS ========== -->
         <script src="js/main.js"></script>
         <script>
-            $(function ($) {
+            $(function($) {
                 $('#example').DataTable();
 
                 $('#example2').DataTable({

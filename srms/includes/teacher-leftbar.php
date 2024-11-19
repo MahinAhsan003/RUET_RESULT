@@ -17,7 +17,7 @@
 
                 </li>
                 <li class="nav-header">
-                    <span class="">Appearance-Junayed</span>
+                    <span class="">Appearance</span>
                 </li>
 
 

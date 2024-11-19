@@ -58,168 +58,158 @@ if (strlen($_SESSION['tlogin']) == "") {
             }
         }
     }
-    ?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SMS Admin| Add Result </title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
-    <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
-    <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
-    <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
-    <link rel="stylesheet" href="css/prism/prism.css" media="screen">
-    <link rel="stylesheet" href="css/select2/select2.min.css">
-    <link rel="stylesheet" href="css/main.css" media="screen">
-    <script src="js/modernizr/modernizr.min.js"></script>
+?>
+    <!DOCTYPE html>
+    <html lang="en">
 
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>RUET Teacher | Add Result </title>
+        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
+        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
+        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
+        <link rel="stylesheet" href="css/prism/prism.css" media="screen">
+        <link rel="stylesheet" href="css/select2/select2.min.css">
+        <link rel="stylesheet" href="css/main.css" media="screen">
+        <script src="js/modernizr/modernizr.min.js"></script>
 
-<body class="top-navbar-fixed">
+    </head>
+
+    <body class="top-navbar-fixed">
 
 
-    <div class="main-wrapper">
+        <div class="main-wrapper">
 
-        <!-- ========== TOP NAVBAR ========== -->
-        <?php include('includes/topbar.php'); ?>
-        <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-        <div class="content-wrapper">
-            <div class="content-container">
+            <!-- ========== TOP NAVBAR ========== -->
+            <?php include('includes/teacher-topbar.php'); ?>
+            <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
+            <div class="content-wrapper">
+                <div class="content-container">
 
-                <!-- ========== LEFT SIDEBAR ========== -->
-                <?php include('includes/teacher-leftbar.php'); ?>
-                <!-- /.left-sidebar -->
+                    <!-- ========== LEFT SIDEBAR ========== -->
+                    <?php include('includes/teacher-leftbar.php'); ?>
+                    <!-- /.left-sidebar -->
 
-                <div class="content-wrapper">
-                    <div class="content-container">
+                    <div class="content-wrapper">
+                        <div class="content-container">
 
-                        <div class="main-page">
-                            <div class="container-fluid">
-                                <div class="row page-title-div">
-                                    <div class="col-md-6">
-                                        <h2 class="title">Add Result</h2>
-                                    </div>
-                                </div>
-                                <div class="row breadcrumb-div">
-                                    <div class="col-md-6">
-                                        <ul class="breadcrumb">
-                                            <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                            <li> Result</li>
-                                            <li class="active">Add Result</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <section class="section">
+                            <div class="main-page">
                                 <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="panel">
-                                                <div class="panel-heading">
-                                                    <div class="panel-title">
-                                                        <h5>View Students Info</h5>
+                                    <div class="row page-title-div">
+                                        <div class="col-md-6">
+                                            <h2 class="title">Add Result</h2>
+                                        </div>
+                                    </div>
+                                    <div class="row breadcrumb-div">
+                                        <div class="col-md-6">
+                                            <ul class="breadcrumb">
+                                                <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                                <li> Result</li>
+                                                <li class="active">Add Result</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <section class="section">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel">
+                                                    <div class="panel-heading">
+                                                        <div class="panel-title">
+                                                            <h5>View Students Info</h5>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="panel-body p-20">
-                                                    <form method="post" action="" class="filter-form">
-                                                        <div class="form-group">
-                                                            <label for="department">Department</label>
-                                                            <select name="department" id="department"
-                                                                class="form-control" onchange="updateSeries()">
-                                                                <option value="">Select Department</option>
-                                                                <?php
+                                                    <div class="panel-body p-20">
+                                                        <form method="post" action="" class="filter-form">
+                                                            <div class="form-group">
+                                                                <label for="department">Department</label>
+                                                                <select name="department" id="department"
+                                                                    class="form-control" onchange="updateSeries()">
+                                                                    <option value="">Select Department</option>
+                                                                    <?php
                                                                     $sql = "SELECT DISTINCT Department FROM tblclasses";
                                                                     $query = $dbh->prepare($sql);
                                                                     $query->execute();
                                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                                     if ($query->rowCount() > 0) {
                                                                         foreach ($results as $result) { ?>
-                                                                <option
-                                                                    value="<?php echo htmlentities($result->Department); ?>">
-                                                                    <?php echo htmlentities($result->Department); ?>
-                                                                </option>
-                                                                <?php }
+                                                                            <option
+                                                                                value="<?php echo htmlentities($result->Department); ?>">
+                                                                                <?php echo htmlentities($result->Department); ?>
+                                                                            </option>
+                                                                    <?php }
                                                                     } ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="series">Series</label>
-                                                            <select name="series" id="series" class="form-control"
-                                                                onchange="updateSemesters()">
-                                                                <option value="">Select Series</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="semester">Semester</label>
-                                                            <select name="semester" id="semester" class="form-control"
-                                                                onchange="updateCourses()">
-                                                                <option value="">Select Semester</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="course">Course</label>
-                                                            <select name="course" id="course" class="form-control">
-                                                            </select>
-                                                        </div>
-                                                        <button type="submit" name="filter"
-                                                            class="btn btn-primary">Filter</button>
-                                                    </form>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="series">Series</label>
+                                                                <select name="series" id="series" class="form-control"
+                                                                    onchange="updateSemesters()">
+                                                                    <option value="">Select Series</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="semester">Semester</label>
+                                                                <select name="semester" id="semester" class="form-control"
+                                                                    onchange="updateCourses()">
+                                                                    <option value="">Select Semester</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="course">Course</label>
+                                                                <select name="course" id="course" class="form-control">
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" name="filter"
+                                                                class="btn btn-primary">Filter</button>
+                                                        </form>
 
-                                                    <table id="example"
-                                                        class="display table table-striped table-bordered"
-                                                        cellspacing="0" width="100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>Student Name</th>
-                                                                <th>Roll Id</th>
-                                                                <th>CT-1</th>
-                                                                <th>CT-2</th>
-                                                                <th>CT-3</th>
-                                                                <th>CT-4</th>
-                                                                <th>Attendance</th>
-                                                                <th>Assignment</th>
-                                                                <th>Semester Final</th>
-                                                                <th>Update</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tfoot>
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>Student Name</th>
-                                                                <th>Roll Id</th>
-                                                                <th>CT-1</th>
-                                                                <th>CT-2</th>
-                                                                <th>CT-3</th>
-                                                                <th>CT-4</th>
-                                                                <th>Attendance</th>
-                                                                <th>Assignment</th>
-                                                                <th>Semester Final</th>
-                                                                <th>Update</th>
-                                                            </tr>
-                                                        </tfoot>
-                                                        <tbody>
-                                                            <?php
+                                                        <table id="example"
+                                                            class="display table table-striped table-bordered"
+                                                            cellspacing="0" width="100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Student Name</th>
+                                                                    <th>Roll Id</th>
+                                                                    <th>CT-1</th>
+                                                                    <th>CT-2</th>
+                                                                    <th>CT-3</th>
+                                                                    <th>CT-4</th>
+                                                                    <th>Attendance</th>
+                                                                    <th>Assignment</th>
+                                                                    <th>Semester Final</th>
+                                                                    <th>Update</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Student Name</th>
+                                                                    <th>Roll Id</th>
+                                                                    <th>CT-1</th>
+                                                                    <th>CT-2</th>
+                                                                    <th>CT-3</th>
+                                                                    <th>CT-4</th>
+                                                                    <th>Attendance</th>
+                                                                    <th>Assignment</th>
+                                                                    <th>Semester Final</th>
+                                                                    <th>Update</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                            <tbody>
+                                                                <?php
                                                                 if (isset($_POST['filter'])) {
                                                                     $department = $_POST['Department'];
                                                                     $series = $_POST['Series'];
                                                                     $semester = $_POST['Semester'];
                                                                     $course = $_POST['Course'];
-<<<<<<< HEAD
-                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, 
-                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.`Semester Final`, s.Status
-                                                                    FROM tblstudents s 
-                                                                    LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                    WHERE 1=1";
-                                                                    $sql = "SELECT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status
-                                                                     FROM tblstudents s 
-                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                     WHERE 1=1";
-=======
                                                                     $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment,m.Semester_Final
                                                                     FROM tblstudents s 
                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
@@ -229,7 +219,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     FROM tblregistration r2 
                                                                     WHERE r2.RollId = r.RollId 
                                                                     AND r2.RegisteredCourses LIKE '%$course,%' )";
->>>>>>> origin/mahin
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -264,7 +253,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 $cnt = 1;
                                                                 if (count($results) > 0) {
                                                                     foreach ($results as $result) { ?>
-<<<<<<< HEAD
                                                                         <tr>
                                                                             <td><?php echo htmlentities($cnt); ?></td>
                                                                             <td><?php echo htmlentities($result->StudentName); ?>
@@ -278,8 +266,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             <td><?php echo htmlentities($result->CT_4); ?></td>
                                                                             <td><?php echo htmlentities($result->Attendance); ?>
                                                                             </td>
-                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
-                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                            <td><?php echo htmlentities($result->Assignment); ?>
+                                                                            <td><?php echo htmlentities($result->Semester_Final); ?>
                                                                             </td>
                                                                             <td>
                                                                                 <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
@@ -290,114 +278,86 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                                     onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
                                                                             </td>
                                                                         </tr>
-                                                                        <?php $cnt++;
-=======
-                                                            <tr>
-                                                                <td><?php echo htmlentities($cnt); ?></td>
-                                                                <td><?php echo htmlentities($result->StudentName); ?>
-                                                                </td>
-                                                                <td><?php echo htmlentities($result->RollId); ?></td>
-                                                                <td><?php echo htmlentities($result->CT_1); ?>
-                                                                </td>
-                                                                <td><?php echo htmlentities($result->CT_2); ?>
-                                                                </td>
-                                                                <td><?php echo htmlentities($result->CT_3); ?></td>
-                                                                <td><?php echo htmlentities($result->CT_4); ?></td>
-                                                                <td><?php echo htmlentities($result->Attendance); ?>
-                                                                </td>
-                                                                <td><?php echo htmlentities($result->Assignment); ?>
-                                                                <td><?php echo htmlentities($result->Semester_Final); ?>
-                                                                </td>
-                                                                <td>
-                                                                    <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"
-                                                                        class="btn btn-primary btn-xs"
-                                                                        target="_blank">Update</a>
-                                                                    <a href="delete-student.php?classid=<?php echo htmlentities($result->id); ?>"
-                                                                        class="btn btn-danger btn-xs" target="_blank"
-                                                                        onclick="return confirm('Are you sure you want to delete this class?');">Edit</a>
-                                                                </td>
-                                                            </tr>
-                                                            <?php $cnt++;
->>>>>>> origin/mahin
+                                                                <?php $cnt++;
                                                                     }
                                                                 } ?>
-                                                        </tbody>
+                                                            </tbody>
 
-                                                    </table>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </section>
+                                </section>
+                            </div>
                         </div>
                     </div>
+                    <!-- /.content-container -->
                 </div>
-                <!-- /.content-container -->
+                <!-- /.content-wrapper -->
             </div>
-            <!-- /.content-wrapper -->
-        </div>
-        <!--     /.main-wrapper -->
-        <script>
-        // Update series dropdown based on department selection
-        function updateSeries() {
-            console.log("dknfkn");
-            var department = document.getElementById("department").value;
-            var seriesDropdown = document.getElementById("series");
+            <!--     /.main-wrapper -->
+            <script>
+                // Update series dropdown based on department selection
+                function updateSeries() {
+                    console.log("dknfkn");
+                    var department = document.getElementById("department").value;
+                    var seriesDropdown = document.getElementById("series");
 
-            seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+                    seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
 
-            if (seriesOptions[department]) {
-                seriesOptions[department].forEach(function(series) {
-                    var optionElement = document.createElement("option");
-                    optionElement.value = series;
-                    optionElement.text = series;
-                    seriesDropdown.appendChild(optionElement);
-                });
-            }
-            updateSemesters(); // Clear the next dropdowns when department changes
-        }
+                    if (seriesOptions[department]) {
+                        seriesOptions[department].forEach(function(series) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = series;
+                            optionElement.text = series;
+                            seriesDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateSemesters(); // Clear the next dropdowns when department changes
+                }
 
-        function updateSemesters() {
-            var department = document.getElementById("department").value;
-            var series = document.getElementById("series").value;
-            var semesterDropdown = document.getElementById("semester");
+                function updateSemesters() {
+                    var department = document.getElementById("department").value;
+                    var series = document.getElementById("series").value;
+                    var semesterDropdown = document.getElementById("semester");
 
-            semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
+                    semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
 
-            var key = department + '|' + series;
+                    var key = department + '|' + series;
 
-            if (semesterOptions[key]) {
-                semesterOptions[key].forEach(function(semester) {
-                    var optionElement = document.createElement("option");
-                    optionElement.value = semester;
-                    optionElement.text = semester;
-                    semesterDropdown.appendChild(optionElement);
-                });
-            }
-            updateCourses(); // Clear the next dropdown when series changes
-        }
+                    if (semesterOptions[key]) {
+                        semesterOptions[key].forEach(function(semester) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = semester;
+                            optionElement.text = semester;
+                            semesterDropdown.appendChild(optionElement);
+                        });
+                    }
+                    updateCourses(); // Clear the next dropdown when series changes
+                }
 
-        function updateCourses() {
-            var department = document.getElementById("department").value;
-            var semester = document.getElementById("semester").value;
-            var courseDropdown = document.getElementById("course");
+                function updateCourses() {
+                    var department = document.getElementById("department").value;
+                    var semester = document.getElementById("semester").value;
+                    var courseDropdown = document.getElementById("course");
 
-            courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+                    courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
 
-            var key = department + '|' + semester;
+                    var key = department + '|' + semester;
 
-            if (courseOptions[key]) {
-                courseOptions[key].forEach(function(course) {
-                    var optionElement = document.createElement("option");
-                    optionElement.value = course;
-                    optionElement.text = course;
-                    courseDropdown.appendChild(optionElement);
-                });
-            }
-        }
-        var seriesOptions = {
-            <?php
+                    if (courseOptions[key]) {
+                        courseOptions[key].forEach(function(course) {
+                            var optionElement = document.createElement("option");
+                            optionElement.value = course;
+                            optionElement.text = course;
+                            courseDropdown.appendChild(optionElement);
+                        });
+                    }
+                }
+                var seriesOptions = {
+                    <?php
                     // Fetch department and series data from tblclasses
                     $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
                     $query = $dbh->prepare($sql);
@@ -415,10 +375,10 @@ if (strlen($_SESSION['tlogin']) == "") {
                         echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
                     }
                     ?>
-        };
-        // Update semesters dropdown based on department and series selection
-        var semesterOptions = {
-            <?php
+                };
+                // Update semesters dropdown based on department and series selection
+                var semesterOptions = {
+                    <?php
                     // Fetch department, series, and semester data from tblclasses
                     $sql = "SELECT Department, Series, Semester FROM tblclasses";
                     $query = $dbh->prepare($sql);
@@ -439,10 +399,10 @@ if (strlen($_SESSION['tlogin']) == "") {
                         echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
                     }
                     ?>
-        };
-        // Update courses dropdown based on department and semester selection
-        var courseOptions = {
-            <?php
+                };
+                // Update courses dropdown based on department and semester selection
+                var courseOptions = {
+                    <?php
                     // Fetch department, semester, and course code data from tblsubjects
                     $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
                     $query = $dbh->prepare($sql);
@@ -463,18 +423,18 @@ if (strlen($_SESSION['tlogin']) == "") {
                         echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
                     }
                     ?>
-        };
-        </script>
-        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"> </script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-        <script src="js/prism/prism.js"></script>
-        <script sr c="js/select2/select2.min.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/DataTables/datatables.min.js"></script>
-</body>
+                };
+            </script>
+            <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+            <script src="js/bootstrap/bootstrap.min.js"></script>
+            <script src="js/pace/pace.min.js"> </script>
+            <script src="js/lobipanel/lobipanel.min.js"></script>
+            <script src="js/iscroll/iscroll.js"></script>
+            <script src="js/prism/prism.js"></script>
+            <script sr c="js/select2/select2.min.js"></script>
+            <script src="js/main.js"></script>
+            <script src="js/DataTables/datatables.min.js"></script>
+    </body>
 
-</html>
+    </html>
 <?PHP } ?>
