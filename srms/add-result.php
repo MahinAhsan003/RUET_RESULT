@@ -58,7 +58,6 @@ if (strlen($_SESSION['tlogin']) == "") {
             }
         }
     }
-
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -67,7 +66,7 @@ if (strlen($_SESSION['tlogin']) == "") {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>RUET Teacher | Add Result </title>
+        <title>SMS Admin| Add Result </title>
         <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
         <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
         <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
@@ -85,11 +84,10 @@ if (strlen($_SESSION['tlogin']) == "") {
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-            <?php include('includes/teacher-topbar.php'); ?>
+            <?php include('includes/topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
-
                     <!-- ========== LEFT SIDEBAR ========== -->
                     <?php include('includes/teacher-leftbar.php'); ?>
                     <!-- /.left-sidebar -->
@@ -206,19 +204,18 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             <tbody>
                                                                 <?php
                                                                 if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['Department'];
-                                                                    $series = $_POST['Series'];
-                                                                    $semester = $_POST['Semester'];
-                                                                    $course = $_POST['Course'];
-                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment,m.Semester_Final
+                                                                    $department = $_POST['department'];
+                                                                    $series = $_POST['series'];
+                                                                    $semester = $_POST['semester'];
+                                                                    $course = $_POST['course'];
+                                                                    // print_r($_POST);
+                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, 
+                                                                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final, s.Status
                                                                     FROM tblstudents s 
                                                                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                    WHERE EXISTS (
-                                                                    SELECT 1 
-                                                                    FROM tblregistration r2 
-                                                                    WHERE r2.RollId = r.RollId 
-                                                                    AND r2.RegisteredCourses LIKE '%$course,%' )";
+                                                                    INNER JOIN tblregistration r ON s.RollId = r.RollId 
+                                                                    WHERE 1=1";
+                                                                    // echo "Department: $department, Series: $series, Course: $course<br>";
                                                                     if ($department != "") {
                                                                         $sql .= " AND s.Department = :department";
                                                                     }
@@ -226,11 +223,11 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         $sql .= " AND s.Series = :series";
                                                                     }
                                                                     if ($course != "") {
-                                                                        $sql .= " AND FIND_IN_SET(:course, RegisteredCourses)";
+                                                                        $sql .= " AND r.RegisteredCourses = :course";
                                                                     }
 
                                                                     $sql .= " ORDER BY RollId";
-
+                                                                    // echo "Constructed SQL: " . $sql . "<br>";
                                                                     $query = $dbh->prepare($sql);
 
                                                                     // Bind all parameters at once
@@ -242,9 +239,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         $params[':series'] = $series;
                                                                     }
                                                                     if ($course != "") {
-                                                                        $params[':course'] = $course;
+                                                                        $params[':course'] = (string) $course;
                                                                     }
-
                                                                     $query->execute($params);
                                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                                 } else {
@@ -297,143 +293,143 @@ if (strlen($_SESSION['tlogin']) == "") {
                 </div>
                 <!-- /.content-wrapper -->
             </div>
-            <!--     /.main-wrapper -->
-            <script>
-                // Update series dropdown based on department selection
-                function updateSeries() {
-                    console.log("dknfkn");
-                    var department = document.getElementById("department").value;
-                    var seriesDropdown = document.getElementById("series");
+            <!--       /.main-wrapper -->
+        </div>
+        <script>
+            // Update series dropdown based on department selection
+            function updateSeries() {
+                var department = document.getElementById("department").value;
+                var seriesDropdown = document.getElementById("series");
 
-                    seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+                seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
 
-                    if (seriesOptions[department]) {
-                        seriesOptions[department].forEach(function(series) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = series;
-                            optionElement.text = series;
-                            seriesDropdown.appendChild(optionElement);
-                        });
+                if (seriesOptions[department]) {
+                    seriesOptions[department].forEach(function(series) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = series;
+                        optionElement.text = series;
+                        seriesDropdown.appendChild(optionElement);
+                    });
+                }
+                updateSemesters(); // Clear the next dropdowns when department changes
+            }
+
+            function updateSemesters() {
+                var department = document.getElementById("department").value;
+                var series = document.getElementById("series").value;
+                var semesterDropdown = document.getElementById("semester");
+
+                semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
+
+                var key = department + '|' + series;
+
+                if (semesterOptions[key]) {
+                    semesterOptions[key].forEach(function(semester) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = semester;
+                        optionElement.text = semester;
+                        semesterDropdown.appendChild(optionElement);
+                    });
+                }
+                updateCourses(); // Clear the next dropdown when series changes
+            }
+
+            function updateCourses() {
+                var department = document.getElementById("department").value;
+                var semester = document.getElementById("semester").value;
+                var courseDropdown = document.getElementById("course");
+
+                courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+
+                var key = department + '|' + semester;
+
+                if (courseOptions[key]) {
+                    courseOptions[key].forEach(function(course) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = course;
+                        optionElement.text = course;
+                        courseDropdown.appendChild(optionElement);
+                    });
+                }
+            }
+            var seriesOptions = {
+                <?php
+                // Fetch department and series data from tblclasses
+                $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
+                $query = $dbh->prepare($sql);
+                $query->execute();
+                $results = $query->fetchAll(PDO::FETCH_OBJ);
+                $departments = [];
+                if ($query->rowCount() > 0) {
+                    foreach ($results as $result) {
+                        $departments[$result->Department][] = $result->Series;
                     }
-                    updateSemesters(); // Clear the next dropdowns when department changes
+                }
+                // Generate the JavaScript object for seriesOptions
+                foreach ($departments as $department => $series) {
+                    $uniqueSeries = array_unique($series); // Remove duplicate series
+                    echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
+                }
+                ?>
+            };
+            // Update semesters dropdown based on department and series selection
+            var semesterOptions = {
+                <?php
+                // Fetch department, series, and semester data from tblclasses
+                $sql = "SELECT Department, Series, Semester FROM tblclasses";
+                $query = $dbh->prepare($sql);
+                $query->execute();
+                $results = $query->fetchAll(PDO::FETCH_OBJ);
+                $deptSeries = [];
+                if ($query->rowCount() > 0) {
+                    foreach ($results as $result) {
+                        // Combine Department and Series as the key
+                        $key = $result->Department . '|' . $result->Series;
+                        $deptSeries[$key][] = $result->Semester;
+                    }
                 }
 
-                function updateSemesters() {
-                    var department = document.getElementById("department").value;
-                    var series = document.getElementById("series").value;
-                    var semesterDropdown = document.getElementById("semester");
-
-                    semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
-
-                    var key = department + '|' + series;
-
-                    if (semesterOptions[key]) {
-                        semesterOptions[key].forEach(function(semester) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = semester;
-                            optionElement.text = semester;
-                            semesterDropdown.appendChild(optionElement);
-                        });
+                // Generate the JavaScript object for semesterOptions
+                foreach ($deptSeries as $key => $semesters) {
+                    $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
+                    echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
+                }
+                ?>
+            };
+            // Update courses dropdown based on department and semester selection
+            var courseOptions = {
+                <?php
+                // Fetch department, semester, and course code data from tblsubjects
+                $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
+                $query = $dbh->prepare($sql);
+                $query->execute();
+                $results = $query->fetchAll(PDO::FETCH_OBJ);
+                $deptSemesters = [];
+                if ($query->rowCount() > 0) {
+                    foreach ($results as $result) {
+                        // Combine Department and Semester as the key
+                        $key = $result->Department . '|' . $result->Semester;
+                        $deptSemesters[$key][] = $result->CourseCode;
                     }
-                    updateCourses(); // Clear the next dropdown when series changes
                 }
 
-                function updateCourses() {
-                    var department = document.getElementById("department").value;
-                    var semester = document.getElementById("semester").value;
-                    var courseDropdown = document.getElementById("course");
-
-                    courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
-
-                    var key = department + '|' + semester;
-
-                    if (courseOptions[key]) {
-                        courseOptions[key].forEach(function(course) {
-                            var optionElement = document.createElement("option");
-                            optionElement.value = course;
-                            optionElement.text = course;
-                            courseDropdown.appendChild(optionElement);
-                        });
-                    }
+                // Generate the JavaScript object for courseOptions
+                foreach ($deptSemesters as $key => $courses) {
+                    $uniqueCourses = array_unique($courses); // Remove duplicate courses
+                    echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
                 }
-                var seriesOptions = {
-                    <?php
-                    // Fetch department and series data from tblclasses
-                    $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
-                    $query = $dbh->prepare($sql);
-                    $query->execute();
-                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                    $departments = [];
-                    if ($query->rowCount() > 0) {
-                        foreach ($results as $result) {
-                            $departments[$result->Department][] = $result->Series;
-                        }
-                    }
-                    // Generate the JavaScript object for seriesOptions
-                    foreach ($departments as $department => $series) {
-                        $uniqueSeries = array_unique($series); // Remove duplicate series
-                        echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
-                    }
-                    ?>
-                };
-                // Update semesters dropdown based on department and series selection
-                var semesterOptions = {
-                    <?php
-                    // Fetch department, series, and semester data from tblclasses
-                    $sql = "SELECT Department, Series, Semester FROM tblclasses";
-                    $query = $dbh->prepare($sql);
-                    $query->execute();
-                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                    $deptSeries = [];
-                    if ($query->rowCount() > 0) {
-                        foreach ($results as $result) {
-                            // Combine Department and Series as the key
-                            $key = $result->Department . '|' . $result->Series;
-                            $deptSeries[$key][] = $result->Semester;
-                        }
-                    }
-
-                    // Generate the JavaScript object for semesterOptions
-                    foreach ($deptSeries as $key => $semesters) {
-                        $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
-                        echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
-                    }
-                    ?>
-                };
-                // Update courses dropdown based on department and semester selection
-                var courseOptions = {
-                    <?php
-                    // Fetch department, semester, and course code data from tblsubjects
-                    $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
-                    $query = $dbh->prepare($sql);
-                    $query->execute();
-                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                    $deptSemesters = [];
-                    if ($query->rowCount() > 0) {
-                        foreach ($results as $result) {
-                            // Combine Department and Semester as the key
-                            $key = $result->Department . '|' . $result->Semester;
-                            $deptSemesters[$key][] = $result->CourseCode;
-                        }
-                    }
-
-                    // Generate the JavaScript object for courseOptions
-                    foreach ($deptSemesters as $key => $courses) {
-                        $uniqueCourses = array_unique($courses); // Remove duplicate courses
-                        echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
-                    }
-                    ?>
-                };
-            </script>
-            <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-            <script src="js/bootstrap/bootstrap.min.js"></script>
-            <script src="js/pace/pace.min.js"> </script>
-            <script src="js/lobipanel/lobipanel.min.js"></script>
-            <script src="js/iscroll/iscroll.js"></script>
-            <script src="js/prism/prism.js"></script>
-            <script sr c="js/select2/select2.min.js"></script>
-            <script src="js/main.js"></script>
-            <script src="js/DataTables/datatables.min.js"></script>
+                ?>
+            };
+        </script>
+        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="js/pace/pace.min.js"> </script>
+        <script src="js/lobipanel/lobipanel.min.js"></script>
+        <script src="js/iscroll/iscroll.js"></script>
+        <script src="js/prism/prism.js"></script>
+        <script sr c="js/select2/select2.min.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/DataTables/datatables.min.js"></script>
     </body>
 
     </html>
