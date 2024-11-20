@@ -2685,23 +2685,84 @@ CREATE TABLE `tblmarks` (
   `Attendance` INT DEFAULT 0,
   `Assignment` INT DEFAULT 0,
   `Semester_Final` INT DEFAULT 0,
+  `GPA` DECIMAL(4,2),
   PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
   FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE  -- Correct foreign key reference
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010001', '1', 'ECE-1103', '18', '18', '1', '5', '10', '10', '45', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010002', '1', 'ECE-1103', '17', '8', '6', '12', '2', '8', '51', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010003', '1', 'ECE-1103', '7', '5', '5', '13', '3', '8', '54', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010004', '1', 'ECE-1103', '10', '20', '12', '9', '10', '2', '41', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010005', '1', 'ECE-1103', '20', '2', '20', '20', '3', '8', '47', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010006', '1', 'ECE-1103', '17', '13', '4', '7', '7', '9', '42', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010007', '1', 'ECE-1103', '19', '1', '10', '20', '1', '6', '52', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010008', '1', 'ECE-1103', '14', '13', '4', '5', '1', '6', '43', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010009', '1', 'ECE-1103', '12', '12', '14', '4', '6', '6', '53', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010010', '1', 'ECE-1103', '2', '15', '20', '1', '8', '7', '55', '4.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010011', '1', 'ECE-1103', '7', '2', '12', '13', '2', '8', '40', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010012', '1', 'ECE-1103', '14', '15', '9', '1', '3', '10', '48', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010013', '1', 'ECE-1103', '16', '19', '12', '14', '5', '8', '51', '4.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010014', '1', 'ECE-1103', '6', '3', '18', '10', '5', '6', '43', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010015', '1', 'ECE-1103', '2', '4', '1', '15', '9', '10', '45', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010016', '1', 'ECE-1103', '8', '17', '12', '16', '2', '9', '45', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010017', '1', 'ECE-1103', '7', '3', '18', '5', '1', '9', '53', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010018', '1', 'ECE-1103', '16', '2', '5', '16', '3', '9', '47', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010019', '1', 'ECE-1103', '16', '6', '1', '19', '6', '10', '50', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010020', '1', 'ECE-1103', '16', '9', '1', '2', '1', '10', '48', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010021', '1', 'ECE-1103', '20', '6', '6', '1', '4', '2', '40', '2.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010022', '1', 'ECE-1103', '14', '3', '8', '13', '6', '7', '44', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010023', '1', 'ECE-1103', '10', '20', '18', '20', '4', '1', '40', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010024', '1', 'ECE-1103', '19', '14', '6', '13', '10', '1', '49', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010025', '1', 'ECE-1103', '2', '1', '11', '16', '8', '8', '49', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010026', '1', 'ECE-1103', '6', '4', '13', '12', '3', '3', '51', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010027', '1', 'ECE-1103', '8', '3', '10', '15', '10', '3', '53', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010028', '1', 'ECE-1103', '11', '15', '12', '8', '2', '10', '40', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010029', '1', 'ECE-1103', '3', '19', '7', '13', '3', '1', '46', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010030', '1', 'ECE-1103', '2', '6', '3', '20', '9', '4', '41', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010031', '1', 'ECE-1103', '14', '16', '7', '7', '8', '10', '46', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010032', '1', 'ECE-1103', '4', '3', '9', '18', '9', '5', '50', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010033', '1', 'ECE-1103', '16', '13', '5', '5', '3', '7', '40', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010034', '1', 'ECE-1103', '19', '11', '14', '8', '2', '3', '55', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010035', '1', 'ECE-1103', '9', '6', '17', '15', '9', '1', '45', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010036', '1', 'ECE-1103', '20', '11', '14', '16', '9', '2', '42', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010037', '1', 'ECE-1103', '16', '10', '10', '8', '2', '2', '50', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010038', '1', 'ECE-1103', '20', '3', '15', '17', '10', '10', '48', '4.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010039', '1', 'ECE-1103', '1', '17', '17', '6', '2', '7', '41', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010040', '1', 'ECE-1103', '17', '4', '7', '7', '3', '7', '44', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010041', '1', 'ECE-1103', '11', '18', '7', '4', '2', '10', '55', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010042', '1', 'ECE-1103', '5', '20', '3', '3', '4', '9', '42', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010043', '1', 'ECE-1103', '9', '20', '12', '2', '3', '2', '51', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010044', '1', 'ECE-1103', '15', '3', '4', '2', '1', '9', '54', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010045', '1', 'ECE-1103', '13', '1', '8', '18', '2', '7', '48', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010046', '1', 'ECE-1103', '9', '20', '13', '16', '5', '5', '55', '4.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010047', '1', 'ECE-1103', '8', '16', '6', '9', '6', '8', '50', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010048', '1', 'ECE-1103', '14', '8', '6', '6', '2', '8', '44', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010049', '1', 'ECE-1103', '1', '1', '6', '4', '7', '7', '55', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010050', '1', 'ECE-1103', '10', '14', '1', '10', '9', '10', '53', '4.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010051', '1', 'ECE-1103', '1', '11', '5', '4', '9', '4', '45', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010052', '1', 'ECE-1103', '15', '8', '16', '17', '3', '6', '47', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010053', '1', 'ECE-1103', '7', '20', '16', '13', '1', '1', '53', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010054', '1', 'ECE-1103', '1', '4', '2', '6', '5', '4', '53', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010055', '1', 'ECE-1103', '2', '12', '6', '12', '8', '10', '43', '3.50');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010056', '1', 'ECE-1103', '5', '19', '4', '10', '9', '5', '53', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010057', '1', 'ECE-1103', '14', '5', '3', '4', '7', '4', '43', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010058', '1', 'ECE-1103', '9', '9', '15', '8', '1', '2', '54', '3.25');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010059', '1', 'ECE-1103', '18', '7', '16', '18', '7', '1', '54', '3.75');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010060', '1', 'ECE-1103', '15', '18', '11', '2', '2', '1', '43', '3.00');
+INSERT INTO `tblmarks` (`RollId`, `Semester`, `CourseCode`, `CT_1`, `CT_2`, `CT_3`, `CT_4`, `Attendance`, `Assignment`, `Semester_Final`, `GPA`) VALUES ('2010061', '1', 'ECE-1103', '20', '11', '11', '2', '9', '6', '46', '3.75');
+
 -- Table structure for table `tblcgpa`
 CREATE TABLE `tblcgpa` (
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `CourseCode` varchar(100) NOT NULL,
-  `GPA` DECIMAL(2,2),
-  `SGPA` DECIMAL(2,2),
-  `CGPA` DECIMAL(2,2),
-  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
-  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE  -- Correct foreign key reference
+  `SGPA` DECIMAL(4,2),
+  `CGPA` DECIMAL(4,2),
+  PRIMARY KEY (`RollId`, `Semester`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 
 COMMIT;
 

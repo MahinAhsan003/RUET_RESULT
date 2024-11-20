@@ -262,8 +262,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             <td><?php echo htmlentities($result->CT_4); ?></td>
                                                                             <td><?php echo htmlentities($result->Attendance); ?>
                                                                             </td>
-                                                                            <td><?php echo htmlentities($result->Assignment); ?>
-                                                                            <td><?php echo htmlentities($result->Semester_Final); ?>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
+                                                                            <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Blocked'); ?>
                                                                             </td>
                                                                             <td>
                                                                                 <a href="edit-student.php?stid=<?php echo htmlentities($result->StudentId); ?>"

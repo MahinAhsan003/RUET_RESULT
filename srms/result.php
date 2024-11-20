@@ -2,227 +2,201 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+
+if (!isset($_SESSION['login'])) {
+    header("Location: index.php");
+    exit();
+} else {
+    $rollId = $_SESSION['login'];
+    $sql = "SELECT * FROM tblstudents WHERE RollId=:rollId";
+    $query = $dbh->prepare($sql);
+    $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+    $query->execute();
+    $student = $query->fetch(PDO::FETCH_OBJ);
+
+    if (!$student) {
+        header("Location: index.php");
+        exit();
+    }
+
+    $results = [];
+    $selectedSemester = '';
+    $scgpa = 0.0;
+    $cgpa = 0.0;
+
+    if (isset($_POST['filter'])) {
+        $selectedSemester = $_POST['semester'];
+
+        if (empty($selectedSemester)) {
+            $error = "Please select a semester!";
+        } else {
+            // Fetch results for the selected semester
+            $sql = "SELECT CourseCode, CT_1, CT_2, CT_3, CT_4, Attendance, Assignment, Semester_Final 
+                    FROM tblmarks 
+                    WHERE RollId = :rollId AND Semester = :semester";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+            $query->bindParam(':semester', $selectedSemester, PDO::PARAM_INT);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+            // Calculate SGPA
+            $totalGPA = 0.0;
+            $courseCount = 0;
+            foreach ($results as $result) {
+                $ctAvg = (max($result->CT_1, $result->CT_2, $result->CT_3) +
+                    max($result->CT_2, $result->CT_3, $result->CT_4) +
+                    max($result->CT_1, $result->CT_3, $result->CT_4)) / 3;
+                $totalMarks = $ctAvg + $result->Attendance + $result->Assignment + $result->Semester_Final;
+
+                $gradePoint = calculateGrade($totalMarks);
+                $totalGPA += $gradePoint;
+                $courseCount++;
+            }
+            $sgpa = $courseCount > 0 ? $totalGPA / $courseCount : 0;
+
+            // Fetch CGPA from tblcgpa
+            $sql = "SELECT CGPA FROM tblcgpa WHERE RollId = :rollId AND Semester = :semester";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+            $query->bindParam(':semester', $selectedSemester, PDO::PARAM_INT);
+            $query->execute();
+            $cgpaResult = $query->fetch(PDO::FETCH_OBJ);
+            $cgpa = $cgpaResult ? $cgpaResult->CGPA : 0.0;
+        }
+    }
+}
+
+// Function to calculate grade point
+function calculateGrade($score)
+{
+    if ($score >= 80) return 4.0;
+    elseif ($score >= 75) return 3.75;
+    elseif ($score >= 70) return 3.5;
+    elseif ($score >= 65) return 3.25;
+    elseif ($score >= 60) return 3.0;
+    elseif ($score >= 55) return 2.75;
+    elseif ($score >= 50) return 2.5;
+    elseif ($score >= 45) return 2.25;
+    elseif ($score >= 40) return 2.0;
+    else return 0.0;
+}
+
+// Function to convert grade point to letter grade
+function getLetterGrade($gradePoint)
+{
+    if ($gradePoint >= 4.0) return 'A+';
+    elseif ($gradePoint >= 3.75) return 'A';
+    elseif ($gradePoint >= 3.5) return 'A-';
+    elseif ($gradePoint >= 3.25) return 'B+';
+    elseif ($gradePoint >= 3.0) return 'B';
+    elseif ($gradePoint >= 2.75) return 'B-';
+    elseif ($gradePoint >= 2.5) return 'C+';
+    elseif ($gradePoint >= 2.25) return 'C';
+    elseif ($gradePoint >= 2.0) return 'D';
+    else return 'F';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Result Management System</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" >
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
-    </head>
-    <body>
-        <div class="main-wrapper">
-            <div class="content-wrapper">
-                <div class="content-container">
 
-         
-                    <!-- /.left-sidebar -->
+<head>
+    <meta charset="utf-8">
+    <title>Semester Results</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery/jquery-2.2.4.min.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+</head>
 
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-12">
-                                    <h2 class="title" align="center">Result Management System</h2>
-                                </div>
+<body class="top-navbar-fixed">
+    <div class="main-wrapper">
+        <?php include('includes/student-topbar.php'); ?>
+        <div class="content-wrapper">
+            <div class="content-container">
+                <?php include('includes/student-leftbar.php'); ?>
+                <div class="main-page">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2 class="title">Semester Results</h2>
                             </div>
-                            <!-- /.row -->
-                          
-                            <!-- /.row -->
                         </div>
-                        <!-- /.container-fluid -->
-
-                        <section class="section" id="exampl">
-                            <div class="container-fluid">
-
-                                <div class="row">
-                              
-                             
-
-                                    <div class="col-md-8 col-md-offset-2">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <h3 align="center">Student Result Details</h3>
-                                                    <hr />
-<?php
-// code Student Data
-$rollid=$_POST['rollid'];
-$classid=$_POST['class'];
-$_SESSION['rollid']=$rollid;
-$_SESSION['classid']=$classid;
-$qery = "SELECT   tblstudents.StudentName,tblstudents.RollId,tblstudents.RegDate,tblstudents.StudentId,tblstudents.Status,tblclasses.ClassName,tblclasses.Section from tblstudents join tblclasses on tblclasses.id=tblstudents.ClassId where tblstudents.RollId=:rollid and tblstudents.ClassId=:classid ";
-$stmt = $dbh->prepare($qery);
-$stmt->bindParam(':rollid',$rollid,PDO::PARAM_STR);
-$stmt->bindParam(':classid',$classid,PDO::PARAM_STR);
-$stmt->execute();
-$resultss=$stmt->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($stmt->rowCount() > 0)
-{
-foreach($resultss as $row)
-{   ?>
-<p><b>Student Name :</b> <?php echo htmlentities($row->StudentName);?></p>
-<p><b>Student Roll Id :</b> <?php echo htmlentities($row->RollId);?>
-<p><b>Student Class:</b> <?php echo htmlentities($row->ClassName);?>(<?php echo htmlentities($row->Section);?>)
-<?php }
-
-    ?>
-                                            </div>
-                                            <div class="panel-body p-20">
-
-
-
-
-
-
-
-                                                <table class="table table-hover table-bordered" border="1" width="100%">
-                                                <thead>
-                                                        <tr style="text-align: center">
-                                                            <th style="text-align: center">#</th>
-                                                            <th style="text-align: center"> Subject</th>    
-                                                            <th style="text-align: center">Marks</th>
-                                                        </tr>
-                                               </thead>
-  
-
-
-                                                	
-                                                	<tbody>
-<?php                                              
-// Code for result
-
- $query ="select t.StudentName,t.RollId,t.ClassId,t.marks,SubjectId,tblsubjects.SubjectName from (select sts.StudentName,sts.RollId,sts.ClassId,tr.marks,SubjectId from tblstudents as sts join  tblresult as tr on tr.StudentId=sts.StudentId) as t join tblsubjects on tblsubjects.id=t.SubjectId where (t.RollId=:rollid and t.ClassId=:classid)";
-$query= $dbh -> prepare($query);
-$query->bindParam(':rollid',$rollid,PDO::PARAM_STR);
-$query->bindParam(':classid',$classid,PDO::PARAM_STR);
-$query-> execute();  
-$results = $query -> fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($countrow=$query->rowCount()>0)
-{ 
-foreach($results as $result){
-
-    ?>
-
-                                                		<tr>
-<th scope="row" style="text-align: center"><?php echo htmlentities($cnt);?></th>
-<td style="text-align: center"><?php echo htmlentities($result->SubjectName);?></td>
-<td style="text-align: center"><?php echo htmlentities($totalmarks=$result->marks);?></td>
-                                                		</tr>
-<?php 
-$totlcount+=$totalmarks;
-$cnt++;}
-?>
-<tr>
-<th scope="row" colspan="2" style="text-align: center">Total Marks</th>
-<td style="text-align: center"><b><?php echo htmlentities($totlcount); ?></b> out of <b><?php echo htmlentities($outof=($cnt-1)*100); ?></b></td>
-                                                        </tr>
-<tr>
-<th scope="row" colspan="2" style="text-align: center">Percntage</th>           
-<td style="text-align: center"><b><?php echo  htmlentities($totlcount*(100)/$outof); ?> %</b></td>
-</tr>
-
-<tr>
-                              
-<td colspan="3" align="center"><i class="fa fa-print fa-2x" aria-hidden="true" style="cursor:pointer" OnClick="CallPrint(this.value)" ></i></td>
-                                                             </tr>
-
- <?php } else { ?>     
-<div class="alert alert-warning left-icon-alert" role="alert">
-                                            <strong>Notice!</strong> Your result not declare yet
- <?php }
-?>
-                                        </div>
- <?php 
- } else
- {?>
-
-<div class="alert alert-danger left-icon-alert" role="alert">
-strong>Oh snap!</strong>
-<?php
-echo htmlentities("Invalid Roll Id");
- }
-?>
-                                        </div>
-
-
-
-                                                	</tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                        <!-- /.panel -->
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                    <div class="form-group">
-                                                           
-                                                            <div class="col-sm-6">
-                                                               <a href="index.php">Back to Home</a>
-                                                            </div>
-                                                        </div>
-
-                                </div>
-                                <!-- /.row -->
-  
-                            </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
-
                     </div>
-                    <!-- /.main-page -->
-
-                  
+                    <section class="section">
+                        <div class="container-fluid">
+                            <form method="post">
+                                <div class="form-group">
+                                    <label for="semester">Select Semester</label>
+                                    <select name="semester" id="semester" class="form-control">
+                                        <option value="">-- Select Semester --</option>
+                                        <?php
+                                        $sql = "SELECT DISTINCT Semester FROM tblclasses ORDER BY Semester";
+                                        $query = $dbh->prepare($sql);
+                                        $query->execute();
+                                        $semesters = $query->fetchAll(PDO::FETCH_OBJ);
+                                        foreach ($semesters as $semester) { ?>
+                                            <option value="<?php echo htmlentities($semester->Semester); ?>"
+                                                <?php echo $selectedSemester == $semester->Semester ? 'selected' : ''; ?>>
+                                                <?php echo htmlentities($semester->Semester); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                            </form>
+                            <?php if (!empty($results)) { ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Code</th>
+                                            <th>Average CT</th>
+                                            <th>Attendance</th>
+                                            <th>Assignment</th>
+                                            <th>Semester Final</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($results as $result) {
+                                            $ctAvg = (max($result->CT_1, $result->CT_2, $result->CT_3) +
+                                                max($result->CT_2, $result->CT_3, $result->CT_4) +
+                                                max($result->CT_1, $result->CT_3, $result->CT_4)) / 3;
+                                            $totalMarks = $ctAvg + $result->Attendance + $result->Assignment + $result->Semester_Final;
+                                            $gradePoint = calculateGrade($totalMarks);
+                                            $letterGrade = getLetterGrade($gradePoint);
+                                        ?>
+                                            <tr>
+                                                <td><?php echo htmlentities($result->CourseCode); ?></td>
+                                                <td><?php echo number_format($ctAvg, 2); ?></td>
+                                                <td><?php echo htmlentities($result->Attendance); ?></td>
+                                                <td><?php echo htmlentities($result->Assignment); ?></td>
+                                                <td><?php echo htmlentities($result->Semester_Final); ?></td>
+                                                <td><?php echo htmlentities($letterGrade); ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5">SGPA</td>
+                                            <td><?php echo number_format($sgpa, 2); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5">CGPA</td>
+                                            <td><?php echo number_format($cgpa, 2); ?></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <button onclick="window.print()" class="btn btn-success">Print</button>
+                            <?php } elseif (isset($_POST['filter'])) { ?>
+                                <div class="alert alert-danger">No results found for the selected semester.</div>
+                            <?php } ?>
+                        </div>
+                    </section>
                 </div>
-                <!-- /.content-container -->
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
+    </div>
+</body>
 
-        <!-- ========== COMMON JS FILES ========== -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
-        <script>
-            $(function($) {
-
-            });
-
-
-            function CallPrint(strid) {
-var prtContent = document.getElementById("exampl");
-var WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-WinPrint.document.write(prtContent.innerHTML);
-WinPrint.document.close();
-WinPrint.focus();
-WinPrint.print();
-}
-</script>
-
-        </script>
-
-        <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
-
-    </body>
 </html>
