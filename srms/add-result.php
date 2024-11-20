@@ -223,7 +223,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         $sql .= " AND s.Series = :series";
                                                                     }
                                                                     if ($course != "") {
-                                                                        $sql .= " AND r.RegisteredCourses = :course";
+                                                                        $sql .= " AND r.RegisteredCourse = :course";
                                                                     }
 
                                                                     $sql .= " ORDER BY RollId";
