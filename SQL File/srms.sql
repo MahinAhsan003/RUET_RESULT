@@ -338,7 +338,7 @@ CREATE TABLE `tblregistration` (
 -- Dumping data for table `tblsubjects`
 --
 
-INSERT INTO `tblregistration` (`RollId`, `Semester`, `RegisteredCourses`, `RegistrationStatus`) VALUES
+INSERT INTO `tblregistration` (`RollId`, `Semester`, `RegisteredCourse`, `RegistrationStatus`) VALUES
 (2010001, 1, 'ECE-1101', 1),
 (2010001, 1, 'ECE-1102', 1),
 (2010001, 1, 'ECE-1103', 1),
