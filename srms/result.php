@@ -92,6 +92,30 @@ function getLetterGrade($gradePoint)
     <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css" />
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
+    <style>
+        .errorWrap {
+            padding: 10px;
+            margin: 0 0 20px 0;
+            background: #fff;
+            border-left: 4px solid #dd3d36;
+            -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+        }
+
+        .succWrap {
+            padding: 10px;
+            margin: 0 0 20px 0;
+            background: #fff;
+            border-left: 4px solid #5cb85c;
+            -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+        }
+
+        /* Added margin to create gap between the filter button and the table */
+        .filter-form {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body class="top-navbar-fixed">
@@ -124,7 +148,7 @@ function getLetterGrade($gradePoint)
                                     <div class="panel">
                                         <div class="panel-heading">
                                             <div class="panel-title">
-                                                <h5>View Result</h5>
+                                                <h5>View Semester Result</h5>
                                             </div>
                                         </div>
                                         <div class="panel-body p-20">

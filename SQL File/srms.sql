@@ -2737,6 +2737,21 @@ CREATE TABLE `tblmarks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 
+-- Table structure for table `tblsessional`
+CREATE TABLE `tblsessional` ( 
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `CourseCode` varchar(100) NOT NULL,
+  `Attendance` INT DEFAULT 0, 
+  `Quiz` INT DEFAULT 0, 
+  `BoardViva` INT DEFAULT 0, 
+  `Performance` INT DEFAULT 0, 
+
+  PRIMARY KEY (`RollId`, `CourseCode`, `Semester`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
 
 
 -- Table structure for table `tblcgpa`
