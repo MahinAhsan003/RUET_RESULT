@@ -130,8 +130,6 @@ if (!isset($_SESSION['login'])) {
 
     <script>
         const courseOptions = <?php echo json_encode($courseOptions); ?>;
-        const selectedSemester = "<?php echo $selectedSemester; ?>";
-        const selectedCourse = "<?php echo $selectedCourse; ?>";
 
         function updateCourses() {
             const semesterDropdown = document.getElementById('semester');
@@ -148,19 +146,17 @@ if (!isset($_SESSION['login'])) {
                     option.textContent = course.CourseName;
                     courseDropdown.appendChild(option);
                 });
-
-                if (selectedSemester === "<?php echo $selectedSemester; ?>") {
-                    courseDropdown.value = "<?php echo $selectedCourse; ?>";
-                }
             }
         }
 
+        // Reset the form on page load
         window.onload = function() {
-            if (selectedSemester) {
-                const semesterDropdown = document.getElementById('semester');
-                semesterDropdown.value = selectedSemester;
-                updateCourses();
-            }
+            const semesterDropdown = document.getElementById('semester');
+            const courseDropdown = document.getElementById('course');
+
+            // Reset the semester and course dropdowns
+            semesterDropdown.selectedIndex = 0; // Set to "Select Semester"
+            courseDropdown.innerHTML = '<option value="">Select Course</option>';
         };
     </script>
 </head>
