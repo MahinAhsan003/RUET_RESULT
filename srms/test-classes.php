@@ -2,10 +2,8 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-
 if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
-    exit;
 } else {
     if (isset($_POST['submit'])) {
         $department = $_POST['department'];
@@ -13,49 +11,34 @@ if (strlen($_SESSION['alogin']) == "") {
         $section = $_POST['section'];
         $semester = $_POST['semester'];
 
-        try {
-            // Check if the department exists in tbldept
-            $sql = "SELECT Department FROM tbldept WHERE Department = :department";
+        // Check if class already exists
+        $sql = "SELECT * FROM tblclasses WHERE Department=:department AND Series=:series AND Section=:section AND Semester=:semester";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':department', $department, PDO::PARAM_STR);
+        $query->bindParam(':series', $series, PDO::PARAM_STR);
+        $query->bindParam(':section', $section, PDO::PARAM_STR);
+        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query->execute();
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $error = "Class Already Exists";
+        } else {
+            // Insert new class
+            $sql = "INSERT INTO tblclasses(Department, Series, Section, Semester) VALUES(:department, :series, :section, :semester)";
             $query = $dbh->prepare($sql);
             $query->bindParam(':department', $department, PDO::PARAM_STR);
+            $query->bindParam(':series', $series, PDO::PARAM_STR);
+            $query->bindParam(':section', $section, PDO::PARAM_STR);
+            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
             $query->execute();
-            $deptExists = $query->rowCount() > 0;
+            $lastInsertId = $dbh->lastInsertId();
 
-            if (!$deptExists) {
-                $error = "The department '$department' does not exist. Please add it first.";
+            if ($lastInsertId) {
+                $msg = "Class Created Successfully";
             } else {
-                // Check if the class already exists
-                $sql = "SELECT * FROM tblclasses WHERE Department = :department AND Series = :series AND Section = :section AND Semester = :semester";
-                $query = $dbh->prepare($sql);
-                $query->bindParam(':department', $department, PDO::PARAM_STR);
-                $query->bindParam(':series', $series, PDO::PARAM_STR);
-                $query->bindParam(':section', $section, PDO::PARAM_STR);
-                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-                $query->execute();
-                $classExists = $query->rowCount() > 0;
-
-                if ($classExists) {
-                    $error = "Class Already Exists";
-                } else {
-                    // Insert new class
-                    $sql = "INSERT INTO tblclasses(Department, Series, Section, Semester) VALUES(:department, :series, :section, :semester)";
-                    $query = $dbh->prepare($sql);
-                    $query->bindParam(':department', $department, PDO::PARAM_STR);
-                    $query->bindParam(':series', $series, PDO::PARAM_STR);
-                    $query->bindParam(':section', $section, PDO::PARAM_STR);
-                    $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-                    $query->execute();
-                    $lastInsertId = $dbh->lastInsertId();
-
-                    if ($lastInsertId) {
-                        $msg = "Class Created Successfully";
-                    } else {
-                        $error = "Something went wrong. Please try again";
-                    }
-                }
+                $error = "Something went wrong. Please try again";
             }
-        } catch (PDOException $e) {
-            $error = "Database error: " . $e->getMessage();
         }
     }
 ?>
