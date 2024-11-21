@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
@@ -11,23 +11,37 @@ if (strlen($_SESSION['alogin']) == "") {
         $coursecredit = $_POST['coursecredit'];
         $department = $_POST['department'];
         $semester = $_POST['semester'];
-        $sql = "INSERT INTO  tblsubjects(CourseName,CourseCode,CourseCredit,Department,Semester) VALUES(:coursename,:coursecode,:coursecredit,:department,:semester)";
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':coursename', $coursename, PDO::PARAM_STR);
-        $query->bindParam(':coursecode', $coursecode, PDO::PARAM_STR);
-        $query->bindParam(':coursecredit', $coursecredit, PDO::PARAM_STR);
-        $query->bindParam(':department', $department, PDO::PARAM_STR);
-        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-        $query->execute();
-        $lastInsertId = $dbh->lastInsertId();
-        if ($lastInsertId) {
-            $msg = "Course Created successfully";
-        } else {
-            $error = "Something went wrong. Please try again";
-        }
 
+        // Check for duplicate CourseCode
+        $sql_check = "SELECT COUNT(*) FROM tblsubjects WHERE CourseCode = :coursecode";
+        $query_check = $dbh->prepare($sql_check);
+        $query_check->bindParam(':coursecode', $coursecode, PDO::PARAM_STR);
+        $query_check->execute();
+        $exists = $query_check->fetchColumn();
+
+        if ($exists) {
+            $error = "Course Code already exists. Please use a unique Course Code.";
+        } else {
+            // Proceed with insertion
+            $sql = "INSERT INTO tblsubjects (CourseName, CourseCode, CourseCredit, Department, Semester)
+                VALUES (:coursename, :coursecode, :coursecredit, :department, :semester)";
+            $query = $dbh->prepare($sql);
+            $query->bindParam(':coursename', $coursename, PDO::PARAM_STR);
+            $query->bindParam(':coursecode', $coursecode, PDO::PARAM_STR);
+            $query->bindParam(':coursecredit', $coursecredit, PDO::PARAM_STR);
+            $query->bindParam(':department', $department, PDO::PARAM_STR);
+            $query->bindParam(':semester', $semester, PDO::PARAM_INT); // Correct binding
+
+            $query->execute();
+            $lastInsertId = $dbh->lastInsertId();
+            if ($lastInsertId) {
+                $msg = "Course Created successfully";
+            } else {
+                $error = "Something went wrong. Please try again";
+            }
+        }
     }
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -50,13 +64,13 @@ if (strlen($_SESSION['alogin']) == "") {
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-            <?php include ('includes/topbar.php'); ?>
+            <?php include('includes/topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
 
                     <!-- ========== LEFT SIDEBAR ========== -->
-                    <?php include ('includes/leftbar.php'); ?>
+                    <?php include('includes/leftbar.php'); ?>
                     <!-- /.left-sidebar -->
 
                     <div class="main-page">
@@ -98,9 +112,9 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <div class="alert alert-success left-icon-alert" role="alert">
                                                     <strong>Well done!</strong><?php echo htmlentities($msg); ?>
                                                 </div><?php } else if ($error) { ?>
-                                                    <div class="alert alert-danger left-icon-alert" role="alert">
-                                                        <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                                    </div>
+                                                <div class="alert alert-danger left-icon-alert" role="alert">
+                                                    <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
+                                                </div>
                                             <?php } ?>
                                             <form class="form-horizontal" method="post">
                                                 <div class="form-group">
@@ -143,7 +157,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                         value="<?php echo htmlentities($result->Department); ?>">
                                                                         <?php echo htmlentities($result->Department); ?>
                                                                     </option>
-                                                                <?php }
+                                                            <?php }
                                                             } ?>
                                                         </select>
                                                     </div>
@@ -184,18 +198,18 @@ if (strlen($_SESSION['alogin']) == "") {
             <script src="js/prism/prism.js"></script>
             <script src="js/select2/select2.min.js"></script>
             <script sr c="js/main.js"></script>
-            <scr ipt>
-                $(fu nction($) {
-                $(". js-states").select2();
-                $(".js-states-limit").select2({
-                maximumSelectionLength: 2
-                });
+            <script>
+                $(function($) {
+                    $(".js-states").select2();
+                    $(".js-states-limit").select2({
+                        maximumSelectionLength: 2
+                    });
 
-                $(".js-states-hide").select2({
-                minimumResultsForSearch: Infinity
+                    $(".js-states-hide").select2({
+                        minimumResultsForSearch: Infinity
+                    });
                 });
-                });
-                </script>
+            </script>
     </body>
 
     </html>
