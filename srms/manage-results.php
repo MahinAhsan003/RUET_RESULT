@@ -192,7 +192,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
                                                                         // Using tblsessional for Attendance, Quiz, BoardViva, Performance
                                                                         $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                                        m.Attendance, m.Quiz, m.BoardViva, m.Performance,  s.Email
                                                                         FROM tblstudents s
                                                                         LEFT JOIN tblsessional m ON s.RollId = m.RollId
                                                                         INNER JOIN tblregistration r ON s.RollId = r.RollId
@@ -200,7 +200,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     } else {
                                                                         // Using tblmarks for CT_1, CT_2, CT_3, CT_4, Assignment, Semester_Final
                                                                         $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
+                                                                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, s.Email
                                                                         FROM tblstudents s
                                                                         LEFT JOIN tblmarks m ON s.RollId = m.RollId
                                                                         INNER JOIN tblregistration r ON s.RollId = r.RollId
@@ -241,7 +241,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 } else {
                                                                     $results = [];
                                                                 }
-
                                                                 // Dynamically display the marks based on the selected marksType
                                                                 $cnt = 1;
                                                                 if (count($results) > 0) {
@@ -257,9 +256,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                         // Only show the selected marksType for tblmarks (e.g., CT-1, CT-2, etc.)
                                                                         echo "<th>" . htmlentities($marksType) . "</th>";
                                                                     }
-
                                                                     echo '</tr></thead><tbody>';
-
                                                                     // Display data rows dynamically based on the selected marksType
                                                                     foreach ($results as $result) {
                                                                         echo '<tr>';
@@ -275,16 +272,49 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             // Display marks for tblmarks
                                                                             echo '<td>' . htmlentities($result->$marksType) . '</td>';
                                                                         }
-
                                                                         echo '</tr>';
                                                                         $cnt++;
                                                                     }
-
                                                                     echo '</tbody></table>';
                                                                 }
                                                                 ?>
                                                             </tbody>
                                                         </table>
+                                                        <button type="submit" name="send_mail">Send Mail</button>
+                                                        <?php
+                                                        if (isset($_POST['send_mail']) && count($results) > 0) {
+                                                            foreach ($results as $result) {
+                                                                $to = $result->Email;
+                                                                $subject = "Your Marks for the Course";
+                                                                $marksValue = $result->$marksType ?? 'No Marks';
+                                                                $message = "
+                                                                <html>
+                                                                <head>
+                                                                    <title>Your Marks for the Course</title>
+                                                                </head>
+                                                                <body>
+                                                                    <h2>Hello " . htmlentities($result->StudentName) . ",</h2>
+                                                                    <p>Your marks for the course are as follows:</p>
+                                                                    <table border='1'>
+                                                                        <tr><th>Marks Type</th><th>Marks</th></tr>
+                                                                        <tr><td>" . htmlentities($marksType) . "</td><td>" . htmlentities($marksValue) . "</td></tr>
+                                                                    </table>
+                                                                    <p>Best regards,<br>Your University</p>
+                                                                </body>
+                                                                </html>
+                                                                ";
+                                                                $headers = "MIME-Version: 1.0" . "\r\n";
+                                                                $headers .= "Content-Type: text/html; charset=UTF-8" . "\r\n";
+                                                                $headers .= "From: your_email@example.com" . "\r\n";
+
+                                                                if (mail($to, $subject, $message, $headers)) {
+                                                                    echo "Email sent to " . htmlentities($result->StudentName) . " (" . htmlentities($result->Email) . ")<br>";
+                                                                } else {
+                                                                    echo "Failed to send email to " . htmlentities($result->StudentName) . "<br>";
+                                                                }
+                                                            }
+                                                        }
+                                                        ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -297,168 +327,170 @@ if (strlen($_SESSION['tlogin']) == "") {
                     <!-- /.content-container -->
                 </div>
                 <!-- /.content-wrapper -->
-            </div>
-            <!--/.main-wrapper -->
-        </div>
-        <script>
-            // Update series dropdown based on department selection
-            function updateSeries() {
-                var department = document.getElementById("department").value;
+                </div>
+                <!--/.main-wrapper -->
+          </di  v>
+           <scr ipt>
+        // Update series dropdown based on department selection
+           func tion updateSeries() {
+            var department = document.getElementById("department").value;
                 var seriesDropdown = document.getElementById("series");
 
-                seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
-
-                if (seriesOptions[department]) {
-                    seriesOptions[department].forEach(function (series) {
+                     seriesDropdown.innerHTML = '<option value="">- -Select a series--</option>';
+    
+            if (seri    esOptions[department]) {
+                 seri   esOptions[department].forEach(function(series) {
                         var optionElement = document.createElement("option");
                         optionElement.value = series;
                         optionElement.text = series;
                         seriesDropdown.appendChild(optionElement);
-                    });
+                });
                 }
                 updateSemesters(); // Clear the next dropdowns when department changes
             }
 
             function updateSemesters() {
                 var department = document.getElementById("department").value;
-                var series = document.getElementById("series").value;
+            var series = document.getElementById("series").value;
                 var semesterDropdown = document.getElementById("semester");
 
                 semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
-
-                var key = department + '|' + series;
-
-                if (semesterOptions[key]) {
-                    semesterOptions[key].forEach(function (semester) {
+   
+                 var key  = department + '|' + series;
+   
+                 if (semesterOptions[key]) {
+                    semesterOptions[key].forEach(function(semester) {
                         var optionElement = document.createElement("option");
                         optionElement.value = semester;
                         optionElement.text = semester;
                         semesterDropdown.appendChild(optionElement);
-                    });
+                });
                 }
                 updateCourses(); // Clear the next dropdown when series changes
-            }
-
+           }
+     
             function updateCourses() {
-                var department = document.getElementById("department").value;
+            var department = document.getElementById("department").value;
                 var semester = document.getElementById("semester").value;
                 var courseDropdown = document.getElementById("course");
-                var marksTypeDropdown = document.getElementById("marksType");
-
-                courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
-                marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
-
-                var key = department + '|' + semester;
-
-                if (courseOptions[key]) {
-                    courseOptions[key].forEach(function (course) {
+            var marksTypeDropdown = document.getElementById("marksType");
+  
+              courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
+            marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
+   
+                var  key = department + '|' + semester;
+ 
+   
+    
+                 if (courseOptions[key]) {
+                    courseOptions[key].forEach(function(course) {
                         var optionElement = document.createElement("option");
                         optionElement.value = course;
-                        optionElement.text = course;
+                    optionElement.text = course;
                         courseDropdown.appendChild(optionElement);
                     });
-                }
-
-                // Fetch CourseCredit and update MarksType dynamically
-                courseDropdown.addEventListener('change', function () {
-                    var selectedCourse = courseDropdown.value;
-
-                    if (selectedCourse) {
+              }
+   
+              // F  etch CourseCredit and update MarksType dynamically
+              courseDr  opdown.addEventListener('change', function() {
+                   var sele ctedCourse = courseDropdown.value;
+   
+                     if (selectedCourse) {
                         fetch(`fetch_course_credit.php?courseCode=${selectedCourse}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
-                                if (data.CourseCredit >= 3.0) {
-                                    marksTypeDropdown.innerHTML +=
-                                        `
-                                                                                <option value="CT_1">CT-1</option>
-                                                                                <option value="CT_2">CT-2</option>
-                                                                                <option value="CT_3">CT-3</option>
-                                                                                <option value="CT_4">CT-4</option>
-                                                                                <option value="Attendance">Attendance</option>
-                                                                                <option value="Assignment">Assignment</option>
-                                                                                <option value="Semester_Final">Semester Final</option>`;
-                                } else {
-                                    marksTypeDropdown.innerHTML +=
-                                        `
-                                                                                <option value="Attendance">Attendance</option>
-                                                                                <option value="Quiz">Quiz</option>
-                                                                                <option value="BoardViva">Board Viva</option>
-                                                                                <option value="Performance">Performance</option>`;
+                        .then(re    sponse => response.json())
+                         .then(data =   > {
+                            marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
+                            if (data.CourseCredit >= 3.0) {
+                                marksTypeDropdown.innerHTML +=
+                                    `
+                                                                                                                                    <option value="CT_1">CT-1</option>
+                                                                                                                                    <option value="CT_2">CT-2</option>
+                                                                                                                                    <option value="CT_3">CT-3</option>
+                                                                                                                                        <option value="CT_4">CT-4</option>
+                                                                                                                                            <option value="Attendance">Attendance</option>
+                                                                                                                                            <option value="Assignment">Assignment</option>
+                                                                                                                                        <option value="Semester_Final">Semester Final</option>`;
+                            } else {
+                                marksTypeDropdown.innerHTML +=
+                                    `
+                                                                                                                                        <option value="Attendance">Attendance</option>
+                                                                                                                                            <option value="Quiz">Quiz</option>
+                                                                                                                                            <option value="BoardViva">Board Viva</option>
+                                                                                                                                            <option value="Performance">Performance</option>`;
                                 }
-                            });
+                        });
                     }
-                });
+            }) ;
+        }
+
+        var seriesOptions = {
+        <?php
+        // Fetch department and series data from tblclasses
+        $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $results = $query->fetchAll(PDO::FETCH_OBJ);
+        $departments = [];
+        if ($query->rowCount() > 0) {
+            foreach ($results as $result) {
+                $departments[$result->Department][] = $result->Series;
+            }
+        }
+        // Generate the JavaScript object for seriesOptions
+        foreach ($departments as $department => $series) {
+            $uniqueSeries = array_unique($series); // Remove duplicate series
+            echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
+        }
+        ?>
+        };
+        // Update semesters dropdown based on department and series selection
+        var semesterOptions = {
+            <?php
+            // Fetch department, series, and semester data from tblclasses
+            $sql = "SELECT Department, Series, Semester FROM tblclasses";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            $deptSeries = [];
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+                    // Combine Department and Series as the key
+                    $key = $result->Department . '|' . $result->Series;
+                    $deptSeries[$key][] = $result->Semester;
+                }
             }
 
-            var seriesOptions = {
-                <?php
-                // Fetch department and series data from tblclasses
-                $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $departments = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        $departments[$result->Department][] = $result->Series;
-                    }
+            // Generate the JavaScript object for semesterOptions
+            foreach ($deptSeries as $key => $semesters) {
+                $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
+                echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
+            }
+            ?>
+        };
+        // Update courses dropdown based on department and semester selection
+        var courseOptions = {
+            <?php
+            // Fetch department, semester, and course code data from tblsubjects
+            $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            $deptSemesters = [];
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+                    // Combine Department and Semester as the key
+                    $key = $result->Department . '|' . $result->Semester;
+                    $deptSemesters[$key][] = $result->CourseCode;
                 }
-                // Generate the JavaScript object for seriesOptions
-                foreach ($departments as $department => $series) {
-                    $uniqueSeries = array_unique($series); // Remove duplicate series
-                    echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
-                }
-                ?>
-            };
-            // Update semesters dropdown based on department and series selection
-            var semesterOptions = {
-                <?php
-                // Fetch department, series, and semester data from tblclasses
-                $sql = "SELECT Department, Series, Semester FROM tblclasses";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $deptSeries = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        // Combine Department and Series as the key
-                        $key = $result->Department . '|' . $result->Series;
-                        $deptSeries[$key][] = $result->Semester;
-                    }
-                }
+            }
 
-                // Generate the JavaScript object for semesterOptions
-                foreach ($deptSeries as $key => $semesters) {
-                    $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
-                    echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
-                }
-                ?>
-            };
-            // Update courses dropdown based on department and semester selection
-            var courseOptions = {
-                <?php
-                // Fetch department, semester, and course code data from tblsubjects
-                $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $deptSemesters = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        // Combine Department and Semester as the key
-                        $key = $result->Department . '|' . $result->Semester;
-                        $deptSemesters[$key][] = $result->CourseCode;
-                    }
-                }
-
-                // Generate the JavaScript object for courseOptions
-                foreach ($deptSemesters as $key => $courses) {
-                    $uniqueCourses = array_unique($courses); // Remove duplicate courses
-                    echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
-                }
-                ?>
-            };
+            // Generate the JavaScript object for courseOptions
+            foreach ($deptSemesters as $key => $courses) {
+                $uniqueCourses = array_unique($courses); // Remove duplicate courses
+                echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
+            }
+            ?>
+        };
         </script>
         <script src="js/jquery/jquery-2.2.4.min.js"> </script>
         <script src="js/bootstrap/bootstrap.min.js"></script>

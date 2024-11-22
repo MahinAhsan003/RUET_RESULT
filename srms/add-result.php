@@ -262,14 +262,15 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             echo '<td>' . htmlentities($cnt) . '</td>';
                                                                             echo '<td>' . htmlentities($result->StudentName) . '</td>';
                                                                             echo '<td>' . htmlentities($result->RollId) . '</td>';
-
+                                                                            echo '<input type="hidden" name="marksType" value="' . htmlentities($marksType) . '">'; // Store marksType
+                                                                            echo '<input type="hidden" name="semester" value="' . htmlentities($semester) . '">'; // Store semester
+                                                                            echo '<input type="hidden" name="course" value="' . htmlentities($course) . '">'; // Store semester
                                                                             // Display the marksType value as an input field for each student
                                                                             echo '<td>';
                                                                             // If the marks are already available, populate the input field with the existing mark
                                                                             $existingMark = htmlentities($result->$marksType ?? '');
                                                                             echo '<input type="text" name="marks[' . $result->RollId . ']" class="form-control" placeholder="Enter Marks" value="' . $existingMark . '">';
                                                                             echo '</td>';
-
                                                                             echo '</tr>';
                                                                             $cnt++;
                                                                         }
@@ -284,38 +285,46 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             $marks = $_POST['marks']; // Array of RollId => Mark
                                                             $semester = $_POST['semester'];
                                                             $course = $_POST['course'];
-                                                            // Validate $marksType to prevent SQL injection
+                                                            $marksType = $_POST['marksType'];
+
+                                                            // Define allowed columns and their maximum marks
                                                             $allowedColumns = [
-                                                                'Attendance',
-                                                                'Quiz',
-                                                                'BoardViva',
-                                                                'Performance',
-                                                                'CT_1',
-                                                                'CT_2',
-                                                                'CT_3',
-                                                                'CT_4',
-                                                                'Attendance',
-                                                                'Assignment',
-                                                                'Semester_Final'
+                                                                'CT_1' => 20,
+                                                                'CT_2' => 20,
+                                                                'CT_3' => 20,
+                                                                'CT_4' => 20,
+                                                                'Assignment' => 10,
+                                                                'Attendance' => 10,
+                                                                'Semester_Final' => 60,
+                                                                'Quiz' => 20,
+                                                                'BoardViva' => 25,
+                                                                'Performance' => 45
                                                             ];
-                                                            if (!in_array($marksType, $allowedColumns)) {
+
+                                                            // Check if the selected marksType is valid
+                                                            if (!array_key_exists($marksType, $allowedColumns)) {
                                                                 die("Invalid marks type specified."); // Exit if the column name is not allowed
                                                             }
 
+                                                            // Get the maximum allowed marks for the selected marksType
+                                                            $maxMarks = $allowedColumns[$marksType];
+
                                                             foreach ($marks as $rollId => $mark) {
+                                                                // Validate that the entered mark does not exceed the maximum allowed
+                                                                if ($mark > $maxMarks) {
+                                                                    echo "Error: Marks for Roll ID $rollId cannot exceed $maxMarks for $marksType.<br>";
+                                                                    continue; // Skip this record and move to the next
+                                                                }
+
                                                                 // Dynamically construct the query with the validated column name
                                                                 if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
                                                                     $sql = "INSERT INTO tblsessional (RollId, Semester, CourseCode, $marksType) 
                                                                     VALUES (:rollId, :semester, :course, :mark)
                                                                     ON DUPLICATE KEY UPDATE $marksType = :mark";
-                                                                    echo "Constructed SQL: " . $sql . "<br>";
-
                                                                 } else {
                                                                     $sql = "INSERT INTO tblmarks (RollId, Semester, CourseCode, $marksType) 
                                                                     VALUES (:rollId, :semester, :course, :mark)
                                                                     ON DUPLICATE KEY UPDATE $marksType = :mark";
-                                                                    echo "Constructed SQL: " . $sql . "<br>";
-
                                                                 }
 
                                                                 // Prepare and bind parameters
@@ -326,16 +335,14 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 $query->bindParam(':mark', $mark, PDO::PARAM_INT);
 
                                                                 // Execute the query and handle errors
-                                                                try {
-                                                                    $query->execute();
-                                                                    echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
-                                                                } catch (PDOException $e) {
-                                                                    echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
-                                                                }
+                                                                // try {
+                                                                //     $query->execute();
+                                                                //     echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
+                                                                // } catch (PDOException $e) {
+                                                                //     echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                                // }
                                                             }
                                                         }
-
-
                                                         ?>
                                                     </div>
                                                 </div>
@@ -423,20 +430,20 @@ if (strlen($_SESSION['tlogin']) == "") {
                                 if (data.CourseCredit >= 3.0) {
                                     marksTypeDropdown.innerHTML +=
                                         `
-                                                                                                                                                                                <option value="CT_1">CT-1</option>
-                                                                                                                                                                                <option value="CT_2">CT-2</option>
-                                                                                                                                                                                <option value="CT_3">CT-3</option>
-                                                                                                                                                                                <option value="CT_4">CT-4</option>
-                                                                                                                                                                                <option value="Attendance">Attendance</option>
-                                                                                                                                                                                <option value="Assignment">Assignment</option>
-                                                                                                                                                                                <option value="Semester_Final">Semester Final</option>`;
+                                                                                        <option value="CT_1">CT-1</option>
+                                                                                        <option value="CT_2">CT-2</option>
+                                                                                        <option value="CT_3">CT-3</option>
+                                                                                        <option value="CT_4">CT-4</option>
+                                                                                        <option value="Attendance">Attendance</option>
+                                                                                        <option value="Assignment">Assignment</option>
+                                                                                        <option value="Semester_Final">Semester Final</option>`;
                                 } else {
                                     marksTypeDropdown.innerHTML +=
                                         `
-                                                                                                                                                                                <option value="Attendance">Attendance</option>
-                                                                                                                                                                                <option value="Quiz">Quiz</option>
-                                                                                                                                                                                <option value="BoardViva">Board Viva</option>
-                                                                                                                                                                                <option value="Performance">Performance</option>`;
+                                                                                         <option value="Attendance">Attendance</option>
+                                                                                         <option value="Quiz">Quiz</option>
+                                                                                         <option value="BoardViva">Board Viva</option>
+                                                                                         <option value="Performance">Performance</option>`;
                                 }
                             });
                     }
