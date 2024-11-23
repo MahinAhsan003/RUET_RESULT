@@ -27,16 +27,15 @@ if (!isset($_SESSION['login'])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SMS Admin| Add Result </title>
+    <title>Admin Manage Students Results</title>
     <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
     <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
     <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
     <link rel="stylesheet" href="css/prism/prism.css" media="screen">
-    <link rel="stylesheet" href="css/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css" />
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
-
     <style>
         .errorWrap {
             padding: 10px;
@@ -61,288 +60,280 @@ if (!isset($_SESSION['login'])) {
             margin-bottom: 20px;
         }
     </style>
-
 </head>
 
 <body class="top-navbar-fixed">
-
-
     <div class="main-wrapper">
-
-        <!-- ========== TOP NAVBAR ========== -->
         <?php include('includes/teacher-topbar.php'); ?>
-        <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
         <div class="content-wrapper">
             <div class="content-container">
-                <!-- ========== LEFT SIDEBAR ========== -->
                 <?php include('includes/teacher-leftbar.php'); ?>
-                <!-- /.left-sidebar -->
-
-                <div class="content-wrapper">
-                    <div class="content-container">
-
-                        <div class="main-page">
-                            <div class="container-fluid">
-                                <div class="row page-title-div">
-                                    <div class="col-md-6">
-                                        <h2 class="title">Add Result</h2>
-                                    </div>
-                                </div>
-                                <div class="row breadcrumb-div">
-                                    <div class="col-md-6">
-                                        <ul class="breadcrumb">
-                                            <li><a href="teacher-dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                            <li> Result</li>
-                                            <li class="active">Add Result</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                <div class="main-page">
+                    <div class="container-fluid">
+                        <div class="row page-title-div">
+                            <div class="col-md-6">
+                                <h2 class="title">Add Result</h2>
                             </div>
+                        </div>
+                        <div class="row breadcrumb-div">
+                            <div class="col-md-6">
+                                <ul class="breadcrumb">
+                                    <li><a href="teacher-dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                    <li> Result</li>
+                                    <li class="active">Add Result</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                            <section class="section">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="panel">
-                                                <div class="panel-heading">
-                                                    <div class="panel-title">
-                                                        <h5>View Students Info</h5>
-                                                    </div>
+                    <section class="section">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel">
+                                        <div class="panel-heading">
+                                            <div class="panel-title">
+                                                <h5>View Results Info</h5>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body p-20">
+                                            <?php if ($msg) { ?>
+                                                <div class="succWrap"><strong>SUCCESS</strong>:
+                                                    <?php echo htmlentities($msg); ?>
                                                 </div>
-                                                <div class="panel-body p-20">
-                                                    <form method="post" action="">
-                                                        <div class="form-group">
-                                                            <label for="department">Department</label>
-                                                            <select name="department" id="department"
-                                                                class="form-control" onchange="updateSeries()">
-                                                                <option value="">Select Department</option>
-                                                                <?php
-                                                                $sql = "SELECT DISTINCT Department FROM tblclasses";
-                                                                $query = $dbh->prepare($sql);
-                                                                $query->execute();
-                                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                                if ($query->rowCount() > 0) {
-                                                                    foreach ($results as $result) { ?>
-                                                                        <option
-                                                                            value="<?php echo htmlentities($result->Department); ?>">
-                                                                            <?php echo htmlentities($result->Department); ?>
-                                                                        </option>
-                                                                <?php }
-                                                                } ?>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="series">Series</label>
-                                                            <select name="series" id="series" class="form-control"
-                                                                onchange="updateSemesters()">
-                                                                <option value="">Select Series</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="semester">Semester</label>
-                                                            <select name="semester" id="semester" class="form-control"
-                                                                onchange="updateCourses()">
-                                                                <option value="">Select Semester</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="course">Course</label>
-                                                            <select name="course" id="course" class="form-control">
-                                                                <option value="">Select Course</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="marksType">Marks Type</label>
-                                                            <select name="marksType" id="marksType"
-                                                                class="form-control">
-                                                                <option value="">Select Marks Type</option>
-                                                            </select>
-                                                        </div>
-                                                        <button type="submit" name="filter"
-                                                            class="btn btn-primary">Filter</button>
-                                                    </form>
+                                            <?php } ?>
+                                            <?php if ($error) { ?>
+                                                <div class="errorWrap"><strong>ERROR</strong>:
+                                                    <?php echo htmlentities($error); ?>
+                                                </div>
+                                            <?php } ?>
+                                            <form method="post" action="" class="filter-form">
+                                                <div class="form-group">
+                                                    <label for="department">Department</label>
+                                                    <select name="department" id="department"
+                                                        class="form-control" onchange="updateSeries()">
+                                                        <option value="">Select Department</option>
+                                                        <?php
+                                                        $sql = "SELECT DISTINCT Department FROM tblclasses";
+                                                        $query = $dbh->prepare($sql);
+                                                        $query->execute();
+                                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        if ($query->rowCount() > 0) {
+                                                            foreach ($results as $result) { ?>
+                                                                <option
+                                                                    value="<?php echo htmlentities($result->Department); ?>">
+                                                                    <?php echo htmlentities($result->Department); ?>
+                                                                </option>
+                                                        <?php }
+                                                        } ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="series">Series</label>
+                                                    <select name="series" id="series" class="form-control"
+                                                        onchange="updateSemesters()">
+                                                        <option value="">Select Series</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="semester">Semester</label>
+                                                    <select name="semester" id="semester" class="form-control"
+                                                        onchange="updateCourses()">
+                                                        <option value="">Select Semester</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="course">Course</label>
+                                                    <select name="course" id="course" class="form-control">
+                                                        <option value="">Select Course</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="marksType">Marks Type</label>
+                                                    <select name="marksType" id="marksType"
+                                                        class="form-control">
+                                                        <option value="">Select Marks Type</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" name="filter"
+                                                    class="btn btn-primary">Filter</button>
+                                            </form>
 
-                                                    <form method="post" action="">
-                                                        <table id="example"
-                                                            class="display table table-striped table-bordered"
-                                                            cellspacing="0" width="100%">
-                                                            <tbody>
-                                                                <?php
-                                                                if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['department'];
-                                                                    $series = $_POST['series'];
-                                                                    $semester = $_POST['semester'];
-                                                                    $course = $_POST['course'];
-                                                                    $marksType = $_POST['marksType']; // Selected marksType
+                                            <form method="post" action="">
+                                                <table id="example" class="display table table-striped table-bordered"
+                                                    cellspacing="0" width="100%">
+                                                    <tbody>
+                                                        <?php
+                                                        if (isset($_POST['filter'])) {
+                                                            $department = $_POST['department'];
+                                                            $series = $_POST['series'];
+                                                            $semester = $_POST['semester'];
+                                                            $course = $_POST['course'];
+                                                            $marksType = $_POST['marksType']; // Selected marksType
 
-                                                                    // Determine which table to use for the marks query (tblsessional or tblmarks)
-                                                                    if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                        // Using tblsessional for Attendance, Quiz, BoardViva, Performance
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                                                            // Determine which table to use for the marks query (tblsessional or tblmarks)
+                                                            if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
+                                                                // Using tblsessional for Attendance, Quiz, BoardViva, Performance
+                                                                $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
                                                                                     m.Attendance, m.Quiz, m.BoardViva, m.Performance
                                                                                     FROM tblstudents s
                                                                                     LEFT JOIN tblsessional m ON s.RollId = m.RollId
                                                                                     INNER JOIN tblregistration r ON s.RollId = r.RollId
                                                                                     WHERE 1=1";
-                                                                    } else {
-                                                                        // Using tblmarks for CT_1, CT_2, CT_3, CT_4, Assignment, Semester_Final
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                                                            } else {
+                                                                // Using tblmarks for CT_1, CT_2, CT_3, CT_4, Assignment, Semester_Final
+                                                                $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
                                                                             m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
                                                                             FROM tblstudents s
                                                                             LEFT JOIN tblmarks m ON s.RollId = m.RollId
                                                                             INNER JOIN tblregistration r ON s.RollId = r.RollId
                                                                             WHERE 1=1";
-                                                                    }
-
-                                                                    // Add conditions for filtering based on department, series, course
-                                                                    if ($department != "") {
-                                                                        $sql .= " AND s.Department = :department";
-                                                                    }
-                                                                    if ($series != "") {
-                                                                        $sql .= " AND s.Series = :series";
-                                                                    }
-                                                                    if ($course != "") {
-                                                                        $sql .= " AND r.RegisteredCourse = :course";
-                                                                    }
-
-                                                                    // Finalize the query with ordering by RollId
-                                                                    $sql .= " ORDER BY s.RollId";
-
-                                                                    // Prepare and execute the query
-                                                                    $query = $dbh->prepare($sql);
-
-                                                                    // Bind parameters dynamically based on the filters
-                                                                    $params = [];
-                                                                    if ($department != "") {
-                                                                        $params[':department'] = $department;
-                                                                    }
-                                                                    if ($series != "") {
-                                                                        $params[':series'] = $series;
-                                                                    }
-                                                                    if ($course != "") {
-                                                                        $params[':course'] = (string) $course;
-                                                                    }
-
-                                                                    $query->execute($params);
-                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                                } else {
-                                                                    $results = [];
-                                                                }
-                                                                // Dynamically display the marks based on the selected marksType
-                                                                $cnt = 1;
-                                                                if (count($results) > 0) {
-                                                                    echo '<form method="POST" action="">'; // Open form to submit marks
-                                                                    echo '<table class="table table-bordered">';
-                                                                    echo '<thead><tr>';
-                                                                    echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
-
-                                                                    // Display dynamic columns based on selected marksType
-                                                                    echo "<th>" . htmlentities($marksType) . "</th>"; // Display the selected marksType as the header
-
-                                                                    echo '</tr></thead><tbody>';
-
-                                                                    // Display data rows dynamically based on the selected marksType
-                                                                    foreach ($results as $result) {
-                                                                        echo '<tr>';
-                                                                        echo '<td>' . htmlentities($cnt) . '</td>';
-                                                                        echo '<td>' . htmlentities($result->StudentName) . '</td>';
-                                                                        echo '<td>' . htmlentities($result->RollId) . '</td>';
-                                                                        echo '<input type="hidden" name="marksType" value="' . htmlentities($marksType) . '">'; // Store marksType
-                                                                        echo '<input type="hidden" name="semester" value="' . htmlentities($semester) . '">'; // Store semester
-                                                                        echo '<input type="hidden" name="course" value="' . htmlentities($course) . '">'; // Store semester
-                                                                        // Display the marksType value as an input field for each student
-                                                                        echo '<td>';
-                                                                        // If the marks are already available, populate the input field with the existing mark
-                                                                        $existingMark = htmlentities($result->$marksType ?? '');
-                                                                        echo '<input type="text" name="marks[' . $result->RollId . ']" class="form-control" placeholder="Enter Marks" value="' . $existingMark . '">';
-                                                                        echo '</td>';
-                                                                        echo '</tr>';
-                                                                        $cnt++;
-                                                                    }
-                                                                }
-                                                                ?>
-                                                            </tbody>
-                                                        </table>
-                                                        <button type="submit" name="submitMarks">Submit Marks</button>
-                                                    </form>
-                                                    <?php
-                                                    if (isset($_POST['submitMarks'])) {
-                                                        $marks = $_POST['marks']; // Array of RollId => Mark
-                                                        $semester = $_POST['semester'];
-                                                        $course = $_POST['course'];
-                                                        $marksType = $_POST['marksType'];
-
-                                                        // Define allowed columns and their maximum marks
-                                                        $allowedColumns = [
-                                                            'CT_1' => 20,
-                                                            'CT_2' => 20,
-                                                            'CT_3' => 20,
-                                                            'CT_4' => 20,
-                                                            'Assignment' => 10,
-                                                            'Attendance' => 10,
-                                                            'Semester_Final' => 60,
-                                                            'Quiz' => 20,
-                                                            'BoardViva' => 25,
-                                                            'Performance' => 45
-                                                        ];
-
-                                                        // Check if the selected marksType is valid
-                                                        if (!array_key_exists($marksType, $allowedColumns)) {
-                                                            die("Invalid marks type specified."); // Exit if the column name is not allowed
-                                                        }
-
-                                                        // Get the maximum allowed marks for the selected marksType
-                                                        $maxMarks = $allowedColumns[$marksType];
-
-                                                        foreach ($marks as $rollId => $mark) {
-                                                            // Validate that the entered mark does not exceed the maximum allowed
-                                                            if ($mark > $maxMarks) {
-                                                                echo "Error: Marks for Roll ID $rollId cannot exceed $maxMarks for $marksType.<br>";
-                                                                continue; // Skip this record and move to the next
                                                             }
 
-                                                            // Dynamically construct the query with the validated column name
-                                                            if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                $sql = "INSERT INTO tblsessional (RollId, Semester, CourseCode, $marksType) 
-                                                                    VALUES (:rollId, :semester, :course, :mark)
-                                                                    ON DUPLICATE KEY UPDATE $marksType = :mark";
-                                                            } else {
-                                                                $sql = "INSERT INTO tblmarks (RollId, Semester, CourseCode, $marksType) 
-                                                                    VALUES (:rollId, :semester, :course, :mark)
-                                                                    ON DUPLICATE KEY UPDATE $marksType = :mark";
+                                                            // Add conditions for filtering based on department, series, course
+                                                            if ($department != "") {
+                                                                $sql .= " AND s.Department = :department";
+                                                            }
+                                                            if ($series != "") {
+                                                                $sql .= " AND s.Series = :series";
+                                                            }
+                                                            if ($course != "") {
+                                                                $sql .= " AND r.RegisteredCourse = :course";
                                                             }
 
-                                                            // Prepare and bind parameters
+                                                            // Finalize the query with ordering by RollId
+                                                            $sql .= " ORDER BY s.RollId";
+
+                                                            // Prepare and execute the query
                                                             $query = $dbh->prepare($sql);
-                                                            $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
-                                                            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-                                                            $query->bindParam(':course', $course, PDO::PARAM_STR);
-                                                            $query->bindParam(':mark', $mark, PDO::PARAM_INT);
 
-                                                            //Execute the query and handle errors
-                                                            try {
-                                                                $query->execute();
-                                                                echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
-                                                            } catch (PDOException $e) {
-                                                                echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                            // Bind parameters dynamically based on the filters
+                                                            $params = [];
+                                                            if ($department != "") {
+                                                                $params[':department'] = $department;
+                                                            }
+                                                            if ($series != "") {
+                                                                $params[':series'] = $series;
+                                                            }
+                                                            if ($course != "") {
+                                                                $params[':course'] = (string) $course;
+                                                            }
+
+                                                            $query->execute($params);
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                        } else {
+                                                            $results = [];
+                                                        }
+                                                        // Dynamically display the marks based on the selected marksType
+                                                        $cnt = 1;
+                                                        if (count($results) > 0) {
+                                                            echo '<form method="POST" action="">'; // Open form to submit marks
+                                                            echo '<table class="table table-bordered">';
+                                                            echo '<thead><tr>';
+                                                            echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
+
+                                                            // Display dynamic columns based on selected marksType
+                                                            echo "<th>" . htmlentities($marksType) . "</th>"; // Display the selected marksType as the header
+
+                                                            echo '</tr></thead><tbody>';
+
+                                                            // Display data rows dynamically based on the selected marksType
+                                                            foreach ($results as $result) {
+                                                                echo '<tr>';
+                                                                echo '<td>' . htmlentities($cnt) . '</td>';
+                                                                echo '<td>' . htmlentities($result->StudentName) . '</td>';
+                                                                echo '<td>' . htmlentities($result->RollId) . '</td>';
+                                                                echo '<input type="hidden" name="marksType" value="' . htmlentities($marksType) . '">'; // Store marksType
+                                                                echo '<input type="hidden" name="semester" value="' . htmlentities($semester) . '">'; // Store semester
+                                                                echo '<input type="hidden" name="course" value="' . htmlentities($course) . '">'; // Store semester
+                                                                // Display the marksType value as an input field for each student
+                                                                echo '<td>';
+                                                                // If the marks are already available, populate the input field with the existing mark
+                                                                $existingMark = htmlentities($result->$marksType ?? '');
+                                                                echo '<input type="text" name="marks[' . $result->RollId . ']" class="form-control" placeholder="Enter Marks" value="' . $existingMark . '">';
+                                                                echo '</td>';
+                                                                echo '</tr>';
+                                                                $cnt++;
                                                             }
                                                         }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                                <button type="submit" name="submitMarks">Submit Marks</button>
+                                            </form>
+                                            <?php
+                                            if (isset($_POST['submitMarks'])) {
+                                                $marks = $_POST['marks']; // Array of RollId => Mark
+                                                $semester = $_POST['semester'];
+                                                $course = $_POST['course'];
+                                                $marksType = $_POST['marksType'];
+
+                                                // Define allowed columns and their maximum marks
+                                                $allowedColumns = [
+                                                    'CT_1' => 20,
+                                                    'CT_2' => 20,
+                                                    'CT_3' => 20,
+                                                    'CT_4' => 20,
+                                                    'Assignment' => 10,
+                                                    'Attendance' => 10,
+                                                    'Semester_Final' => 60,
+                                                    'Quiz' => 20,
+                                                    'BoardViva' => 25,
+                                                    'Performance' => 45
+                                                ];
+
+                                                // Check if the selected marksType is valid
+                                                if (!array_key_exists($marksType, $allowedColumns)) {
+                                                    die("Invalid marks type specified."); // Exit if the column name is not allowed
+                                                }
+
+                                                // Get the maximum allowed marks for the selected marksType
+                                                $maxMarks = $allowedColumns[$marksType];
+
+                                                foreach ($marks as $rollId => $mark) {
+                                                    // Validate that the entered mark does not exceed the maximum allowed
+                                                    if ($mark > $maxMarks) {
+                                                        echo "Error: Marks for Roll ID $rollId cannot exceed $maxMarks for $marksType.<br>";
+                                                        continue; // Skip this record and move to the next
                                                     }
-                                                    ?>
-                                                </div>
-                                            </div>
+
+                                                    // Dynamically construct the query with the validated column name
+                                                    if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
+                                                        $sql = "INSERT INTO tblsessional (RollId, Semester, CourseCode, $marksType) 
+                                                                    VALUES (:rollId, :semester, :course, :mark)
+                                                                    ON DUPLICATE KEY UPDATE $marksType = :mark";
+                                                    } else {
+                                                        $sql = "INSERT INTO tblmarks (RollId, Semester, CourseCode, $marksType) 
+                                                                    VALUES (:rollId, :semester, :course, :mark)
+                                                                    ON DUPLICATE KEY UPDATE $marksType = :mark";
+                                                    }
+
+                                                    // Prepare and bind parameters
+                                                    $query = $dbh->prepare($sql);
+                                                    $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+                                                    $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                    $query->bindParam(':course', $course, PDO::PARAM_STR);
+                                                    $query->bindParam(':mark', $mark, PDO::PARAM_INT);
+
+                                                    //Execute the query and handle errors
+                                                    // try {
+                                                    //     $query->execute();
+                                                    //     echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
+                                                    // } catch (PDOException $e) {
+                                                    //     echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                    // }
+                                                }
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
-                            </section>
+                            </div>
                         </div>
-                    </div>
+                    </section>
                 </div>
-                <!-- /.content-container -->
             </div>
-            <!-- /.content-wrapper -->
         </div>
-        <!--/.main-wrapper -->
     </div>
     <script>
         // Update series dropdown based on department selection
@@ -504,15 +495,21 @@ if (!isset($_SESSION['login'])) {
             ?>
         };
     </script>
-    <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+
+    <!-- ========== COMMON JS FILES ========== -->
+    <script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script src="js/pace/pace.min.js"> </script>
+    <script src="js/pace/pace.min.js"></script>
     <script src="js/lobipanel/lobipanel.min.js"></script>
     <script src="js/iscroll/iscroll.js"></script>
     <script src="js/prism/prism.js"></script>
-    <script sr c="js/select2/select2.min.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/DataTables/datatables.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        $(function($) {
+            $('#example').DataTable();
+        });
+    </script>
 </body>
 
 </html>
