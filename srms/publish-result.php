@@ -3,61 +3,18 @@ session_start();
 error_reporting(0);
 include('includes/config.php');
 
-if (!isset($_SESSION['login'])) {
+if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
-    exit();
-} else {
-    $teacherid = $_SESSION['login'];
-    $sql = "SELECT * FROM tblteachers WHERE TeacherId=:teacherid";
-    $query = $dbh->prepare($sql);
-    $query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
-    $query->execute();
-    $result = $query->fetch(PDO::FETCH_OBJ);
-
-    if (!$result) {
-        header("Location: index.php");
-        exit();
-    }
+    exit;
 }
 ?>
 <?php
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if (strlen($_SESSION['tlogin']) == "") {
+if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
-    if (isset($_POST['submit'])) {
-        $marks = array();
-        $class = $_POST['class'];
-        $studentid = $_POST['studentid'];
-        $mark = $_POST['marks'];
-
-        $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination JOIN tblsubjects ON tblsubjects.id = tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId = :cid ORDER BY tblsubjects.SubjectName");
-        $stmt->execute(array(':cid' => $class));
-        $sid1 = array();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            array_push($sid1, $row['id']);
-        }
-
-        for ($i = 0; $i < count($mark); $i++) {
-            $mar = $mark[$i];
-            $sid = $sid1[$i];
-            $sql = "INSERT INTO tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid, :class, :sid, :marks)";
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
-            $query->bindParam(':class', $class, PDO::PARAM_STR);
-            $query->bindParam(':sid', $sid, PDO::PARAM_STR);
-            $query->bindParam(':marks', $mar, PDO::PARAM_STR);
-            $query->execute();
-            $lastInsertId = $dbh->lastInsertId();
-            if ($lastInsertId) {
-                $msg = "Result info added successfully";
-            } else {
-                $error = "Something went wrong. Please try again";
-            }
-        }
-    }
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -80,7 +37,6 @@ if (strlen($_SESSION['tlogin']) == "") {
 
     <body class="top-navbar-fixed">
 
-
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
@@ -89,7 +45,7 @@ if (strlen($_SESSION['tlogin']) == "") {
             <div class="content-wrapper">
                 <div class="content-container">
                     <!-- ========== LEFT SIDEBAR ========== -->
-                    <?php include('includes/teacher-leftbar.php'); ?>
+                    <?php include('includes/leftbar.php'); ?>
                     <!-- /.left-sidebar -->
 
                     <div class="content-wrapper">
@@ -99,7 +55,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                 <div class="container-fluid">
                                     <div class="row page-title-div">
                                         <div class="col-md-6">
-                                            <h2 class="title">Calculate GPA</h2>
+                                            <h2 class="title">Publish Result</h2>
                                         </div>
                                     </div>
                                     <div class="row breadcrumb-div">
@@ -107,7 +63,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                             <ul class="breadcrumb">
                                                 <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
                                                 <li> Result</li>
-                                                <li class="active">Calculate GPA</li>
+                                                <li class="active">Publish Result</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -401,27 +357,27 @@ if (strlen($_SESSION['tlogin']) == "") {
                 <!-- /.content-wrapper -->
             </div>
             <!--/.main-wrapper -->
-        </div>
-        <script>
-            // Update series dropdown based on department selection
-            function updateSeries() {
+            </di v>
+            <scr ipt>
+                // Update series dropdown based on department selection
+                function updateSeries() {
                 var department = document.getElementById("department").value;
                 var seriesDropdown = document.getElementById("series");
 
                 seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
-                if (seriesOptions[department]) {
-                    seriesOptions[department].forEach(function (series) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = series;
-                        optionElement.text = series;
-                        seriesDropdown.appendChild(optionElement);
-                    });
+                if (seri esOptions[department]) {
+                seriesOptions[department].forEach(function(series) {
+                var optionElement = document.createElement("option");
+                optionElement.value = series;
+                optionElement.text = series;
+                seriesDropdown.appendChild(optionElement);
+                });
                 }
                 updateSemesters(); // Clear the next dropdowns when department changes
-            }
+                }
 
-            function updateSemesters() {
+                function updateSemesters() {
                 var department = document.getElementById("department").value;
                 var series = document.getElementById("series").value;
                 var semesterDropdown = document.getElementById("semester");
@@ -430,18 +386,18 @@ if (strlen($_SESSION['tlogin']) == "") {
 
                 var key = department + '|' + series;
 
-                if (semesterOptions[key]) {
-                    semesterOptions[key].forEach(function (semester) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = semester;
-                        optionElement.text = semester;
-                        semesterDropdown.appendChild(optionElement);
-                    });
+                if (seme sterOptions[key]) {
+                seme sterOptions[key].forEach(function(semester) {
+                var optionElement = document.createElement("option");
+                optionElement.value = semester;
+                optionElement.text = semester;
+                semesterDropdown.appendChild(optionElement);
+                });
                 }
                 updateCourses(); // Clear the next dropdown when series changes
-            }
+                }
 
-            function updateCourses() {
+                function updateCourses() {
                 var department = document.getElementById("department").value;
                 var semester = document.getElementById("semester").value;
                 var courseDropdown = document.getElementById("course");
@@ -451,17 +407,19 @@ if (strlen($_SESSION['tlogin']) == "") {
                 var key = department + '|' + semester;
 
 
-                if (courseOptions[key]) {
-                    courseOptions[key].forEach(function (course) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = course;
-                        optionElement.text = course;
-                        courseDropdown.appendChild(optionElement);
-                    });
-                }
-            }
 
-            var seriesOptions = {
+                if (courseOptions[key]) {
+                cour seOptions[key].forEach(function(course) {
+                var optionElement = document.createElement("option");
+                optionElement.value = course;
+                optionElement.text = course;
+                courseDropdown.appendChild(optionElement);
+                });
+                }
+
+                }
+
+                var seriesOptions = {
                 <?php
                 $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
                 $query = $dbh->prepare($sql);
@@ -478,9 +436,9 @@ if (strlen($_SESSION['tlogin']) == "") {
                     echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
                 }
                 ?>
-            };
+                };
 
-            var semesterOptions = {
+                var semesterOptions = {
                 <?php
                 $sql = "SELECT Department, Series, Semester FROM tblclasses";
                 $query = $dbh->prepare($sql);
@@ -499,9 +457,9 @@ if (strlen($_SESSION['tlogin']) == "") {
                     echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
                 }
                 ?>
-            };
+                };
 
-            var courseOptions = {
+                var courseOptions = {
                 <?php
                 $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
                 $query = $dbh->prepare($sql);
@@ -520,18 +478,18 @@ if (strlen($_SESSION['tlogin']) == "") {
                     echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
                 }
                 ?>
-            };
-        </script>
+                };
+                </script>
 
-        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"> </script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-        <script src="js/prism/prism.js"></script>
-        <script sr c="js/select2/select2.min.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/DataTables/datatables.min.js"></script>
+                <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+                <script src="js/bootstrap/bootstrap.min.js"></script>
+                <script src="js/pace/pace.min.js"> </script>
+                <script src="js/lobipanel/lobipanel.min.js"></script>
+                <script src="js/iscroll/iscroll.js"></script>
+                <script src="js/prism/prism.js"></script>
+                <script sr c="js/select2/select2.min.js"></script>
+                <script src="js/main.js"></script>
+                <script src="js/DataTables/datatables.min.js"></script>
     </body>
 
     </html>
