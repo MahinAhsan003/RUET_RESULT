@@ -185,25 +185,25 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     $query->execute([':course' => $course]);
                                                                     $courseCredit = $query->fetchColumn();
 
-                                                                    // Initialize marks columns and query string
+                                                                    // Based on course credit, we decide the marks columns
                                                                     if ($courseCredit < 3.0) {
-                                                                        // Use tblsessional columns (no Best 3 CT Average)
+                                                                        // Use tblsessional columns
                                                                         $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
                                                                         $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                FROM tblstudents s
-                LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                                        FROM tblstudents s
+                                                                        LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                        WHERE r.RegisteredCourse = :course";
                                                                     } else {
-                                                                        // Use tblmarks columns (include Best 3 CT Average)
+                                                                        // Use tblmarks columns
                                                                         $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Assignment', 'Semester_Final'];
                                                                         $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
-                FROM tblstudents s
-                LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
+                                                                        FROM tblstudents s
+                                                                        LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                        WHERE r.RegisteredCourse = :course";
                                                                     }
 
                                                                     // Add filters for department, series, and semester
@@ -238,11 +238,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             echo "<th>" . htmlentities($column) . "</th>"; // Display column name in header
                                                                         }
 
-                                                                        // Add the "Best 3 CT Average" column header if fetching from tblmarks
-                                                                        if ($courseCredit >= 3.0) {
-                                                                            echo '<th>Best 3 CT Average</th>';
-                                                                        }
-
                                                                         echo '</tr></thead><tbody>';
 
                                                                         // Display data rows dynamically based on marks columns
@@ -254,27 +249,8 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                             echo '<td>' . htmlentities($row['RollId']) . '</td>';
 
                                                                             // Loop through each marks column and display the corresponding value
-                                                                            $ctScores = []; // Array to store CT marks for calculating the average
                                                                             foreach ($marksColumns as $column) {
-                                                                                // If the column is a CT score, add it to the CT scores array
-                                                                                if (in_array($column, ['CT_1', 'CT_2', 'CT_3', 'CT_4'])) {
-                                                                                    $ctScores[] = $row[$column] ?? 0; // Use 0 if the value is null
-                                                                                }
                                                                                 echo '<td>' . htmlentities($row[$column] ?? 'N/A') . '</td>'; // Display marks or 'N/A' if not available
-                                                                            }
-
-                                                                            // Calculate the best 3 average for CT marks if fetching from tblmarks
-                                                                            if ($courseCredit >= 3.0 && count($ctScores) > 0) {
-                                                                                // Sort the array in descending order to get the best 3 marks
-                                                                                rsort($ctScores);
-                                                                                // Take the top 3 scores and calculate their average
-                                                                                $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
-                                                                                echo '<td>' . number_format($bestThreeAverage, 2) . '</td>'; // Display the average, formatted to 2 decimal places
-                                                                            } else {
-                                                                                // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
-                                                                                if ($courseCredit >= 3.0) {
-                                                                                    echo '<td></td>'; // This is to ensure no empty cell when course credit is less than 3
-                                                                                }
                                                                             }
 
                                                                             echo '</tr>';
@@ -350,7 +326,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                 courseDropdown.innerHTML = '<option value="">Select Course</option>';
 
                 var key = department + '|' + semester;
-
 
                 if (courseOptions[key]) {
                     courseOptions[key].forEach(function (course) {

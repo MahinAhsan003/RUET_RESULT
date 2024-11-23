@@ -30,6 +30,8 @@
                         </li>
                         <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
                                     Result</span></a></li>
+                        <li><a href="calculate-gpa.php"><i class="fa fa fa-server"></i> <span>Calculate
+                                    GPA</span></a></li>
 
                     </ul>
                 </li>
