@@ -40,85 +40,44 @@ if (!isset($_SESSION['login'])) {
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="../js/modernizr/modernizr.min.js"></script>
     <style>
-    .center-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 80vh;
-        /* Adjust this value as needed */
-    }
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            /* Adjust this value as needed */
+        }
 
-    .student-info {
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+        .student-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-    .student-info h3 {
-        margin-top: 0;
-        color: #333;
-    }
+        .student-info h3 {
+            margin-top: 0;
+            color: #333;
+        }
 
-    .student-info p {
-        font-size: 14px;
-        color: #555;
-    }
+        .student-info p {
+            font-size: 14px;
+            color: #555;
+        }
 
-    .student-info p strong {
-        color: #000;
-    }
+        .student-info p strong {
+            color: #000;
+        }
     </style>
 </head>
 
 <body class="top-navbar-fixed">
     <div class="main-wrapper">
-        <?php include('includes/topbar.php'); ?>
+        <?php include('includes/teacher-topbar.php'); ?>
         <div class="content-wrapper">
             <div class="content-container">
-
-                <div class="left-sidebar bg-black-300 box-shadow ">
-                    <div class="sidebar-content">
-                        <div class="user-info closed">
-                            <img src="http://placehold.it/90/c2c2c2?text=User" alt="John Doe"
-                                class="img-circle profile-img">
-                            <h6 class="title">Teacher</h6>
-                        </div>
-                        <!-- /.user-info -->
-
-                        <div class="sidebar-nav">
-                            <ul class="side-nav color-gray">
-                                <li class="nav-header">
-                                    <span class="">Main Category</span>
-                                </li>
-                                <li>
-                                    <a href="teacher-dashboard.php"><i class="fa fa-dashboard"></i>
-                                        <span>Dashboard</span> </a>
-
-                                </li>
-                                <li class="nav-header">
-                                    <span class="">Appearance</span>
-                                </li>
-
-
-                                <li class="has-children">
-                                    <a href="#"><i class="fa fa-info-circle"></i> <span>Result</span> <i
-                                            class="fa fa-angle-right arrow"></i></a>
-                                    <ul class="child-nav">
-                                        <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
-                                                    Result</span></a>
-                                        </li>
-                                        <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
-                                                    Result</span></a></li>
-
-                                    </ul>
-                                </li>
-                        </div>
-                        <!-- /.sidebar-nav -->
-                    </div>
-                    <!-- /.sidebar-content -->
-                </div>
+                <?php include('includes/teacher-leftbar.php'); ?>
                 <div class="main-page">
                     <div class="container-fluid">
                         <div class="row page-title-div">
@@ -201,32 +160,32 @@ if (!isset($_SESSION['login'])) {
     <script src="js/traffic-chart.js"></script>
     <script src="js/task-list.js"></script>
     <script>
-    $(function() {
-        // Counter for dashboard stats
-        $('.counter').counterUp({
-            delay: 10,
-            time: 1000
+        $(function() {
+            // Counter for dashboard stats
+            $('.counter').counterUp({
+                delay: 10,
+                time: 1000
+            });
+            // Welcome notification
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            toastr["success"]("Welcome to student Result Management System!");
         });
-        // Welcome notification
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": false,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        }
-        toastr["success"]("Welcome to student Result Management System!");
-    });
     </script>
 </body>
 

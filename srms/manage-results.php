@@ -1,475 +1,555 @@
 <?php
 session_start();
 error_reporting(0);
-include('includes/config.php');
 
 if (!isset($_SESSION['login'])) {
     header("Location: index.php");
     exit();
-} else {
-    $teacherid = $_SESSION['login'];
-    $sql = "SELECT * FROM tblteachers WHERE TeacherId=:teacherid";
-    $query = $dbh->prepare($sql);
-    $query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
-    $query->execute();
-    $result = $query->fetch(PDO::FETCH_OBJ);
+}
+include('includes/config.php');
 
-    if (!$result) {
-        header("Location: index.php");
+// Import PHPMailer classes into the global namespace
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Load Composer's autoloader
+require '../vendor/autoload.php';
+
+// Create an instance; passing `true` enables exceptions
+$mail = new PHPMailer(true);
+
+$teacherid = $_SESSION['login'];
+
+// Fetch teacher's department to ensure proper access
+$sql = "SELECT Department FROM tblteachers WHERE TeacherId=:teacherid";
+$query = $dbh->prepare($sql);
+$query->bindParam(':teacherid', $teacherid, PDO::PARAM_STR);
+$query->execute();
+$teacherDepartment = $query->fetchColumn();
+
+if (!$teacherDepartment) {
+    header("Location: index.php");
+    exit();
+}
+
+if (isset($_POST['send_marks'])) {
+    // Get filters from the form
+    $department = $_POST['department'] ?? null;
+    $series = $_POST['series'] ?? null;
+    $semester = $_POST['semester'] ?? null;
+    $course = $_POST['course'] ?? null;
+
+    if (!$department || !$series || !$semester || !$course) {
+        echo "Please fill all the required fields.";
         exit();
     }
+
+    // SQL query to fetch student and marks data based on filters
+    $sql = "SELECT 
+                s.StudentName, s.RollId, s.StudentEmail,
+                m.CT_1, m.CT_2, m.CT_3, m.CT_4, 
+                m.Assignment, m.Attendance
+            FROM tblstudents s
+            LEFT JOIN tblmarks m ON s.RollId = m.RollId
+            INNER JOIN tblregistration r ON s.RollId = r.RollId
+            WHERE s.Department = :department 
+              AND s.Series = :series 
+              AND r.Semester = :semester 
+              AND r.RegisteredCourse = :course";
+
+    $query = $dbh->prepare($sql);
+    $query->execute([
+        ':department' => $department,
+        ':series' => $series,
+        ':semester' => $semester,
+        ':course' => $course
+    ]);
+
+    $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+    if (empty($results)) {
+        echo "No students found for the selected filters.";
+        exit();
+    }
+
+    // Array to track emails that have been sent
+    $sentEmails = [];
+
+    // Email each student their marks
+    foreach ($results as $row) {
+        $email = $row->StudentEmail;
+
+        // Skip if the email is already processed
+        if (in_array($email, $sentEmails)) {
+            continue;
+        }
+
+        // Validate email
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "Invalid email address for student {$row->StudentName}: $email<br>";
+            continue; // Skip invalid email addresses
+        }
+
+        $studentName = $row->StudentName;
+        $ctMarks = [
+            'CT_1' => $row->CT_1 ?? 'Not Published Yet',
+            'CT_2' => $row->CT_2 ?? 'Not Published Yet',
+            'CT_3' => $row->CT_3 ?? 'Not Published Yet',
+            'CT_4' => $row->CT_4 ?? 'Not Published Yet'
+        ];
+        $assignment = $row->Assignment ?? 'Not Available';
+        $attendance = $row->Attendance ?? 'Not Available';
+
+        // Calculate average of the best 3 CT marks
+        $validMarks = array_filter($ctMarks, fn($mark) => is_numeric($mark));
+        rsort($validMarks);
+        $averageCT = count($validMarks) >= 3
+            ? ceil(array_sum(array_slice($validMarks, 0, 3)) / 3)
+            : 'Not Available';
+
+        // Email body content
+        $body = "<p>Dear $studentName,</p>
+                 <p>Here are your marks for $course:</p>
+                 <ul>
+                    <li>CT 1: {$ctMarks['CT_1']}</li>
+                    <li>CT 2: {$ctMarks['CT_2']}</li>
+                    <li>CT 3: {$ctMarks['CT_3']}</li>
+                    <li>CT 4: {$ctMarks['CT_4']}</li>
+                    <li>Average of Best 3 CTs: $averageCT</li>
+                    <li>Assignment: $assignment</li>
+                    <li>Attendance: $attendance</li>
+                 </ul>
+                 <p>Best Regards,<br>RUET ECE</p>";
+
+        try {
+            // Server settings
+            $mail->SMTPDebug = SMTP::DEBUG_OFF;
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ruetecemailer@gmail.com';
+            $mail->Password   = 'vmwtflzdhqppllum';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = 465;
+
+            // Recipients
+            $mail->setFrom('ruetecemailer@gmail.com', 'RUET ECE');
+            $mail->addAddress($email, $studentName);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Your CT, Assignment & Attendance Marks';
+            $mail->Body    = $body;
+
+            $mail->send();
+            $sentEmails[] = $email; // Add to sent emails list
+        } catch (Exception $e) {
+            echo "Failed to send email to $studentName ($email). Error: {$mail->ErrorInfo}<br>";
+        }
+
+        // Clear recipients for the next iteration
+        $mail->clearAddresses();
+    }
+    header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+    exit();
 }
 ?>
-<?php
-session_start();
-error_reporting(0);
-include('includes/config.php');
-if (strlen($_SESSION['tlogin']) == "") {
-    header("Location: index.php");
-} else {
-    if (isset($_POST['submit'])) {
-        $marks = array();
-        $class = $_POST['class'];
-        $studentid = $_POST['studentid'];
-        $mark = $_POST['marks'];
-
-        $stmt = $dbh->prepare("SELECT tblsubjects.SubjectName,tblsubjects.id FROM tblsubjectcombination JOIN tblsubjects ON tblsubjects.id = tblsubjectcombination.SubjectId WHERE tblsubjectcombination.ClassId = :cid ORDER BY tblsubjects.SubjectName");
-        $stmt->execute(array(':cid' => $class));
-        $sid1 = array();
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            array_push($sid1, $row['id']);
-        }
-
-        for ($i = 0; $i < count($mark); $i++) {
-            $mar = $mark[$i];
-            $sid = $sid1[$i];
-            $sql = "INSERT INTO tblresult(StudentId,ClassId,SubjectId,marks) VALUES(:studentid, :class, :sid, :marks)";
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':studentid', $studentid, PDO::PARAM_STR);
-            $query->bindParam(':class', $class, PDO::PARAM_STR);
-            $query->bindParam(':sid', $sid, PDO::PARAM_STR);
-            $query->bindParam(':marks', $mar, PDO::PARAM_STR);
-            $query->execute();
-            $lastInsertId = $dbh->lastInsertId();
-            if ($lastInsertId) {
-                $msg = "Result info added successfully";
-            } else {
-                $error = "Something went wrong. Please try again";
-            }
-        }
-    }
-?>
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin| Manage Result </title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen">
-        <link rel="stylesheet" href="css/select2/select2.min.css">
-        <link rel="stylesheet" href="css/main.css" media="screen">
-        <script src="js/modernizr/modernizr.min.js"></script>
-
-    </head>
-
-    <body class="top-navbar-fixed">
 
 
-        <div class="main-wrapper">
+<!DOCTYPE html>
+<html lang="en">
 
-            <!-- ========== TOP NAVBAR ========== -->
-            <?php include('includes/topbar.php'); ?>
-            <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-            <div class="content-wrapper">
-                <div class="content-container">
-                    <!-- ========== LEFT SIDEBAR ========== -->
-                    <?php include('includes/teacher-leftbar.php'); ?>
-                    <!-- /.left-sidebar -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manage Studnets $results </title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="css/font-awesome.min.css" media="screen">
+    <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen">
+    <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen">
+    <link rel="stylesheet" href="css/prism/prism.css" media="screen">
+    <link rel="stylesheet" href="css/select2/select2.min.css">
+    <link rel="stylesheet" href="css/main.css" media="screen">
+    <script src="js/modernizr/modernizr.min.js"></script>
 
-                    <div class="content-wrapper">
-                        <div class="content-container">
+</head>
 
-                            <div class="main-page">
-                                <div class="container-fluid">
-                                    <div class="row page-title-div">
-                                        <div class="col-md-6">
-                                            <h2 class="title">Add Result</h2>
-                                        </div>
-                                    </div>
-                                    <div class="row breadcrumb-div">
-                                        <div class="col-md-6">
-                                            <ul class="breadcrumb">
-                                                <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                                <li> Result</li>
-                                                <li class="active">Manage Result</li>
-                                            </ul>
-                                        </div>
+<body class="top-navbar-fixed">
+
+
+    <div class="main-wrapper">
+
+        <!-- ========== TOP NAVBAR ========== -->
+        <?php include('includes/teacher-topbar.php'); ?>
+        <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
+        <div class="content-wrapper">
+            <div class="content-container">
+                <!-- ========== LEFT SIDEBAR ========== -->
+                <?php include('includes/teacher-leftbar.php'); ?>
+                <!-- /.left-sidebar -->
+
+                <div class="content-wrapper">
+                    <div class="content-container">
+
+                        <div class="main-page">
+                            <div class="container-fluid">
+                                <div class="row page-title-div">
+                                    <div class="col-md-6">
+                                        <h2 class="title">Manage Students Results</h2>
                                     </div>
                                 </div>
+                                <div class="row breadcrumb-div">
+                                    <div class="col-md-6">
+                                        <ul class="breadcrumb">
+                                            <li><a href="teacher-dashboard.php"><i class="fa fa-home"></i> Home</a></li>
+                                            <li> Result</li>
+                                            <li class="active">Manage Studnets Results</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <section class="section">
-                                    <div class="container-fluid">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="panel">
-                                                    <div class="panel-heading">
-                                                        <div class="panel-title">
-                                                            <h5>View Students Info</h5>
-                                                        </div>
+                            <section class="section">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="panel">
+                                                <div class="panel-heading">
+                                                    <div class="panel-title">
+                                                        <h5>View Students Results</h5>
                                                     </div>
-                                                    <div class="panel-body p-20">
-                                                        <form method="post" action="" class="filter-form">
-                                                            <div class="form-group">
-                                                                <label for="department">Department</label>
-                                                                <select name="department" id="department"
-                                                                    class="form-control" onchange="updateSeries()">
-                                                                    <option value="">Select Department</option>
-                                                                    <?php
-                                                                    $sql = "SELECT DISTINCT Department FROM tblclasses";
-                                                                    $query = $dbh->prepare($sql);
-                                                                    $query->execute();
-                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                                    if ($query->rowCount() > 0) {
-                                                                        foreach ($results as $result) { ?>
-                                                                            <option
-                                                                                value="<?php echo htmlentities($result->Department); ?>">
-                                                                                <?php echo htmlentities($result->Department); ?>
-                                                                            </option>
-                                                                    <?php }
-                                                                    } ?>
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="series">Series</label>
-                                                                <select name="series" id="series" class="form-control"
-                                                                    onchange="updateSemesters()">
-                                                                    <option value="">Select Series</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="semester">Semester</label>
-                                                                <select name="semester" id="semester" class="form-control"
-                                                                    onchange="updateCourses()">
-                                                                    <option value="">Select Semester</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="course">Course</label>
-                                                                <select name="course" id="course" class="form-control">
-                                                                </select>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="marksType">Marks Type</label>
-                                                                <select name="marksType" id="marksType"
-                                                                    class="form-control">
-                                                                    <option value="">Select Marks Type</option>
-                                                                </select>
-                                                            </div>
-
-                                                            <button type="submit" name="filter"
-                                                                class="btn btn-primary">Filter</button>
-                                                        </form>
-
-                                                        <table id="example"
-                                                            class="display table table-striped table-bordered"
-                                                            cellspacing="0" width="100%">
-                                                            <tbody>
+                                                </div>
+                                                <div class="panel-body p-20">
+                                                    <form method="post" action="" class="filter-form">
+                                                        <div class="form-group">
+                                                            <label for="department">Department</label>
+                                                            <select name="department" id="department" class="form-control" onchange="updateSeries()">
+                                                                <option value="">Select Department</option>
                                                                 <?php
-                                                                if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['department'];
-                                                                    $series = $_POST['series'];
-                                                                    $semester = $_POST['semester'];
-                                                                    $course = $_POST['course'];
-                                                                    $marksType = $_POST['marksType']; // Selected marksType
+                                                                $sql = "SELECT DISTINCT Department FROM tblclasses";
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->execute();
+                                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                if ($query->rowCount() > 0) {
+                                                                    foreach ($results as $result) { ?>
+                                                                        <option value="<?php echo htmlentities($result->Department); ?>"
+                                                                            <?php echo isset($_POST['department']) && $_POST['department'] == $result->Department ? 'selected' : ''; ?>>
+                                                                            <?php echo htmlentities($result->Department); ?>
+                                                                        </option>
+                                                                <?php }
+                                                                } ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="series">Series</label>
+                                                            <select name="series" id="series" class="form-control" onchange="updateSemesters()">
+                                                                <option value="">Select Series</option>
+                                                                <?php if (isset($_POST['series'])) { ?>
+                                                                    <option value="<?php echo $_POST['series']; ?>" selected><?php echo $_POST['series']; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="semester">Semester</label>
+                                                            <select name="semester" id="semester" class="form-control" onchange="updateCourses()">
+                                                                <option value="">Select Semester</option>
+                                                                <?php if (isset($_POST['semester'])) { ?>
+                                                                    <option value="<?php echo $_POST['semester']; ?>" selected><?php echo $_POST['semester']; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="course">Course</label>
+                                                            <select name="course" id="course" class="form-control">
+                                                                <option value="">Select Course</option>
+                                                                <?php if (isset($_POST['course'])) { ?>
+                                                                    <option value="<?php echo $_POST['course']; ?>" selected><?php echo $_POST['course']; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                                                    </form>
+                                                    <table id="example"
+                                                        class="display table table-striped table-bordered"
+                                                        cellspacing="0" width="100%">
+                                                        <tbody>
+                                                            <?php
+                                                            if (isset($_POST['filter'])) {
+                                                                $GLOBALS['department'] = $_POST['department'];
+                                                                $GLOBALS['series'] = $_POST['series'];
+                                                                $GLOBALS['semester'] = $_POST['semester'];
+                                                                $GLOBALS['course'] = $_POST['course'];
 
-                                                                    // Determine which table to use for the marks query (tblsessional or tblmarks)
-                                                                    if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                        // Using tblsessional for Attendance, Quiz, BoardViva, Performance
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                                                                        FROM tblstudents s
-                                                                        LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                        WHERE 1=1";
-                                                                    } else {
-                                                                        // Using tblmarks for CT_1, CT_2, CT_3, CT_4, Assignment, Semester_Final
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
-                                                                        FROM tblstudents s
-                                                                        LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                        WHERE 1=1";
-                                                                    }
+                                                                $department = $GLOBALS['department'];
+                                                                $series = $GLOBALS['series'];
+                                                                $semester = $GLOBALS['semester'];
+                                                                $course = $GLOBALS['course'];
 
-                                                                    // Add conditions for filtering based on department, series, course
-                                                                    if ($department != "") {
-                                                                        $sql .= " AND s.Department = :department";
-                                                                    }
-                                                                    if ($series != "") {
-                                                                        $sql .= " AND s.Series = :series";
-                                                                    }
-                                                                    if ($course != "") {
-                                                                        $sql .= " AND r.RegisteredCourse = :course";
-                                                                    }
 
-                                                                    // Finalize the query with ordering by RollId
-                                                                    $sql .= " ORDER BY s.RollId";
 
-                                                                    // Prepare and execute the query
-                                                                    $query = $dbh->prepare($sql);
+                                                                // Fetch course credit to determine marks columns
+                                                                $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->execute([':course' => $course]);
+                                                                $courseCredit = $query->fetchColumn();
 
-                                                                    // Bind parameters dynamically based on the filters
-                                                                    $params = [];
-                                                                    if ($department != "") {
-                                                                        $params[':department'] = $department;
-                                                                    }
-                                                                    if ($series != "") {
-                                                                        $params[':series'] = $series;
-                                                                    }
-                                                                    if ($course != "") {
-                                                                        $params[':course'] = (string) $course;
-                                                                    }
-
-                                                                    $query->execute($params);
-                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                // Initialize marks columns and query string
+                                                                if ($courseCredit < 3.0) {
+                                                                    // Use tblsessional columns (no Best 3 CT Average)
+                                                                    $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
+                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                FROM tblstudents s
+                LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                INNER JOIN tblregistration r ON s.RollId = r.RollId
+                WHERE r.RegisteredCourse = :course";
                                                                 } else {
-                                                                    $results = [];
+                                                                    // Use tblmarks columns (include Best 3 CT Average)
+                                                                    $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Attendance', 'Assignment', 'Semester_Final'];
+                                                                    $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
+                FROM tblstudents s
+                LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                INNER JOIN tblregistration r ON s.RollId = r.RollId
+                WHERE r.RegisteredCourse = :course";
                                                                 }
 
-                                                                // Dynamically display the marks based on the selected marksType
-                                                                $cnt = 1;
-                                                                if (count($results) > 0) {
+                                                                // Add filters for department, series, and semester
+                                                                if ($department)
+                                                                    $sql .= " AND s.Department = :department";
+                                                                if ($series)
+                                                                    $sql .= " AND s.Series = :series";
+                                                                if ($semester)
+                                                                    $sql .= " AND r.Semester = :semester";
+
+                                                                // Prepare and execute query
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->execute([
+                                                                    ':course' => $course,
+                                                                    ':department' => $department,
+                                                                    ':series' => $series,
+                                                                    ':semester' => $semester
+                                                                ]);
+
+                                                                $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                                                                if ($query->rowCount() > 0) {
+                                                                    // Table start
                                                                     echo '<table class="table table-bordered">';
+
+                                                                    // Table header
                                                                     echo '<thead><tr>';
                                                                     echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
 
-                                                                    // Display dynamic columns based on selected marksType
-                                                                    if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                        // Only show the selected marksType (e.g., Attendance, Quiz, etc.)
-                                                                        echo "<th>" . htmlentities($marksType) . "</th>";
-                                                                    } else {
-                                                                        // Only show the selected marksType for tblmarks (e.g., CT-1, CT-2, etc.)
-                                                                        echo "<th>" . htmlentities($marksType) . "</th>";
+                                                                    // Dynamically create table headers for marks columns
+                                                                    foreach ($marksColumns as $column) {
+                                                                        echo "<th>" . htmlentities($column) . "</th>"; // Display column name in header
+                                                                    }
+
+                                                                    // Add the "Best 3 CT Average" column header if fetching from tblmarks
+                                                                    if ($courseCredit >= 3.0) {
+                                                                        echo '<th>Best 3 CT Average</th>';
                                                                     }
 
                                                                     echo '</tr></thead><tbody>';
 
-                                                                    // Display data rows dynamically based on the selected marksType
-                                                                    foreach ($results as $result) {
+                                                                    // Display data rows dynamically based on marks columns
+                                                                    $counter = 1; // Counter for row numbering
+                                                                    foreach ($results as $row) {
                                                                         echo '<tr>';
-                                                                        echo '<td>' . htmlentities($cnt) . '</td>';
-                                                                        echo '<td>' . htmlentities($result->StudentName) . '</td>';
-                                                                        echo '<td>' . htmlentities($result->RollId) . '</td>';
+                                                                        echo '<td>' . $counter++ . '</td>'; // Row number
+                                                                        echo '<td>' . htmlentities($row['StudentName']) . '</td>';
+                                                                        echo '<td>' . htmlentities($row['RollId']) . '</td>';
 
-                                                                        // Display the selected marksType value for each student
-                                                                        if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                            // Display marks for tblsessional
-                                                                            echo '<td>' . htmlentities($result->$marksType) . '</td>';
+                                                                        // Loop through each marks column and display the corresponding value
+                                                                        $ctScores = []; // Array to store CT marks for calculating the average
+                                                                        foreach ($marksColumns as $column) {
+                                                                            // If the column is a CT score, add it to the CT scores array
+                                                                            if (in_array($column, ['CT_1', 'CT_2', 'CT_3', 'CT_4'])) {
+                                                                                $ctScores[] = $row[$column] ?? 0; // Use 0 if the value is null
+                                                                            }
+                                                                            echo '<td>' . htmlentities($row[$column] ?? 'N/A') . '</td>'; // Display marks or 'N/A' if not available
+                                                                        }
+
+                                                                        // Calculate the best 3 average for CT marks if fetching from tblmarks
+                                                                        if ($courseCredit >= 3.0 && count($ctScores) > 0) {
+                                                                            // Sort the array in descending order to get the best 3 marks
+                                                                            rsort($ctScores);
+                                                                            // Take the top 3 scores and calculate their average
+                                                                            $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
+                                                                            $bestThreeAverage = ceil($bestThreeAverage);
+                                                                            echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
                                                                         } else {
-                                                                            // Display marks for tblmarks
-                                                                            echo '<td>' . htmlentities($result->$marksType) . '</td>';
+                                                                            // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
+                                                                            if ($courseCredit >= 3.0) {
+                                                                                echo '<td></td>'; // This is to ensure no empty cell when course credit is less than 3
+                                                                            }
                                                                         }
 
                                                                         echo '</tr>';
-                                                                        $cnt++;
                                                                     }
 
                                                                     echo '</tbody></table>';
+                                                                } else {
+                                                                    echo '<tr><td colspan="9">No records found</td></tr>';
                                                                 }
-                                                                ?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                            }
+                                                            ?>
+                                                        </tbody>
+                                                    </table>
+                                                    <form action="" method="post">
+                                                        <input type="hidden" name="department" value="<?php echo $_POST['department'] ?? ''; ?>">
+                                                        <input type="hidden" name="series" value="<?php echo $_POST['series'] ?? ''; ?>">
+                                                        <input type="hidden" name="semester" value="<?php echo $_POST['semester'] ?? ''; ?>">
+                                                        <input type="hidden" name="course" value="<?php echo $_POST['course'] ?? ''; ?>">
+                                                        <button type="submit" name="send_marks" class="btn btn-primary">Send Marks</button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </section>
-                            </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
-                    <!-- /.content-container -->
                 </div>
-                <!-- /.content-wrapper -->
+                <!-- /.content-container -->
             </div>
-            <!--/.main-wrapper -->
+            <!-- /.content-wrapper -->
         </div>
-        <script>
-            // Update series dropdown based on department selection
-            function updateSeries() {
-                var department = document.getElementById("department").value;
-                var seriesDropdown = document.getElementById("series");
+        <!--/.main-wrapper -->
+    </div>
+    <script>
+        // Update series dropdown based on department selection
+        function updateSeries() {
+            var department = document.getElementById("department").value;
+            var seriesDropdown = document.getElementById("series");
 
-                seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
+            seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
-                if (seriesOptions[department]) {
-                    seriesOptions[department].forEach(function(series) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = series;
-                        optionElement.text = series;
-                        seriesDropdown.appendChild(optionElement);
-                    });
-                }
-                updateSemesters(); // Clear the next dropdowns when department changes
-            }
-
-            function updateSemesters() {
-                var department = document.getElementById("department").value;
-                var series = document.getElementById("series").value;
-                var semesterDropdown = document.getElementById("semester");
-
-                semesterDropdown.innerHTML = '<option value="">--Select a semester--</option>';
-
-                var key = department + '|' + series;
-
-                if (semesterOptions[key]) {
-                    semesterOptions[key].forEach(function(semester) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = semester;
-                        optionElement.text = semester;
-                        semesterDropdown.appendChild(optionElement);
-                    });
-                }
-                updateCourses(); // Clear the next dropdown when series changes
-            }
-
-            function updateCourses() {
-                var department = document.getElementById("department").value;
-                var semester = document.getElementById("semester").value;
-                var courseDropdown = document.getElementById("course");
-                var marksTypeDropdown = document.getElementById("marksType");
-
-                courseDropdown.innerHTML = '<option value="">--Select a course--</option>';
-                marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
-
-                var key = department + '|' + semester;
-
-                if (courseOptions[key]) {
-                    courseOptions[key].forEach(function(course) {
-                        var optionElement = document.createElement("option");
-                        optionElement.value = course;
-                        optionElement.text = course;
-                        courseDropdown.appendChild(optionElement);
-                    });
-                }
-
-                // Fetch CourseCredit and update MarksType dynamically
-                courseDropdown.addEventListener('change', function() {
-                    var selectedCourse = courseDropdown.value;
-
-                    if (selectedCourse) {
-                        fetch(`fetch_course_credit.php?courseCode=${selectedCourse}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                marksTypeDropdown.innerHTML = '<option value="">--Select Marks Type--</option>';
-                                if (data.CourseCredit >= 3.0) {
-                                    marksTypeDropdown.innerHTML +=
-                                        `
-                                                                                                                            <option value="CT_1">CT-1</option>
-                                                                                                                            <option value="CT_2">CT-2</option>
-                                                                                                                            <option value="CT_3">CT-3</option>
-                                                                                                                            <option value="CT_4">CT-4</option>
-                                                                                                                            <option value="Attendance">Attendance</option>
-                                                                                                                            <option value="Assignment">Assignment</option>
-                                                                                                                            <option value="Semester_Final">Semester Final</option>`;
-                                } else {
-                                    marksTypeDropdown.innerHTML +=
-                                        `
-                                                                                                                             <option value="Attendance">Attendance</option>
-                                                                                                                             <option value="Quiz">Quiz</option>
-                                                                                                                             <option value="BoardViva">Board Viva</option>
-                                                                                                                             <option value="Performance">Performance</option>`;
-                                }
-                            });
-                    }
+            if (seriesOptions[department]) {
+                seriesOptions[department].forEach(function(series) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = series;
+                    optionElement.text = series;
+                    seriesDropdown.appendChild(optionElement);
                 });
             }
+            updateSemesters(); // Clear the next dropdowns when department changes
+        }
 
-            var seriesOptions = {
-                <?php
-                // Fetch department and series data from tblclasses
-                $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $departments = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        $departments[$result->Department][] = $result->Series;
-                    }
-                }
-                // Generate the JavaScript object for seriesOptions
-                foreach ($departments as $department => $series) {
-                    $uniqueSeries = array_unique($series); // Remove duplicate series
-                    echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
-                }
-                ?>
-            };
-            // Update semesters dropdown based on department and series selection
-            var semesterOptions = {
-                <?php
-                // Fetch department, series, and semester data from tblclasses
-                $sql = "SELECT Department, Series, Semester FROM tblclasses";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $deptSeries = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        // Combine Department and Series as the key
-                        $key = $result->Department . '|' . $result->Series;
-                        $deptSeries[$key][] = $result->Semester;
-                    }
-                }
+        function updateSemesters() {
+            var department = document.getElementById("department").value;
+            var series = document.getElementById("series").value;
+            var semesterDropdown = document.getElementById("semester");
 
-                // Generate the JavaScript object for semesterOptions
-                foreach ($deptSeries as $key => $semesters) {
-                    $uniqueSemesters = array_unique($semesters); // Remove duplicate semesters
-                    echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
-                }
-                ?>
-            };
-            // Update courses dropdown based on department and semester selection
-            var courseOptions = {
-                <?php
-                // Fetch department, semester, and course code data from tblsubjects
-                $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $deptSemesters = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        // Combine Department and Semester as the key
-                        $key = $result->Department . '|' . $result->Semester;
-                        $deptSemesters[$key][] = $result->CourseCode;
-                    }
-                }
+            semesterDropdown.innerHTML = '<option value="">Select Semester</option>';
 
-                // Generate the JavaScript object for courseOptions
-                foreach ($deptSemesters as $key => $courses) {
-                    $uniqueCourses = array_unique($courses); // Remove duplicate courses
-                    echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
-                }
-                ?>
-            };
-        </script>
-        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"> </script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-        <script src="js/prism/prism.js"></script>
-        <script sr c="js/select2/select2.min.js"></script>
-        <script src="js/main.js"></script>
-        <script src="js/DataTables/datatables.min.js"></script>
-    </body>
+            var key = department + '|' + series;
 
-    </html>
-<?PHP } ?>
+            if (semesterOptions[key]) {
+                semesterOptions[key].forEach(function(semester) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = semester;
+                    optionElement.text = semester;
+                    semesterDropdown.appendChild(optionElement);
+                });
+            }
+            updateCourses(); // Clear the next dropdown when series changes
+        }
+
+        function updateCourses() {
+            var department = document.getElementById("department").value;
+            var semester = document.getElementById("semester").value;
+            var courseDropdown = document.getElementById("course");
+
+            courseDropdown.innerHTML = '<option value="">Select Course</option>';
+
+            var key = department + '|' + semester;
+
+
+            if (courseOptions[key]) {
+                courseOptions[key].forEach(function(course) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = course;
+                    optionElement.text = course;
+                    courseDropdown.appendChild(optionElement);
+                });
+            }
+        }
+
+        var seriesOptions = {
+            <?php
+            $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            $departments = [];
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+                    $departments[$result->Department][] = $result->Series;
+                }
+            }
+            foreach ($departments as $department => $series) {
+                $uniqueSeries = array_unique($series);
+                echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
+            }
+            ?>
+        };
+
+        var semesterOptions = {
+            <?php
+            $sql = "SELECT Department, Series, Semester FROM tblclasses";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            $deptSeries = [];
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+                    $key = $result->Department . '|' . $result->Series;
+                    $deptSeries[$key][] = $result->Semester;
+                }
+            }
+
+            foreach ($deptSeries as $key => $semesters) {
+                $uniqueSemesters = array_unique($semesters);
+                echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
+            }
+            ?>
+        };
+
+        var courseOptions = {
+            <?php
+            $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            $deptSemesters = [];
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+                    $key = $result->Department . '|' . $result->Semester;
+                    $deptSemesters[$key][] = $result->CourseCode;
+                }
+            }
+
+            foreach ($deptSemesters as $key => $courses) {
+                $uniqueCourses = array_unique($courses);
+                echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
+            }
+            ?>
+        };
+    </script>
+    <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/pace/pace.min.js"> </script>
+    <script src="js/lobipanel/lobipanel.min.js"></script>
+    <script src="js/iscroll/iscroll.js"></script>
+    <script src="js/prism/prism.js"></script>
+    <script sr c="js/select2/select2.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/DataTables/datatables.min.js"></script>
+</body>
+
+</html>

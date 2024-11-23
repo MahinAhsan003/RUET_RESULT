@@ -26,10 +26,12 @@
                             class="fa fa-angle-right arrow"></i></a>
                     <ul class="child-nav">
                         <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
-                                    Result</span></a>
+                                    Results</span></a>
                         </li>
                         <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
-                                    Result</span></a></li>
+                                    Results</span></a></li>
+                        <li><a href="calculate-gpa.php"><i class="fa fa fa-server"></i> <span>Calculate
+                                    GPA</span></a></li>
 
                     </ul>
                 </li>
