@@ -58,7 +58,7 @@ if (strlen($_SESSION['tlogin']) == "") {
             }
         }
     }
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -141,7 +141,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                                 value="<?php echo htmlentities($result->Department); ?>">
                                                                                 <?php echo htmlentities($result->Department); ?>
                                                                             </option>
-                                                                        <?php }
+                                                                    <?php }
                                                                     } ?>
                                                                 </select>
                                                             </div>
@@ -187,7 +187,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     $semester = $_POST['semester'];
                                                                     $course = $_POST['course'];
                                                                     $marksType = $_POST['marksType']; // Selected marksType
-                                                            
+
                                                                     // Determine which table to use for the marks query (tblsessional or tblmarks)
                                                                     if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
                                                                         // Using tblsessional for Attendance, Quiz, BoardViva, Performance
@@ -309,7 +309,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
 
                 if (seriesOptions[department]) {
-                    seriesOptions[department].forEach(function (series) {
+                    seriesOptions[department].forEach(function(series) {
                         var optionElement = document.createElement("option");
                         optionElement.value = series;
                         optionElement.text = series;
@@ -329,7 +329,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 var key = department + '|' + series;
 
                 if (semesterOptions[key]) {
-                    semesterOptions[key].forEach(function (semester) {
+                    semesterOptions[key].forEach(function(semester) {
                         var optionElement = document.createElement("option");
                         optionElement.value = semester;
                         optionElement.text = semester;
@@ -351,7 +351,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 var key = department + '|' + semester;
 
                 if (courseOptions[key]) {
-                    courseOptions[key].forEach(function (course) {
+                    courseOptions[key].forEach(function(course) {
                         var optionElement = document.createElement("option");
                         optionElement.value = course;
                         optionElement.text = course;
@@ -360,7 +360,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 }
 
                 // Fetch CourseCredit and update MarksType dynamically
-                courseDropdown.addEventListener('change', function () {
+                courseDropdown.addEventListener('change', function() {
                     var selectedCourse = courseDropdown.value;
 
                     if (selectedCourse) {
