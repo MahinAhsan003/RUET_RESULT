@@ -167,104 +167,233 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                             <button type="submit" name="filter"
                                                                 class="btn btn-primary">Filter</button>
                                                         </form>
+                                                        <form id="gpaForm" method="post" action="">
+                                                            <table id="example"
+                                                                class="display table table-striped table-bordered"
+                                                                cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <?php
+                                                                    if (isset($_POST['filter'])) {
+                                                                        $department = $_POST['department'];
+                                                                        $series = $_POST['series'];
+                                                                        $semester = $_POST['semester'];
+                                                                        $course = $_POST['course'];
 
-                                                        <table id="example"
-                                                            class="display table table-striped table-bordered"
-                                                            cellspacing="0" width="100%">
-                                                            <tbody>
-                                                                <?php
-                                                                if (isset($_POST['filter'])) {
-                                                                    $department = $_POST['department'];
-                                                                    $series = $_POST['series'];
-                                                                    $semester = $_POST['semester'];
-                                                                    $course = $_POST['course'];
+                                                                        // Fetch course credit to determine marks columns
+                                                                        $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
+                                                                        $query = $dbh->prepare($sql);
+                                                                        $query->execute([':course' => $course]);
+                                                                        $courseCredit = $query->fetchColumn();
 
-                                                                    // Fetch course credit to determine marks columns
-                                                                    $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
-                                                                    $query = $dbh->prepare($sql);
-                                                                    $query->execute([':course' => $course]);
-                                                                    $courseCredit = $query->fetchColumn();
-
-                                                                    // Based on course credit, we decide the marks columns
-                                                                    if ($courseCredit < 3.0) {
-                                                                        // Use tblsessional columns
-                                                                        $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                                                                        FROM tblstudents s
-                                                                        LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                        WHERE r.RegisteredCourse = :course";
-                                                                    } else {
-                                                                        // Use tblmarks columns
-                                                                        $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Assignment', 'Semester_Final'];
-                                                                        $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
-                                                                        FROM tblstudents s
-                                                                        LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                                                                        WHERE r.RegisteredCourse = :course";
-                                                                    }
-
-                                                                    // Add filters for department, series, and semester
-                                                                    if ($department)
-                                                                        $sql .= " AND s.Department = :department";
-                                                                    if ($series)
-                                                                        $sql .= " AND s.Series = :series";
-                                                                    if ($semester)
-                                                                        $sql .= " AND r.Semester = :semester";
-
-                                                                    // Prepare and execute query
-                                                                    $query = $dbh->prepare($sql);
-                                                                    $query->execute([
-                                                                        ':course' => $course,
-                                                                        ':department' => $department,
-                                                                        ':series' => $series,
-                                                                        ':semester' => $semester
-                                                                    ]);
-
-                                                                    $results = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                                                                    if ($query->rowCount() > 0) {
-                                                                        // Table start
+                                                                        // Start table
                                                                         echo '<table class="table table-bordered">';
 
                                                                         // Table header
                                                                         echo '<thead><tr>';
                                                                         echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
 
-                                                                        // Dynamically create table headers for marks columns
-                                                                        foreach ($marksColumns as $column) {
-                                                                            echo "<th>" . htmlentities($column) . "</th>"; // Display column name in header
+                                                                        // Generate headers based on course credit
+                                                                        if ($courseCredit >= 3.0) {
+                                                                            echo '<th>CT 1</th><th>CT 2</th><th>CT 3</th><th>CT 4</th><th>Attendance</th><th>Assignment</th><th>Semester Final</th>';
+                                                                            echo '<th>Best 3 CT Average</th>';
+                                                                        } else {
+                                                                            echo '<th>Attendance</th><th>Quiz</th><th>Board Viva</th><th>Performance</th>';
                                                                         }
 
+                                                                        echo '<th>Total Marks</th><th>Alphabetical Grade</th><th>Numerical Grade</th>';
                                                                         echo '</tr></thead><tbody>';
 
-                                                                        // Display data rows dynamically based on marks columns
-                                                                        $counter = 1; // Counter for row numbering
-                                                                        foreach ($results as $row) {
-                                                                            echo '<tr>';
-                                                                            echo '<td>' . $counter++ . '</td>'; // Row number
-                                                                            echo '<td>' . htmlentities($row['StudentName']) . '</td>';
-                                                                            echo '<td>' . htmlentities($row['RollId']) . '</td>';
+                                                                        // Prepare the SQL query based on course credit
+                                                                        if ($courseCredit >= 3.0) {
+                                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final
+                    FROM tblstudents s
+                    LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                    WHERE r.RegisteredCourse = :course";
+                                                                        } else {
+                                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                    m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                    FROM tblstudents s
+                    LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                    WHERE r.RegisteredCourse = :course";
+                                                                        }
 
-                                                                            // Loop through each marks column and display the corresponding value
-                                                                            foreach ($marksColumns as $column) {
-                                                                                echo '<td>' . htmlentities($row[$column] ?? 'N/A') . '</td>'; // Display marks or 'N/A' if not available
+                                                                        // Add filters for department, series, and semester
+                                                                        if ($department)
+                                                                            $sql .= " AND s.Department = :department";
+                                                                        if ($series)
+                                                                            $sql .= " AND s.Series = :series";
+                                                                        if ($semester)
+                                                                            $sql .= " AND r.Semester = :semester";
+
+                                                                        // Execute the query
+                                                                        $query = $dbh->prepare($sql);
+                                                                        $query->execute([
+                                                                            ':course' => $course,
+                                                                            ':department' => $department,
+                                                                            ':series' => $series,
+                                                                            ':semester' => $semester
+                                                                        ]);
+
+                                                                        $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                                                                        if ($query->rowCount() > 0) {
+                                                                            $counter = 1; // Counter for row numbering
+                                                                            foreach ($results as $row) {
+                                                                                echo '<tr>';
+                                                                                echo '<td>' . $counter++ . '</td>'; // Row number
+                                                                                echo '<td>' . htmlentities($row['StudentName']) . '</td>';
+                                                                                echo '<td>' . htmlentities($row['RollId']) . '</td>';
+
+                                                                                $totalMarks = 0; // Initialize total marks for calculation
+                                                                
+                                                                                // For courses with credit >= 3 (fetching from tblmarks)
+                                                                                if ($courseCredit >= 3.0) {
+                                                                                    $ctScores = [
+                                                                                        isset($row['CT_1']) ? $row['CT_1'] : 0,
+                                                                                        isset($row['CT_2']) ? $row['CT_2'] : 0,
+                                                                                        isset($row['CT_3']) ? $row['CT_3'] : 0,
+                                                                                        isset($row['CT_4']) ? $row['CT_4'] : 0
+                                                                                    ];
+                                                                                    rsort($ctScores);
+                                                                                    $bestThreeAverage = ceil(array_sum(array_slice($ctScores, 0, 3)) / 3);
+
+                                                                                    $totalMarks = $bestThreeAverage +
+                                                                                        (isset($row['Attendance']) ? $row['Attendance'] : 0) +
+                                                                                        (isset($row['Semester_Final']) ? $row['Semester_Final'] : 0) +
+                                                                                        (isset($row['Assignment']) ? $row['Assignment'] : 0);
+
+                                                                                    echo '<td>' . htmlentities($row['CT_1']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['CT_2']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['CT_3']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['CT_4']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['Attendance']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['Assignment']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['Semester_Final']) . '</td>';
+                                                                                    echo '<td>' . $bestThreeAverage . '</td>';
+                                                                                } else {
+                                                                                    $totalMarks =
+                                                                                        (isset($row['Attendance']) ? $row['Attendance'] : 0) +
+                                                                                        (isset($row['Quiz']) ? $row['Quiz'] : 0) +
+                                                                                        (isset($row['BoardViva']) ? $row['BoardViva'] : 0) +
+                                                                                        (isset($row['Performance']) ? $row['Performance'] : 0);
+
+                                                                                    echo '<td>' . htmlentities($row['Attendance']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['Quiz']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['BoardViva']) . '</td>';
+                                                                                    echo '<td>' . htmlentities($row['Performance']) . '</td>';
+                                                                                }
+
+                                                                                $totalMarks = max(0, $totalMarks);
+                                                                                $numericalGrade = 0;
+                                                                                $alphabeticalGrade = '';
+
+                                                                                if ($totalMarks >= 80) {
+                                                                                    $numericalGrade = 4.0;
+                                                                                    $alphabeticalGrade = 'A+';
+                                                                                } elseif ($totalMarks >= 75) {
+                                                                                    $numericalGrade = 3.75;
+                                                                                    $alphabeticalGrade = 'A';
+                                                                                } elseif ($totalMarks >= 70) {
+                                                                                    $numericalGrade = 3.5;
+                                                                                    $alphabeticalGrade = 'A-';
+                                                                                } elseif ($totalMarks >= 65) {
+                                                                                    $numericalGrade = 3.25;
+                                                                                    $alphabeticalGrade = 'B+';
+                                                                                } elseif ($totalMarks >= 60) {
+                                                                                    $numericalGrade = 3.0;
+                                                                                    $alphabeticalGrade = 'B';
+                                                                                } elseif ($totalMarks >= 55) {
+                                                                                    $numericalGrade = 2.75;
+                                                                                    $alphabeticalGrade = 'B-';
+                                                                                } elseif ($totalMarks >= 50) {
+                                                                                    $numericalGrade = 2.5;
+                                                                                    $alphabeticalGrade = 'C';
+                                                                                } else {
+                                                                                    $numericalGrade = 0;
+                                                                                    $alphabeticalGrade = 'F';
+                                                                                }
+
+                                                                                echo '<td>' . $totalMarks . '</td>';
+                                                                                echo '<td>' . $alphabeticalGrade . '</td>';
+                                                                                echo '<td>' . $numericalGrade . '</td>';
+
+                                                                                // Add hidden fields for GPA calculation
+                                                                                echo '<input type="hidden" name="rollIds[]" value="' . htmlentities($row['RollId']) . '">';
+                                                                                echo '<input type="hidden" name="numericalGrades[]" value="' . $numericalGrade . '">';
+                                                                                echo '<input type="hidden" name="semester" value="' . htmlentities($semester) . '">';
+                                                                                echo '<input type="hidden" name="course" value="' . htmlentities($course) . '">';
+                                                                                echo '</tr>';
                                                                             }
-
-                                                                            echo '</tr>';
+                                                                        } else {
+                                                                            echo '<tr><td colspan="12">No records found</td></tr>';
                                                                         }
 
                                                                         echo '</tbody></table>';
-                                                                    } else {
-                                                                        echo '<tr><td colspan="9">No records found</td></tr>';
+                                                                        echo '<button type="submit" name="calculateGPA" class="btn btn-primary">Calculate GPA</button>';
+                                                                        echo '</form>';
                                                                     }
-                                                                }
-                                                                ?>
-                                                            </tbody>
-                                                        </table>
+                                                                    ?>
+                                                                </tbody>
+                                                            </table>
+                                                        </form>
+
+                                                        <?php
+                                                        if (isset($_POST['calculateGPA'])) {
+                                                            $semester = $_POST['semester'];
+                                                            $course = $_POST['course'];
+
+                                                            // Query to get the Course Credit
+                                                            $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode =
+                                                    :course";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->bindParam(':course', $course, PDO::PARAM_STR);
+                                                            $query->execute();
+
+                                                            // Fetch the Course Credit
+                                                            $courseCredit = $query->fetchColumn();
+                                                            if (!$courseCredit) {
+                                                                die("Error: Course Credit not found for the selected course.");
+                                                            }
+
+                                                            // Get Roll IDs and Numerical Grades from the table form submission
+                                                            $rollIds = $_POST['rollIds']; // Array of Roll IDs from the table
+                                                            $numericalGrades = $_POST['numericalGrades']; // Array of Numerical Grades from the table
+                                                    
+                                                            foreach ($rollIds as $index => $rollId) {
+                                                                $numericalGrade = $numericalGrades[$index];
+
+                                                                // Calculate GPA
+                                                                $GPA = $numericalGrade * $courseCredit;
+
+                                                                // Prepare the SQL query for inserting/updating GPA
+                                                                $sql = "INSERT INTO tblgpa (RollId, Semester, CourseCode, GPA)
+                                                    VALUES (:rollId, :semester, :course, :GPA)
+                                                    ON DUPLICATE KEY UPDATE GPA = :GPA";
+
+                                                                // Prepare and bind parameters
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+                                                                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                                $query->bindParam(':course', $course, PDO::PARAM_STR);
+                                                                $query->bindParam(':GPA', $GPA, PDO::PARAM_STR);
+
+                                                                //             // Execute the query and handle errors
+                                                                //             try {
+                                                                //                 $query->execute();
+                                                                //                 echo "GPA successfully calculated and updated for Roll ID:
+                                                                // $rollId<br>";
+                                                                //             } catch (PDOException $e) {
+                                                                //                 echo "Error calculating GPA for Roll ID: $rollId - " .
+                                                                //                     $e->getMessage() . "<br>";
+                                                                //             }
+                                                            }
+                                                        }
+                                                        ?>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -326,6 +455,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 courseDropdown.innerHTML = '<option value="">Select Course</option>';
 
                 var key = department + '|' + semester;
+
 
                 if (courseOptions[key]) {
                     courseOptions[key].forEach(function (course) {
@@ -398,6 +528,7 @@ if (strlen($_SESSION['tlogin']) == "") {
                 ?>
             };
         </script>
+
         <script src="js/jquery/jquery-2.2.4.min.js"> </script>
         <script src="js/bootstrap/bootstrap.min.js"></script>
         <script src="js/pace/pace.min.js"> </script>

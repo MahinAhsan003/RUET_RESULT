@@ -242,7 +242,6 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                     } else {
                                                                         $results = [];
                                                                     }
-
                                                                     // Dynamically display the marks based on the selected marksType
                                                                     $cnt = 1;
                                                                     if (count($results) > 0) {
@@ -334,13 +333,13 @@ if (strlen($_SESSION['tlogin']) == "") {
                                                                 $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                                 $query->bindParam(':mark', $mark, PDO::PARAM_INT);
 
-                                                                // Execute the query and handle errors
-                                                                // try {
-                                                                //     $query->execute();
-                                                                //     echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
-                                                                // } catch (PDOException $e) {
-                                                                //     echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
-                                                                // }
+                                                                //Execute the query and handle errors
+                                                                try {
+                                                                    $query->execute();
+                                                                    echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
+                                                                } catch (PDOException $e) {
+                                                                    echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                                }
                                                             }
                                                         }
                                                         ?>
@@ -430,20 +429,20 @@ if (strlen($_SESSION['tlogin']) == "") {
                                 if (data.CourseCredit >= 3.0) {
                                     marksTypeDropdown.innerHTML +=
                                         `
-                                                                                        <option value="CT_1">CT-1</option>
-                                                                                        <option value="CT_2">CT-2</option>
-                                                                                        <option value="CT_3">CT-3</option>
-                                                                                        <option value="CT_4">CT-4</option>
-                                                                                        <option value="Attendance">Attendance</option>
-                                                                                        <option value="Assignment">Assignment</option>
-                                                                                        <option value="Semester_Final">Semester Final</option>`;
+                                                                                                <option value="CT_1">CT-1</option>
+                                                                                                <option value="CT_2">CT-2</option>
+                                                                                                <option value="CT_3">CT-3</option>
+                                                                                                <option value="CT_4">CT-4</option>
+                                                                                                <option value="Attendance">Attendance</option>
+                                                                                                <option value="Assignment">Assignment</option>
+                                                                                                <option value="Semester_Final">Semester Final</option>`;
                                 } else {
                                     marksTypeDropdown.innerHTML +=
                                         `
-                                                                                         <option value="Attendance">Attendance</option>
-                                                                                         <option value="Quiz">Quiz</option>
-                                                                                         <option value="BoardViva">Board Viva</option>
-                                                                                         <option value="Performance">Performance</option>`;
+                                                                                                 <option value="Attendance">Attendance</option>
+                                                                                                 <option value="Quiz">Quiz</option>
+                                                                                                 <option value="BoardViva">Board Viva</option>
+                                                                                                 <option value="Performance">Performance</option>`;
                                 }
                             });
                     }
