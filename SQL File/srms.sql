@@ -196,6 +196,37 @@ INSERT INTO `tblnotice` (`id`, `noticeTitle`, `noticeDetails`, `postingDate`) VA
 
 -- --------------------------------------------------------
 
+-- Table structure for table `tblnotice`
+
+CREATE TABLE `tblregistrationnotice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `noticeTitle` varchar(255) DEFAULT NULL,
+  `noticeDetails` mediumtext DEFAULT NULL,
+  `postingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Table structure for table `tblnotice`
+
+CREATE TABLE `tblbacklognotice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `noticeTitle` varchar(255) DEFAULT NULL,
+  `noticeDetails` mediumtext DEFAULT NULL,
+  `postingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+-- Table structure for table `tblnotice`
+
+CREATE TABLE `tblshortnotice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `noticeTitle` varchar(255) DEFAULT NULL,
+  `noticeDetails` mediumtext DEFAULT NULL,
+  `postingDate` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Table structure for table `tblstudents`
 
 CREATE TABLE `tblstudents` (

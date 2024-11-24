@@ -94,7 +94,13 @@
                             class="fa fa-angle-right arrow"></i></a>
                     <ul class="child-nav">
                         <li><a href="add-notice.php"><i class="fa fa-bars"></i> <span>Add Notice</span></a></li>
+                        <li><a href="add-registration-notice.php"><i class="fa fa-bars"></i> <span>Add Registration Notice</span></a></li>
+                        <li><a href="add-backlog-notice.php"><i class="fa fa-bars"></i> <span>Add Backlog Notice</span></a></li>
+                        <li><a href="add-short-notice.php"><i class="fa fa-bars"></i> <span>Add Short Semester Notice</span></a></li>
                         <li><a href="manage-notices.php"><i class="fa fa fa-server"></i> <span>Manage Notices</span></a>
+                        <li><a href="manage-notice-reg.php"><i class="fa fa fa-server"></i> <span>Manage Registration Notices</span></a>
+                        <li><a href="manage-notice-backlog.php"><i class="fa fa fa-server"></i> <span>Manage Backlog Notices</span></a>
+                        <li><a href="manage-notice-short.php"><i class="fa fa fa-server"></i> <span>Manage Short Semester Notices</span></a>
                         </li>
 
                     </ul>

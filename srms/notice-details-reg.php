@@ -42,7 +42,7 @@ include('includes/config.php');
 
                     <?php
                     $noticeid = $_GET['nid'];
-                    $sql = "SELECT * from tblnotice where id='$noticeid'";
+                    $sql = "SELECT * from tblregistrationnotice where id='$noticeid'";
                     $query = $dbh->prepare($sql);
                     $query->execute();
                     $results = $query->fetchAll(PDO::FETCH_OBJ);
@@ -58,11 +58,13 @@ include('includes/config.php');
                     <?php }
                     } ?>
 
+
+
+
                 </div>
             </div>
         </div>
     </section>
-
 
     <!-- Footer-->
     <footer class="py-5 bg-dark">

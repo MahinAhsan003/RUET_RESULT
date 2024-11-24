@@ -54,8 +54,8 @@ include('includes/config.php');
                             $cnt = 1;
                             if ($query->rowCount() > 0) {
                                 foreach ($results as $result) { ?>
-                            <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id); ?>"
-                                    target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
+                                    <li><a href="notice-details.php?nid=<?php echo htmlentities($result->id); ?>"
+                                            target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
                             <?php }
                             } ?>
 
