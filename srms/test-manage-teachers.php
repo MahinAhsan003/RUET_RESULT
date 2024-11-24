@@ -138,7 +138,6 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             <th>Gender</th>
                                                             <th>Department</th>
                                                             <th>Desigation</th>
-                                                            <th>Joining Date</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -153,7 +152,6 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             <th>Gender</th>
                                                             <th>Department</th>
                                                             <th>Desigation</th>
-                                                            <th>Joining Date</th>
                                                             <th>Status</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -188,7 +186,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                     <td><?php echo htmlentities($result->Gender); ?></td>
                                                                     <td><?php echo htmlentities($result->Department); ?></td>
                                                                     <td><?php echo htmlentities($result->Designation); ?></td>
-                                                                    <td><?php echo htmlentities($result->JoiningDate); ?></td>
+                                                                    <td><?php echo htmlentities($result->RegDate); ?></td>
                                                                     <td><?php echo htmlentities($result->Status == 1 ? 'Active' : 'Abroad'); ?></td>
                                                                     <td>
                                                                         <a href="edit-teachers.php?stid=<?php echo htmlentities($result->StudentId); ?>" class="btn btn-primary btn-xs" target="_blank">Edit</a>
