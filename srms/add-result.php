@@ -191,16 +191,21 @@ if (!isset($_SESSION['login'])) {
                                                             }
 
                                                             // Add conditions for filtering based on department, series, course
-                                                            if ($department != "") {
+                                                            if ($department)
                                                                 $sql .= " AND s.Department = :department";
-                                                            }
-                                                            if ($series != "") {
+                                                            if ($series)
                                                                 $sql .= " AND s.Series = :series";
-                                                            }
-                                                            if ($course != "") {
-                                                                $sql .= " AND r.RegisteredCourse = :course";
-                                                            }
+                                                            if ($semester)
+                                                                $sql .= " AND m.Semester = :semester";
 
+                                                            // Prepare and execute query
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute([
+                                                                ':course' => $course,
+                                                                ':department' => $department,
+                                                                ':series' => $series,
+                                                                ':semester' => $semester
+                                                            ]);
                                                             // Finalize the query with ordering by RollId
                                                             $sql .= " ORDER BY s.RollId";
 
@@ -208,16 +213,6 @@ if (!isset($_SESSION['login'])) {
                                                             $query = $dbh->prepare($sql);
 
                                                             // Bind parameters dynamically based on the filters
-                                                            $params = [];
-                                                            if ($department != "") {
-                                                                $params[':department'] = $department;
-                                                            }
-                                                            if ($series != "") {
-                                                                $params[':series'] = $series;
-                                                            }
-                                                            if ($course != "") {
-                                                                $params[':course'] = (string) $course;
-                                                            }
 
                                                             $query->execute($params);
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);

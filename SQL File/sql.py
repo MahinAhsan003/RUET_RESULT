@@ -15,7 +15,7 @@ def generate_marks():
     }
 
 students = range(2010001, 2010062)
-courses = ['ECE-1201', 'ECE-1202', 'ECE-1203', 'ECE-1204']  # Replace with other course codes.
+courses = ['ECE-1201', 'ECE-1202', 'ECE-1203', 'ECE-1204',]  # Replace with other course codes.
 
 for student in students:
     for course in courses:
