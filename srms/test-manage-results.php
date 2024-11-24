@@ -126,12 +126,12 @@ if (isset($_POST['send_marks'])) {
             // Server settings
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'ruetecemailer@gmail.com';
-            $mail->Password = 'vmwtflzdhqppllum';
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ruetecemailer@gmail.com';
+            $mail->Password   = 'vmwtflzdhqppllum';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port = 465;
+            $mail->Port       = 465;
 
             // Recipients
             $mail->setFrom('ruetecemailer@gmail.com', 'RUET ECE');
@@ -140,7 +140,7 @@ if (isset($_POST['send_marks'])) {
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Your CT, Assignment & Attendance Marks';
-            $mail->Body = $body;
+            $mail->Body    = $body;
 
             $mail->send();
             $sentEmails[] = $email; // Add to sent emails list
@@ -245,8 +245,7 @@ if (isset($_POST['send_marks'])) {
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <select name="department" id="department" class="form-control"
-                                                        onchange="updateSeries()">
+                                                    <select name="department" id="department" class="form-control" onchange="updateSeries()">
                                                         <option value="">Select Department</option>
                                                         <?php
                                                         $sql = "SELECT DISTINCT Department FROM tblclasses";
@@ -259,31 +258,25 @@ if (isset($_POST['send_marks'])) {
                                                                     <?php echo isset($_POST['department']) && $_POST['department'] == $result->Department ? 'selected' : ''; ?>>
                                                                     <?php echo htmlentities($result->Department); ?>
                                                                 </option>
-                                                            <?php }
+                                                        <?php }
                                                         } ?>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="series">Series</label>
-                                                    <select name="series" id="series" class="form-control"
-                                                        onchange="updateSemesters()">
+                                                    <select name="series" id="series" class="form-control" onchange="updateSemesters()">
                                                         <option value="">Select Series</option>
                                                         <?php if (isset($_POST['series'])) { ?>
-                                                            <option value="<?php echo $_POST['series']; ?>" selected>
-                                                                <?php echo $_POST['series']; ?>
-                                                            </option>
+                                                            <option value="<?php echo $_POST['series']; ?>" selected><?php echo $_POST['series']; ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="semester">Semester</label>
-                                                    <select name="semester" id="semester" class="form-control"
-                                                        onchange="updateCourses()">
+                                                    <select name="semester" id="semester" class="form-control" onchange="updateCourses()">
                                                         <option value="">Select Semester</option>
                                                         <?php if (isset($_POST['semester'])) { ?>
-                                                            <option value="<?php echo $_POST['semester']; ?>" selected>
-                                                                <?php echo $_POST['semester']; ?>
-                                                            </option>
+                                                            <option value="<?php echo $_POST['semester']; ?>" selected><?php echo $_POST['semester']; ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -292,14 +285,11 @@ if (isset($_POST['send_marks'])) {
                                                     <select name="course" id="course" class="form-control">
                                                         <option value="">Select Course</option>
                                                         <?php if (isset($_POST['course'])) { ?>
-                                                            <option value="<?php echo $_POST['course']; ?>" selected>
-                                                                <?php echo $_POST['course']; ?>
-                                                            </option>
+                                                            <option value="<?php echo $_POST['course']; ?>" selected><?php echo $_POST['course']; ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
-                                                <button type="submit" name="filter"
-                                                    class="btn btn-primary">Filter</button>
+                                                <button type="submit" name="filter" class="btn btn-primary">Filter</button>
                                             </form>
                                             <table id="example" class="display table table-striped table-bordered"
                                                 cellspacing="0" width="100%">
@@ -352,7 +342,7 @@ if (isset($_POST['send_marks'])) {
                                                         if ($series)
                                                             $sql .= " AND s.Series = :series";
                                                         if ($semester)
-                                                            $sql .= " AND m.Semester = :semester";
+                                                            $sql .= " AND r.Semester = :semester";
 
                                                         // Prepare and execute query
                                                         $query = $dbh->prepare($sql);
@@ -430,16 +420,11 @@ if (isset($_POST['send_marks'])) {
                                                 </tbody>
                                             </table>
                                             <form action="" method="post">
-                                                <input type="hidden" name="department"
-                                                    value="<?php echo $_POST['department'] ?? ''; ?>">
-                                                <input type="hidden" name="series"
-                                                    value="<?php echo $_POST['series'] ?? ''; ?>">
-                                                <input type="hidden" name="semester"
-                                                    value="<?php echo $_POST['semester'] ?? ''; ?>">
-                                                <input type="hidden" name="course"
-                                                    value="<?php echo $_POST['course'] ?? ''; ?>">
-                                                <button type="submit" name="send_marks" class="btn btn-primary">Send
-                                                    Marks</button>
+                                                <input type="hidden" name="department" value="<?php echo $_POST['department'] ?? ''; ?>">
+                                                <input type="hidden" name="series" value="<?php echo $_POST['series'] ?? ''; ?>">
+                                                <input type="hidden" name="semester" value="<?php echo $_POST['semester'] ?? ''; ?>">
+                                                <input type="hidden" name="course" value="<?php echo $_POST['course'] ?? ''; ?>">
+                                                <button type="submit" name="send_marks" class="btn btn-primary">Send Marks</button>
                                             </form>
                                         </div>
                                     </div>
@@ -460,7 +445,7 @@ if (isset($_POST['send_marks'])) {
             seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
             if (seriesOptions[department]) {
-                seriesOptions[department].forEach(function (series) {
+                seriesOptions[department].forEach(function(series) {
                     var optionElement = document.createElement("option");
                     optionElement.value = series;
                     optionElement.text = series;
@@ -480,7 +465,7 @@ if (isset($_POST['send_marks'])) {
             var key = department + '|' + series;
 
             if (semesterOptions[key]) {
-                semesterOptions[key].forEach(function (semester) {
+                semesterOptions[key].forEach(function(semester) {
                     var optionElement = document.createElement("option");
                     optionElement.value = semester;
                     optionElement.text = semester;
@@ -501,7 +486,7 @@ if (isset($_POST['send_marks'])) {
 
 
             if (courseOptions[key]) {
-                courseOptions[key].forEach(function (course) {
+                courseOptions[key].forEach(function(course) {
                     var optionElement = document.createElement("option");
                     optionElement.value = course;
                     optionElement.text = course;
@@ -582,7 +567,7 @@ if (isset($_POST['send_marks'])) {
     <script src="js/DataTables/datatables.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-        $(function ($) {
+        $(function($) {
             $('#example').DataTable();
         });
     </script>
