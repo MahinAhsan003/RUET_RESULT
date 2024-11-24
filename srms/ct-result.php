@@ -19,11 +19,11 @@ if (!isset($_SESSION['login'])) {
     $query->execute();
     $semesters = $query->fetchAll(PDO::FETCH_OBJ);
 
-    // Fetch all courses mapped to semesters for the student
+    // Fetch all courses mapped to semesters for the student with CourseCredit >= 3.00
     $sql = "SELECT DISTINCT r.Semester, s.CourseName, s.CourseCode 
-            FROM tblregistration r 
-            JOIN tblsubjects s ON r.RegisteredCourse = s.CourseCode 
-            WHERE r.RollId = :rollId";
+        FROM tblregistration r 
+        JOIN tblsubjects s ON r.RegisteredCourse = s.CourseCode 
+        WHERE r.RollId = :rollId AND s.CourseCredit >= 3.00";
     $query = $dbh->prepare($sql);
     $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
     $query->execute();
@@ -56,27 +56,10 @@ if (!isset($_SESSION['login'])) {
         if (empty($selectedSemester) || empty($selectedCourse)) {
             $error = "Please select both semester and course!";
         } else {
-            // Fetch course credit for the selected course
-            $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':course', $selectedCourse, PDO::PARAM_STR);
-            $query->execute();
-            $courseData = $query->fetch(PDO::FETCH_OBJ);
-            $courseCredit = $courseData->CourseCredit;
-
-            if ($courseCredit < 3.00) {
-                $isSessional = true;
-
-                // Fetch sessional marks
-                $sql = "SELECT Attendance, Quiz, BoardViva, Performance 
-                        FROM tblsessional 
-                        WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :course";
-            } else {
-                $sql = "SELECT CourseCode, CT_1, CT_2, CT_3, CT_4 
-                        FROM tblmarks 
-                        WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :course";
-            }
-
+            // Fetch Class Test Marks
+            $sql = "SELECT CourseCode, CT_1, CT_2, CT_3, CT_4 
+                    FROM tblmarks 
+                    WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :course";
             $query = $dbh->prepare($sql);
             $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
             $query->bindParam(':semester', $selectedSemester, PDO::PARAM_STR);
@@ -171,7 +154,7 @@ if (!isset($_SESSION['login'])) {
                     <div class="container-fluid">
                         <div class="row page-title-div">
                             <div class="col-md-6">
-                                <h2 class="title">Class Test or Sessional Result</h2>
+                                <h2 class="title">Class Test Result</h2>
                             </div>
                         </div>
                         <div class="row breadcrumb-div">
@@ -179,7 +162,7 @@ if (!isset($_SESSION['login'])) {
                                 <ul class="breadcrumb">
                                     <li><a href="student-dash.php"><i class="fa fa-home"></i> Home</a></li>
                                     <li>Result</li>
-                                    <li class="active">CT or Sessional Result</li>
+                                    <li class="active">CT Result</li>
                                 </ul>
                             </div>
                         </div>
@@ -191,7 +174,7 @@ if (!isset($_SESSION['login'])) {
                                     <div class="panel">
                                         <div class="panel-heading">
                                             <div class="panel-title">
-                                                <h5>View CT or Sessional Result</h5>
+                                                <h5>View CT Result</h5>
                                             </div>
                                         </div>
                                         <div class="panel-body p-20">
@@ -224,61 +207,39 @@ if (!isset($_SESSION['login'])) {
 
                                             <table class="table table-bordered">
                                                 <thead>
-                                                    <?php if ($isSessional) { ?>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Course Code</th>
-                                                            <th>Attendance</th>
-                                                            <th>Quiz</th>
-                                                            <th>Board Viva</th>
-                                                            <th>Performance</th>
-                                                        </tr>
-                                                    <?php } else { ?>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Course Code</th>
-                                                            <th>CT-1</th>
-                                                            <th>CT-2</th>
-                                                            <th>CT-3</th>
-                                                            <th>CT-4</th>
-                                                            <th>Average CT</th>
-                                                        </tr>
-                                                    <?php } ?>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Course Code</th>
+                                                        <th>CT-1</th>
+                                                        <th>CT-2</th>
+                                                        <th>CT-3</th>
+                                                        <th>CT-4</th>
+                                                        <th>Average CT</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
                                                     $cnt = 1;
                                                     if (!empty($results)) {
                                                         foreach ($results as $result) {
-                                                            if ($isSessional) {
+                                                            $ctMarks = array_filter([$result->CT_1, $result->CT_2, $result->CT_3, $result->CT_4]);
+                                                            $averageCT = count($ctMarks) >= 3 ? ceil(array_sum(array_slice($ctMarks, -3)) / 3) : '';
                                                     ?>
-                                                                <tr>
-                                                                    <td><?php echo htmlentities($cnt); ?></td>
-                                                                    <td><?php echo htmlentities($selectedCourse); ?></td>
-                                                                    <td><?php echo htmlentities($result->Attendance); ?></td>
-                                                                    <td><?php echo htmlentities($result->Quiz); ?></td>
-                                                                    <td><?php echo htmlentities($result->BoardViva); ?></td>
-                                                                    <td><?php echo htmlentities($result->Performance); ?></td>
-                                                                </tr>
-                                                            <?php } else {
-                                                                $ctMarks = array_filter([$result->CT_1, $result->CT_2, $result->CT_3, $result->CT_4]);
-                                                                $averageCT = count($ctMarks) >= 3 ? ceil(array_sum(array_slice($ctMarks, -3)) / 3) : '';
-                                                            ?>
-                                                                <tr>
-                                                                    <td><?php echo htmlentities($cnt); ?></td>
-                                                                    <td><?php echo htmlentities($result->CourseCode); ?></td>
-                                                                    <td><?php echo htmlentities($result->CT_1); ?></td>
-                                                                    <td><?php echo htmlentities($result->CT_2); ?></td>
-                                                                    <td><?php echo htmlentities($result->CT_3); ?></td>
-                                                                    <td><?php echo htmlentities($result->CT_4); ?></td>
-                                                                    <td><?php echo htmlentities($averageCT); ?></td>
-                                                                </tr>
-                                                        <?php }
+                                                            <tr>
+                                                                <td><?php echo htmlentities($cnt); ?></td>
+                                                                <td><?php echo htmlentities($result->CourseCode); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_1); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_2); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_3); ?></td>
+                                                                <td><?php echo htmlentities($result->CT_4); ?></td>
+                                                                <td><?php echo htmlentities($averageCT); ?></td>
+                                                            </tr>
+                                                        <?php
                                                             $cnt++;
                                                         }
                                                     } elseif (isset($_POST['filter'])) { ?>
                                                         <tr>
-                                                            <td colspan="6" style="text-align: center;">No Results Found</td>
+                                                            <td colspan="7" style="text-align: center;">No Results Found</td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>

@@ -194,7 +194,6 @@ function getLetterGrade($gradePoint)
                                                         <th>Average CT</th>
                                                         <th>Attendance</th>
                                                         <th>Assignment</th>
-                                                        <th>Semester Final</th>
                                                         <th>Grade</th>
                                                     </tr>
                                                 </thead>
@@ -234,7 +233,6 @@ function getLetterGrade($gradePoint)
                                                                 <td><?php echo number_format($ctAvg, 2); ?></td>
                                                                 <td><?php echo htmlentities($result->Attendance); ?></td>
                                                                 <td><?php echo htmlentities($result->Assignment); ?></td>
-                                                                <td><?php echo htmlentities($result->Semester_Final); ?></td>
                                                                 <td><?php echo htmlentities($letterGrade); ?></td>
                                                             </tr>
                                                         <?php $cnt++;
@@ -248,11 +246,11 @@ function getLetterGrade($gradePoint)
                                                 <?php if (!empty($results)) { ?>
                                                     <tfoot>
                                                         <tr>
-                                                            <td colspan="7" style="text-align: right;"><strong>SGPA</strong></td>
+                                                            <td colspan="6" style="text-align: right;"><strong>SGPA</strong></td>
                                                             <td><?php echo htmlentities(number_format($sgpa, 2)); ?></td>
                                                         </tr>
                                                         <tr>
-                                                            <td colspan="7" style="text-align: right;"><strong>CGPA</strong></td>
+                                                            <td colspan="6" style="text-align: right;"><strong>CGPA</strong></td>
                                                             <td><?php echo htmlentities(number_format($cgpa, 2)); ?></td>
                                                         </tr>
                                                     </tfoot>
