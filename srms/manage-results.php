@@ -172,28 +172,28 @@ if (isset($_POST['send_marks'])) {
     <link rel="stylesheet" href="css/main.css" media="screen">
     <script src="js/modernizr/modernizr.min.js"></script>
     <style>
-    .errorWrap {
-        padding: 10px;
-        margin: 0 0 20px 0;
-        background: #fff;
-        border-left: 4px solid #dd3d36;
-        -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-    }
+        .errorWrap {
+            padding: 10px;
+            margin: 0 0 20px 0;
+            background: #fff;
+            border-left: 4px solid #dd3d36;
+            -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+        }
 
-    .succWrap {
-        padding: 10px;
-        margin: 0 0 20px 0;
-        background: #fff;
-        border-left: 4px solid #5cb85c;
-        -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
-    }
+        .succWrap {
+            padding: 10px;
+            margin: 0 0 20px 0;
+            background: #fff;
+            border-left: 4px solid #5cb85c;
+            -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+        }
 
-    /* Added margin to create gap between the filter button and the table */
-    .filter-form {
-        margin-bottom: 20px;
-    }
+        /* Added margin to create gap between the filter button and the table */
+        .filter-form {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -233,14 +233,14 @@ if (isset($_POST['send_marks'])) {
                                         </div>
                                         <div class="panel-body p-20">
                                             <?php if ($msg) { ?>
-                                            <div class="succWrap"><strong>SUCCESS</strong>:
-                                                <?php echo htmlentities($msg); ?>
-                                            </div>
+                                                <div class="succWrap"><strong>SUCCESS</strong>:
+                                                    <?php echo htmlentities($msg); ?>
+                                                </div>
                                             <?php } ?>
                                             <?php if ($error) { ?>
-                                            <div class="errorWrap"><strong>ERROR</strong>:
-                                                <?php echo htmlentities($error); ?>
-                                            </div>
+                                                <div class="errorWrap"><strong>ERROR</strong>:
+                                                    <?php echo htmlentities($error); ?>
+                                                </div>
                                             <?php } ?>
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
@@ -255,11 +255,11 @@ if (isset($_POST['send_marks'])) {
                                                         $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                         if ($query->rowCount() > 0) {
                                                             foreach ($results as $result) { ?>
-                                                        <option value="<?php echo htmlentities($result->Department); ?>"
-                                                            <?php echo isset($_POST['department']) && $_POST['department'] == $result->Department ? 'selected' : ''; ?>>
-                                                            <?php echo htmlentities($result->Department); ?>
-                                                        </option>
-                                                        <?php }
+                                                                <option value="<?php echo htmlentities($result->Department); ?>"
+                                                                    <?php echo isset($_POST['department']) && $_POST['department'] == $result->Department ? 'selected' : ''; ?>>
+                                                                    <?php echo htmlentities($result->Department); ?>
+                                                                </option>
+                                                            <?php }
                                                         } ?>
                                                     </select>
                                                 </div>
@@ -269,9 +269,9 @@ if (isset($_POST['send_marks'])) {
                                                         onchange="updateSemesters()">
                                                         <option value="">Select Series</option>
                                                         <?php if (isset($_POST['series'])) { ?>
-                                                        <option value="<?php echo $_POST['series']; ?>" selected>
-                                                            <?php echo $_POST['series']; ?>
-                                                        </option>
+                                                            <option value="<?php echo $_POST['series']; ?>" selected>
+                                                                <?php echo $_POST['series']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -281,9 +281,9 @@ if (isset($_POST['send_marks'])) {
                                                         onchange="updateCourses()">
                                                         <option value="">Select Semester</option>
                                                         <?php if (isset($_POST['semester'])) { ?>
-                                                        <option value="<?php echo $_POST['semester']; ?>" selected>
-                                                            <?php echo $_POST['semester']; ?>
-                                                        </option>
+                                                            <option value="<?php echo $_POST['semester']; ?>" selected>
+                                                                <?php echo $_POST['semester']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -292,9 +292,9 @@ if (isset($_POST['send_marks'])) {
                                                     <select name="course" id="course" class="form-control">
                                                         <option value="">Select Course</option>
                                                         <?php if (isset($_POST['course'])) { ?>
-                                                        <option value="<?php echo $_POST['course']; ?>" selected>
-                                                            <?php echo $_POST['course']; ?>
-                                                        </option>
+                                                            <option value="<?php echo $_POST['course']; ?>" selected>
+                                                                <?php echo $_POST['course']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -452,66 +452,66 @@ if (isset($_POST['send_marks'])) {
         </div>
     </div>
     <script>
-    // Update series dropdown based on department selection
-    function updateSeries() {
-        var department = document.getElementById("department").value;
-        var seriesDropdown = document.getElementById("series");
+        // Update series dropdown based on department selection
+        function updateSeries() {
+            var department = document.getElementById("department").value;
+            var seriesDropdown = document.getElementById("series");
 
-        seriesDropdown.innerHTML = '<option value="">Select Series</option>';
+            seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
-        if (seriesOptions[department]) {
-            seriesOptions[department].forEach(function(series) {
-                var optionElement = document.createElement("option");
-                optionElement.value = series;
-                optionElement.text = series;
-                seriesDropdown.appendChild(optionElement);
-            });
+            if (seriesOptions[department]) {
+                seriesOptions[department].forEach(function (series) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = series;
+                    optionElement.text = series;
+                    seriesDropdown.appendChild(optionElement);
+                });
+            }
+            updateSemesters(); // Clear the next dropdowns when department changes
         }
-        updateSemesters(); // Clear the next dropdowns when department changes
-    }
 
-    function updateSemesters() {
-        var department = document.getElementById("department").value;
-        var series = document.getElementById("series").value;
-        var semesterDropdown = document.getElementById("semester");
+        function updateSemesters() {
+            var department = document.getElementById("department").value;
+            var series = document.getElementById("series").value;
+            var semesterDropdown = document.getElementById("semester");
 
-        semesterDropdown.innerHTML = '<option value="">Select Semester</option>';
+            semesterDropdown.innerHTML = '<option value="">Select Semester</option>';
 
-        var key = department + '|' + series;
+            var key = department + '|' + series;
 
-        if (semesterOptions[key]) {
-            semesterOptions[key].forEach(function(semester) {
-                var optionElement = document.createElement("option");
-                optionElement.value = semester;
-                optionElement.text = semester;
-                semesterDropdown.appendChild(optionElement);
-            });
+            if (semesterOptions[key]) {
+                semesterOptions[key].forEach(function (semester) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = semester;
+                    optionElement.text = semester;
+                    semesterDropdown.appendChild(optionElement);
+                });
+            }
+            updateCourses(); // Clear the next dropdown when series changes
         }
-        updateCourses(); // Clear the next dropdown when series changes
-    }
 
-    function updateCourses() {
-        var department = document.getElementById("department").value;
-        var semester = document.getElementById("semester").value;
-        var courseDropdown = document.getElementById("course");
+        function updateCourses() {
+            var department = document.getElementById("department").value;
+            var semester = document.getElementById("semester").value;
+            var courseDropdown = document.getElementById("course");
 
-        courseDropdown.innerHTML = '<option value="">Select Course</option>';
+            courseDropdown.innerHTML = '<option value="">Select Course</option>';
 
-        var key = department + '|' + semester;
+            var key = department + '|' + semester;
 
 
-        if (courseOptions[key]) {
-            courseOptions[key].forEach(function(course) {
-                var optionElement = document.createElement("option");
-                optionElement.value = course;
-                optionElement.text = course;
-                courseDropdown.appendChild(optionElement);
-            });
+            if (courseOptions[key]) {
+                courseOptions[key].forEach(function (course) {
+                    var optionElement = document.createElement("option");
+                    optionElement.value = course;
+                    optionElement.text = course;
+                    courseDropdown.appendChild(optionElement);
+                });
+            }
         }
-    }
 
-    var seriesOptions = {
-        <?php
+        var seriesOptions = {
+            <?php
             $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
             $query = $dbh->prepare($sql);
             $query->execute();
@@ -527,10 +527,10 @@ if (isset($_POST['send_marks'])) {
                 echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
             }
             ?>
-    };
+        };
 
-    var semesterOptions = {
-        <?php
+        var semesterOptions = {
+            <?php
             $sql = "SELECT Department, Series, Semester FROM tblclasses";
             $query = $dbh->prepare($sql);
             $query->execute();
@@ -548,10 +548,10 @@ if (isset($_POST['send_marks'])) {
                 echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
             }
             ?>
-    };
+        };
 
-    var courseOptions = {
-        <?php
+        var courseOptions = {
+            <?php
             $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
             $query = $dbh->prepare($sql);
             $query->execute();
@@ -569,7 +569,7 @@ if (isset($_POST['send_marks'])) {
                 echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
             }
             ?>
-    };
+        };
     </script>
 
     <!-- ========== COMMON JS FILES ========== -->
@@ -582,9 +582,9 @@ if (isset($_POST['send_marks'])) {
     <script src="js/DataTables/datatables.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-    $(function($) {
-        $('#example').DataTable();
-    });
+        $(function ($) {
+            $('#example').DataTable();
+        });
     </script>
 </body>
 
