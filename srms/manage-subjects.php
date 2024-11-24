@@ -1,6 +1,6 @@
 <?php session_start();
 error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 if (strlen($_SESSION['alogin']) == "") {
     header("Location: index.php");
 } else {
@@ -16,7 +16,7 @@ if (strlen($_SESSION['alogin']) == "") {
         echo "<script>window.location.href ='manage-subjects.php'</script>";
     }
 
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -51,9 +51,10 @@ if (strlen($_SESSION['alogin']) == "") {
                 -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
                 box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
             }
+
             .filter-form {
-            margin-bottom: 20px;
-        }
+                margin-bottom: 20px;
+            }
         </style>
     </head>
 
@@ -61,11 +62,11 @@ if (strlen($_SESSION['alogin']) == "") {
         <div class="main-wrapper">
 
             <!-- ========== TOP NAVBAR ========== -->
-            <?php include ('includes/topbar.php'); ?>
+            <?php include('includes/topbar.php'); ?>
             <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
             <div class="content-wrapper">
                 <div class="content-container">
-                    <?php include ('includes/leftbar.php'); ?>
+                    <?php include('includes/leftbar.php'); ?>
 
                     <div class="main-page">
                         <div class="container-fluid">
@@ -110,9 +111,9 @@ if (strlen($_SESSION['alogin']) == "") {
                                                 <div class="alert alert-success left-icon-alert" role="alert">
                                                     <strong>Well done!</strong><?php echo htmlentities($msg); ?>
                                                 </div><?php } else if ($error) { ?>
-                                                    <div class="alert alert-danger left-icon-alert" role="alert">
-                                                        <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                                    </div>
+                                                <div class="alert alert-danger left-icon-alert" role="alert">
+                                                    <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
+                                                </div>
                                             <?php } ?>
                                             <div class="panel-body p-20">
 
@@ -144,7 +145,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                     <td><?php echo htmlentities($result->CourseName); ?></td>
                                                                     <td><?php echo htmlentities($result->CourseCode); ?></td>
                                                                     <td><?php echo htmlentities($result->CourseCredit); ?></td>
-                                                                    <td><?php echo htmlentities($result->deptName); ?></td>
+                                                                    <td><?php echo htmlentities($result->Department); ?></td>
                                                                     <td><?php echo htmlentities($result->Semester); ?></td>
                                                                     <td><?php echo htmlentities($result->Creationdate); ?></td>
                                                                     <td><?php echo htmlentities($result->UpdationDate); ?></td>
@@ -157,7 +158,7 @@ if (strlen($_SESSION['alogin']) == "") {
 
                                                                     </td>
                                                                 </tr>
-                                                                <?php $cnt = $cnt + 1;
+                                                        <?php $cnt = $cnt + 1;
                                                             }
                                                         } ?>
 
@@ -216,7 +217,7 @@ if (strlen($_SESSION['alogin']) == "") {
         <!-- ========== THEME JS ========== -->
         <script src="js/main.js"></script>
         <script>
-            $(function ($) {
+            $(function($) {
                 $('#example').DataTable();
 
                 $('#example2').DataTable({
