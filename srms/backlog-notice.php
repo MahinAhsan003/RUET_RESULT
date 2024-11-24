@@ -68,6 +68,29 @@ if (!isset($_SESSION['login'])) {
         .student-info p strong {
             color: #000;
         }
+
+        .notice-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .notice-list ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notice-list ul li a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .notice-list ul li img {
+            margin-left: 10px;
+            height: 20px;
+        }
     </style>
 </head>
 
@@ -97,23 +120,29 @@ if (!isset($_SESSION['login'])) {
                                 <div class="col-lg-6">
                                     <h2>Notice Board</h2>
                                     <hr color="#000" />
-                                    <marquee direction="up" onmouseover="this.stop();" onmouseout="this.start();">
+                                    <div class="notice-list">
                                         <ul>
-                                            <?php $sql = "SELECT * from tblbacklognotice";
+                                            <?php
+                                            $sql = "SELECT * FROM tblbacklognotice ORDER BY postingDate DESC";
                                             $query = $dbh->prepare($sql);
                                             $query->execute();
                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                            $cnt = 1;
+
                                             if ($query->rowCount() > 0) {
                                                 foreach ($results as $result) { ?>
-                                                    <li><a href="notice-details-back.php?nid=<?php echo htmlentities($result->id); ?>"
-                                                            target="_blank"><?php echo htmlentities($result->noticeTitle); ?></li>
-                                            <?php }
-                                            } ?>
+                                                    <li>
+                                                        <a href="notice-details-backlog.php?nid=<?php echo htmlentities($result->id); ?>" target="_blank" onclick="hideImage(this)">
+                                                            <?php echo htmlentities($result->noticeTitle); ?>
+                                                        </a>
 
+                                                        <img src="images/latest-news-blink-img.gif" alt="New" class="notice-icon">
+                                                    </li>
+                                                <?php }
+                                            } else { ?>
+                                                <li>No notices available.</li>
+                                            <?php } ?>
                                         </ul>
-                                    </marquee>
-
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -167,6 +196,14 @@ if (!isset($_SESSION['login'])) {
             }
             toastr["success"]("Welcome to RUET Management Systems!");
         });
+    </script>
+    <script>
+        function hideImage(link) {
+            const img = link.parentNode.querySelector(".notice-icon");
+            if (img) {
+                img.style.display = "none";
+            }
+        }
     </script>
 </body>
 
