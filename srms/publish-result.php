@@ -80,7 +80,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                         </div>
                                                     </div>
                                                     <div class="panel-body p-20">
-                                                        <form method="post" action="" class="filter-form">
+                                                        <form method="POST" id="filterForm">
                                                             <div class="form-group">
                                                                 <label for="department">Department</label>
                                                                 <select name="department" id="department"
@@ -115,235 +115,221 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                     <option value="">Select Semester</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="course">Course</label>
-                                                                <select name="course" id="course" class="form-control">
-                                                                </select>
-                                                            </div>
-                                                            <button type="submit" name="filter"
+
+                                                            <button type="button" id="filterBtn"
                                                                 class="btn btn-primary">Filter</button>
                                                         </form>
-                                                        <form id="gpaForm" method="post" action="">
-                                                            <table id="example"
-                                                                class="display table table-striped table-bordered"
-                                                                cellspacing="0" width="100%">
-                                                                <tbody>
-                                                                    <?php
-                                                                    if (isset($_POST['filter'])) {
-                                                                        $department = $_POST['department'];
-                                                                        $series = $_POST['series'];
-                                                                        $semester = $_POST['semester'];
-                                                                        $course = $_POST['course'];
 
-                                                                        // Fetch course credit to determine marks columns
-                                                                        $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
-                                                                        $query = $dbh->prepare($sql);
-                                                                        $query->execute([':course' => $course]);
-                                                                        $courseCredit = $query->fetchColumn();
+                                                        <!-- The Form for calculating result -->
+                                                        <form method="POST" id="calculateForm" style="display:none;">
+                                                            <!-- Hidden inputs to pass filter details -->
+                                                            <input type="hidden" name="department" id="hiddenDepartment">
+                                                            <input type="hidden" name="series" id="hiddenSeries">
+                                                            <input type="hidden" name="semester" id="hiddenSemester">
 
-                                                                        // Start table
-                                                                        echo '<table class="table table-bordered">';
+                                                            <!-- Dropdown for selecting Semester (1-8) for Result Publishing, initially hidden -->
+                                                            <div id="semesterSelectDiv" style="display:none;">
+                                                                <label for="selectSemester">Select Semester for Publishing
+                                                                    Result</label>
+                                                                <select name="selectSemester" id="selectSemester"
+                                                                    class="form-control">
+                                                                    <option value="">Select Semester</option>
+                                                                    <option value="1">Semester 1</option>
+                                                                    <option value="2">Semester 2</option>
+                                                                    <option value="3">Semester 3</option>
+                                                                    <option value="4">Semester 4</option>
+                                                                    <option value="5">Semester 5</option>
+                                                                    <option value="6">Semester 6</option>
+                                                                    <option value="7">Semester 7</option>
+                                                                    <option value="8">Semester 8</option>
+                                                                </select>
+                                                            </div>
 
-                                                                        // Table header
-                                                                        echo '<thead><tr>';
-                                                                        echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
-
-                                                                        // Generate headers based on course credit
-                                                                        if ($courseCredit >= 3.0) {
-                                                                            echo '<th>CT 1</th><th>CT 2</th><th>CT 3</th><th>CT 4</th><th>Attendance</th><th>Assignment</th><th>Semester Final</th>';
-                                                                            echo '<th>Best 3 CT Average</th>';
-                                                                        } else {
-                                                                            echo '<th>Attendance</th><th>Quiz</th><th>Board Viva</th><th>Performance</th>';
-                                                                        }
-
-                                                                        echo '<th>Total Marks</th><th>Alphabetical Grade</th><th>Numerical Grade</th>';
-                                                                        echo '</tr></thead><tbody>';
-
-                                                                        // Prepare the SQL query based on course credit
-                                                                        if ($courseCredit >= 3.0) {
-                                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                    m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final
-                    FROM tblstudents s
-                    LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                    INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
-                                                                        } else {
-                                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                    m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                    FROM tblstudents s
-                    LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                    INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
-                                                                        }
-
-                                                                        // Add filters for department, series, and semester
-                                                                        if ($department)
-                                                                            $sql .= " AND s.Department = :department";
-                                                                        if ($series)
-                                                                            $sql .= " AND s.Series = :series";
-                                                                        if ($semester)
-                                                                            $sql .= " AND r.Semester = :semester";
-
-                                                                        // Execute the query
-                                                                        $query = $dbh->prepare($sql);
-                                                                        $query->execute([
-                                                                            ':course' => $course,
-                                                                            ':department' => $department,
-                                                                            ':series' => $series,
-                                                                            ':semester' => $semester
-                                                                        ]);
-
-                                                                        $results = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                                                                        if ($query->rowCount() > 0) {
-                                                                            $counter = 1; // Counter for row numbering
-                                                                            foreach ($results as $row) {
-                                                                                echo '<tr>';
-                                                                                echo '<td>' . $counter++ . '</td>'; // Row number
-                                                                                echo '<td>' . htmlentities($row['StudentName']) . '</td>';
-                                                                                echo '<td>' . htmlentities($row['RollId']) . '</td>';
-
-                                                                                $totalMarks = 0; // Initialize total marks for calculation
-                                                                
-                                                                                // For courses with credit >= 3 (fetching from tblmarks)
-                                                                                if ($courseCredit >= 3.0) {
-                                                                                    $ctScores = [
-                                                                                        isset($row['CT_1']) ? $row['CT_1'] : 0,
-                                                                                        isset($row['CT_2']) ? $row['CT_2'] : 0,
-                                                                                        isset($row['CT_3']) ? $row['CT_3'] : 0,
-                                                                                        isset($row['CT_4']) ? $row['CT_4'] : 0
-                                                                                    ];
-                                                                                    rsort($ctScores);
-                                                                                    $bestThreeAverage = ceil(array_sum(array_slice($ctScores, 0, 3)) / 3);
-
-                                                                                    $totalMarks = $bestThreeAverage +
-                                                                                        (isset($row['Attendance']) ? $row['Attendance'] : 0) +
-                                                                                        (isset($row['Semester_Final']) ? $row['Semester_Final'] : 0) +
-                                                                                        (isset($row['Assignment']) ? $row['Assignment'] : 0);
-
-                                                                                    echo '<td>' . htmlentities($row['CT_1']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['CT_2']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['CT_3']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['CT_4']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['Attendance']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['Assignment']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['Semester_Final']) . '</td>';
-                                                                                    echo '<td>' . $bestThreeAverage . '</td>';
-                                                                                } else {
-                                                                                    $totalMarks =
-                                                                                        (isset($row['Attendance']) ? $row['Attendance'] : 0) +
-                                                                                        (isset($row['Quiz']) ? $row['Quiz'] : 0) +
-                                                                                        (isset($row['BoardViva']) ? $row['BoardViva'] : 0) +
-                                                                                        (isset($row['Performance']) ? $row['Performance'] : 0);
-
-                                                                                    echo '<td>' . htmlentities($row['Attendance']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['Quiz']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['BoardViva']) . '</td>';
-                                                                                    echo '<td>' . htmlentities($row['Performance']) . '</td>';
-                                                                                }
-
-                                                                                $totalMarks = max(0, $totalMarks);
-                                                                                $numericalGrade = 0;
-                                                                                $alphabeticalGrade = '';
-
-                                                                                if ($totalMarks >= 80) {
-                                                                                    $numericalGrade = 4.0;
-                                                                                    $alphabeticalGrade = 'A+';
-                                                                                } elseif ($totalMarks >= 75) {
-                                                                                    $numericalGrade = 3.75;
-                                                                                    $alphabeticalGrade = 'A';
-                                                                                } elseif ($totalMarks >= 70) {
-                                                                                    $numericalGrade = 3.5;
-                                                                                    $alphabeticalGrade = 'A-';
-                                                                                } elseif ($totalMarks >= 65) {
-                                                                                    $numericalGrade = 3.25;
-                                                                                    $alphabeticalGrade = 'B+';
-                                                                                } elseif ($totalMarks >= 60) {
-                                                                                    $numericalGrade = 3.0;
-                                                                                    $alphabeticalGrade = 'B';
-                                                                                } elseif ($totalMarks >= 55) {
-                                                                                    $numericalGrade = 2.75;
-                                                                                    $alphabeticalGrade = 'B-';
-                                                                                } elseif ($totalMarks >= 50) {
-                                                                                    $numericalGrade = 2.5;
-                                                                                    $alphabeticalGrade = 'C';
-                                                                                } else {
-                                                                                    $numericalGrade = 0;
-                                                                                    $alphabeticalGrade = 'F';
-                                                                                }
-
-                                                                                echo '<td>' . $totalMarks . '</td>';
-                                                                                echo '<td>' . $alphabeticalGrade . '</td>';
-                                                                                echo '<td>' . $numericalGrade . '</td>';
-
-                                                                                // Add hidden fields for GPA calculation
-                                                                                echo '<input type="hidden" name="rollIds[]" value="' . htmlentities($row['RollId']) . '">';
-                                                                                echo '<input type="hidden" name="numericalGrades[]" value="' . $numericalGrade . '">';
-                                                                                echo '<input type="hidden" name="semester" value="' . htmlentities($semester) . '">';
-                                                                                echo '<input type="hidden" name="course" value="' . htmlentities($course) . '">';
-                                                                                echo '</tr>';
-                                                                            }
-                                                                        } else {
-                                                                            echo '<tr><td colspan="12">No records found</td></tr>';
-                                                                        }
-
-                                                                        echo '</tbody></table>';
-                                                                        echo '<button type="submit" name="calculateGPA" class="btn btn-primary">Calculate GPA</button>';
-                                                                        echo '</form>';
-                                                                    }
-                                                                    ?>
-                                                                </tbody>
-                                                            </table>
+                                                            <!-- Show Publish Result button -->
+                                                            <div id="publishResultButtonDiv" style="display:none;">
+                                                                <button type="submit" name="publishResult"
+                                                                    class="btn btn-warning mt-3">Publish Result</button>
+                                                            </div>
                                                         </form>
+                                                        <div id="echoDetails" class="mt-3"></div>
 
+                                                        <script>
+                                                            document.getElementById('filterBtn').addEventListener('click',
+                                                                function () {
+                                                                    // Get selected filter values
+                                                                    var department = document.getElementById('department')
+                                                                        .value;
+                                                                    var series = document.getElementById('series').value;
+                                                                    var semester = document.getElementById('semester')
+                                                                        .value;
+
+                                                                    // Display the selected filter details
+                                                                    var echoDetails = document.getElementById(
+                                                                        'echoDetails');
+                                                                    echoDetails.innerHTML = `
+                        <strong>Department:</strong> ${department}<br>
+                        <strong>Series:</strong> ${series}<br>
+                        <strong>Semester:</strong> ${semester}
+                    `;
+
+                                                                    // Show the 'Publish Result' button and semester selection dropdown
+                                                                    document.getElementById('calculateForm').style.display =
+                                                                        'block';
+
+                                                                    // Set the hidden fields with the selected filter values
+                                                                    document.getElementById('hiddenDepartment').value =
+                                                                        department;
+                                                                    document.getElementById('hiddenSeries').value = series;
+                                                                    document.getElementById('hiddenSemester').value =
+                                                                        semester;
+                                                                });
+
+                                                            // Show the semester selection dropdown and publish result button when the form is displayed
+                                                            document.getElementById('calculateForm').addEventListener('submit',
+                                                                function (e) {
+                                                                    e
+                                                                        .preventDefault(); // Prevent form submission to keep the page intact
+
+                                                                    // Show the select semester dropdown and publish result button
+                                                                    document.getElementById('semesterSelectDiv').style
+                                                                        .display = 'block';
+                                                                    document.getElementById('publishResultButtonDiv').style
+                                                                        .display = 'block';
+                                                                });
+                                                        </script>
                                                         <?php
-                                                        if (isset($_POST['calculateGPA'])) {
+
+                                                        // Publish Result (Calculate SGPA and CGPA)
+                                                        if (isset($_POST['publishResult'])) {
+                                                            // Get filter details from POST variables
                                                             $semester = $_POST['semester'];
-                                                            $course = $_POST['course'];
+                                                            $department = $_POST['department'];
+                                                            $series = $_POST['series'];
 
-                                                            // Query to get the Course Credit
-                                                            $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
+                                                            // Query to get RollIds for the selected semester, department, and series
+                                                            $sql = "SELECT DISTINCT RollId FROM tblgpa WHERE Semester = :semester";
                                                             $query = $dbh->prepare($sql);
-                                                            $query->bindParam(':course', $course, PDO::PARAM_STR);
+                                                            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
                                                             $query->execute();
+                                                            $rollIds = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                                                            // Fetch the Course Credit
-                                                            $courseCredit = $query->fetchColumn();
-                                                            if (!$courseCredit) {
-                                                                die("Error: Course Credit not found for the selected course.");
+                                                            foreach ($rollIds as $rollId) {
+                                                                $roll = $rollId['RollId'];
+
+                                                                // Query to calculate SGPA for each student
+                                                                $sql = "SELECT SUM(s.CourseCredit * g.GPA) AS weightedGPA, SUM(s.CourseCredit) AS totalCredits
+                                                                FROM tblgpa g
+                                                                JOIN tblsubjects s ON g.CourseCode = s.CourseCode
+                                                                WHERE g.RollId = :rollId AND g.Semester = :semester
+                                                                GROUP BY g.RollId, g.Semester
+                                                            ";
+
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                                $query->execute();
+
+                                                                // Fetch the weighted GPA and total credits
+                                                                $result = $query->fetch(PDO::FETCH_ASSOC);
+
+                                                                if ($result) {
+                                                                    $weightedGPA = $result['weightedGPA'];
+                                                                    $totalCredits = $result['totalCredits'];
+
+                                                                    // Calculate SGPA
+                                                                    if ($totalCredits > 0) {
+                                                                        $sgpa = $weightedGPA / $totalCredits;
+                                                                    } else {
+                                                                        $sgpa = 0;  // In case of no courses in that semester
+                                                                    }
+
+                                                                    // Insert the calculated SGPA into the tblsgpa table
+                                                                    $sql = "INSERT INTO tblsgpa (RollId, Semester, SGPA) 
+                    VALUES (:rollId, :semester, :sgpa) 
+                    ON DUPLICATE KEY UPDATE SGPA = :sgpa";
+
+                                                                    $query = $dbh->prepare($sql);
+                                                                    $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                    $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                                    $query->bindParam(':sgpa', $sgpa, PDO::PARAM_STR);
+
+                                                                    try {
+                                                                        $query->execute();
+                                                                        echo "SGPA successfully calculated and updated for Roll ID: $roll<br>";
+                                                                    } catch (PDOException $e) {
+                                                                        echo "Error updating SGPA for Roll ID: $roll - " . $e->getMessage() . "<br>";
+                                                                    }
+                                                                }
                                                             }
 
-                                                            // Get Roll IDs and Numerical Grades from the table form submission
-                                                            $rollIds = $_POST['rollIds']; // Array of Roll IDs from the table
-                                                            $numericalGrades = $_POST['numericalGrades']; // Array of Numerical Grades from the table
-                                                    
-                                                            foreach ($rollIds as $index => $rollId) {
-                                                                $numericalGrade = $numericalGrades[$index];
+                                                            // Calculate CGPA (Optional based on selected semester)
+                                                            if (isset($_POST['selectSemester'])) {
+                                                                $selectedSemester = $_POST['selectSemester'];
 
-                                                                // Prepare the SQL query for inserting GPA (Numerical Grade as GPA)
-                                                                $sql = "INSERT INTO tblgpa (RollId, Semester, CourseCode, GPA)
-                VALUES (:rollId, :semester, :course, :GPA)
-                ON DUPLICATE KEY UPDATE GPA = :GPA";
+                                                                // Query to get RollIds for the selected department and semesters
+                                                                $sql = "SELECT DISTINCT RollId 
+                                                                FROM tblgpa 
+                                                                WHERE Semester IN (";
 
-                                                                // Prepare and bind parameters
+                                                                // Add semesters 1 to selected semester dynamically
+                                                                $semesters = range(1, $selectedSemester);  // Generate array of semesters up to selected
+                                                                $placeholders = implode(',', array_fill(0, count($semesters), '?'));
+                                                                $sql .= $placeholders . ")";
+
                                                                 $query = $dbh->prepare($sql);
-                                                                $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
-                                                                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-                                                                $query->bindParam(':course', $course, PDO::PARAM_STR);
-                                                                $query->bindParam(':GPA', $numericalGrade, PDO::PARAM_STR);
+                                                                // Bind the semester values dynamically
+                                                                $query->execute($semesters);
+                                                                $rollIds = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                                                                // Execute the query and handle errors
-                                                                try {
-                                                                    $query->execute();
-                                                                    echo "GPA (Numerical Grade) successfully inserted/updated for Roll ID: $rollId<br>";
-                                                                } catch (PDOException $e) {
-                                                                    echo "Error inserting GPA for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                                foreach ($rollIds as $rollId) {
+                                                                    $roll = $rollId['RollId'];
+
+                                                                    // Query to calculate total SGPA for all semesters up to the selected semester
+                                                                    $sql = "SELECT SUM(s.CourseCredit * g.GPA) AS weightedGPA, SUM(s.CourseCredit) AS totalCredits
+                                                                    FROM tblgpa g
+                                                                    JOIN tblsubjects s ON g.CourseCode = s.CourseCode
+                                                                    WHERE g.RollId = :rollId AND g.Semester IN (";
+
+                                                                    $placeholders = implode(',', array_fill(0, count($semesters), '?'));
+                                                                    $sql .= $placeholders . ") GROUP BY g.RollId";
+
+                                                                    $query = $dbh->prepare($sql);
+                                                                    $query->execute(array_merge([$roll], $semesters));
+                                                                    $result = $query->fetch(PDO::FETCH_ASSOC);
+
+                                                                    if ($result) {
+                                                                        $weightedGPA = $result['weightedGPA'];
+                                                                        $totalCredits = $result['totalCredits'];
+
+                                                                        // Calculate CGPA
+                                                                        if ($totalCredits > 0) {
+                                                                            $cgpa = $weightedGPA / $totalCredits;
+                                                                        } else {
+                                                                            $cgpa = 0; // No courses found
+                                                                        }
+
+                                                                        // Insert the calculated CGPA into the tblcgpa table
+                                                                        $sql = "INSERT INTO tblcgpa (RollId, Semester, CGPA) 
+                        VALUES (:rollId, :semester, :cgpa) 
+                        ON DUPLICATE KEY UPDATE CGPA = :cgpa";
+
+                                                                        $query = $dbh->prepare($sql);
+                                                                        $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                        $query->bindParam(':semester', $selectedSemester, PDO::PARAM_STR);
+                                                                        $query->bindParam(':cgpa', $cgpa, PDO::PARAM_STR);
+
+                                                                        try {
+                                                                            $query->execute();
+                                                                            echo "CGPA successfully calculated and updated for Roll ID: $roll<br>";
+                                                                        } catch (PDOException $e) {
+                                                                            echo "Error updating CGPA for Roll ID: $roll - " . $e->getMessage() . "<br>";
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                         ?>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -357,27 +343,27 @@ if (strlen($_SESSION['alogin']) == "") {
                 <!-- /.content-wrapper -->
             </div>
             <!--/.main-wrapper -->
-            </di v>
-            <scr ipt>
-                // Update series dropdown based on department selection
-                function updateSeries() {
+        </div>
+        <script>
+            // Update series dropdown based on department selection
+            function updateSeries() {
                 var department = document.getElementById("department").value;
                 var seriesDropdown = document.getElementById("series");
 
                 seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
-                if (seri esOptions[department]) {
-                seriesOptions[department].forEach(function(series) {
-                var optionElement = document.createElement("option");
-                optionElement.value = series;
-                optionElement.text = series;
-                seriesDropdown.appendChild(optionElement);
-                });
+                if (seriesOptions[department]) {
+                    seriesOptions[department].forEach(function (series) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = series;
+                        optionElement.text = series;
+                        seriesDropdown.appendChild(optionElement);
+                    });
                 }
                 updateSemesters(); // Clear the next dropdowns when department changes
-                }
+            }
 
-                function updateSemesters() {
+            function updateSemesters() {
                 var department = document.getElementById("department").value;
                 var series = document.getElementById("series").value;
                 var semesterDropdown = document.getElementById("semester");
@@ -386,40 +372,17 @@ if (strlen($_SESSION['alogin']) == "") {
 
                 var key = department + '|' + series;
 
-                if (seme sterOptions[key]) {
-                seme sterOptions[key].forEach(function(semester) {
-                var optionElement = document.createElement("option");
-                optionElement.value = semester;
-                optionElement.text = semester;
-                semesterDropdown.appendChild(optionElement);
-                });
-                }
-                updateCourses(); // Clear the next dropdown when series changes
+                if (semesterOptions[key]) {
+                    semesterOptions[key].forEach(function (semester) {
+                        var optionElement = document.createElement("option");
+                        optionElement.value = semester;
+                        optionElement.text = semester;
+                        semesterDropdown.appendChild(optionElement);
+                    });
                 }
 
-                function updateCourses() {
-                var department = document.getElementById("department").value;
-                var semester = document.getElementById("semester").value;
-                var courseDropdown = document.getElementById("course");
-
-                courseDropdown.innerHTML = '<option value="">Select Course</option>';
-
-                var key = department + '|' + semester;
-
-
-
-                if (courseOptions[key]) {
-                cour seOptions[key].forEach(function(course) {
-                var optionElement = document.createElement("option");
-                optionElement.value = course;
-                optionElement.text = course;
-                courseDropdown.appendChild(optionElement);
-                });
-                }
-
-                }
-
-                var seriesOptions = {
+            }
+            var seriesOptions = {
                 <?php
                 $sql = "SELECT DISTINCT Department, Series FROM tblclasses";
                 $query = $dbh->prepare($sql);
@@ -436,9 +399,9 @@ if (strlen($_SESSION['alogin']) == "") {
                     echo '"' . $department . '": ["' . implode('", "', $uniqueSeries) . '"],';
                 }
                 ?>
-                };
+            };
 
-                var semesterOptions = {
+            var semesterOptions = {
                 <?php
                 $sql = "SELECT Department, Series, Semester FROM tblclasses";
                 $query = $dbh->prepare($sql);
@@ -457,39 +420,18 @@ if (strlen($_SESSION['alogin']) == "") {
                     echo '"' . $key . '": ["' . implode('", "', $uniqueSemesters) . '"],';
                 }
                 ?>
-                };
+            };
+        </script>
 
-                var courseOptions = {
-                <?php
-                $sql = "SELECT Department, Semester, CourseCode FROM tblsubjects";
-                $query = $dbh->prepare($sql);
-                $query->execute();
-                $results = $query->fetchAll(PDO::FETCH_OBJ);
-                $deptSemesters = [];
-                if ($query->rowCount() > 0) {
-                    foreach ($results as $result) {
-                        $key = $result->Department . '|' . $result->Semester;
-                        $deptSemesters[$key][] = $result->CourseCode;
-                    }
-                }
-
-                foreach ($deptSemesters as $key => $courses) {
-                    $uniqueCourses = array_unique($courses);
-                    echo '"' . $key . '": ["' . implode('", "', $uniqueCourses) . '"],';
-                }
-                ?>
-                };
-                </script>
-
-                <script src="js/jquery/jquery-2.2.4.min.js"> </script>
-                <script src="js/bootstrap/bootstrap.min.js"></script>
-                <script src="js/pace/pace.min.js"> </script>
-                <script src="js/lobipanel/lobipanel.min.js"></script>
-                <script src="js/iscroll/iscroll.js"></script>
-                <script src="js/prism/prism.js"></script>
-                <script sr c="js/select2/select2.min.js"></script>
-                <script src="js/main.js"></script>
-                <script src="js/DataTables/datatables.min.js"></script>
+        <script src="js/jquery/jquery-2.2.4.min.js"> </script>
+        <script src="js/bootstrap/bootstrap.min.js"></script>
+        <script src="js/pace/pace.min.js"> </script>
+        <script src="js/lobipanel/lobipanel.min.js"></script>
+        <script src="js/iscroll/iscroll.js"></script>
+        <script src="js/prism/prism.js"></script>
+        <script sr c="js/select2/select2.min.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/DataTables/datatables.min.js"></script>
     </body>
 
     </html>
