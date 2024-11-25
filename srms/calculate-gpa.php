@@ -380,12 +380,13 @@ if (!isset($_SESSION['login'])) {
 
 
 
-                                                    // Execute the query and handle errors
-                                                    try {
-                                                        $query->execute();
-                                                        echo "GPA (Numerical Grade) successfully inserted/updated for Roll ID: $rollId<br>";
-                                                    } catch (PDOException $e) {
-                                                        echo "Error inserting GPA for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                        // Execute the query and handle errors
+                                                        try {
+                                                            $query->execute();
+                                                            echo "GPA (Numerical Grade) successfully inserted/updated for Roll ID: $rollId<br>";
+                                                        } catch (PDOException $e) {
+                                                            echo "Error inserting GPA for Roll ID: $rollId - " . $e->getMessage() . "<br>";
+                                                        }
                                                     }
                                                 }
                                             } ?>
