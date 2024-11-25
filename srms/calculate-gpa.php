@@ -110,8 +110,8 @@ if (!isset($_SESSION['login'])) {
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <select name="department" id="department"
-                                                        class="form-control" onchange="updateSeries()">
+                                                    <select name="department" id="department" class="form-control"
+                                                        onchange="updateSeries()">
                                                         <option value="">Select Department</option>
                                                         <?php
                                                         $sql = "SELECT DISTINCT Department FROM tblclasses";
@@ -124,7 +124,7 @@ if (!isset($_SESSION['login'])) {
                                                                     value="<?php echo htmlentities($result->Department); ?>">
                                                                     <?php echo htmlentities($result->Department); ?>
                                                                 </option>
-                                                        <?php }
+                                                            <?php }
                                                         } ?>
                                                     </select>
                                                 </div>
@@ -151,8 +151,7 @@ if (!isset($_SESSION['login'])) {
                                                     class="btn btn-primary">Filter</button>
                                             </form>
                                             <form id="gpaForm" method="post" action="">
-                                                <table id="example"
-                                                    class="display table table-striped table-bordered"
+                                                <table id="example" class="display table table-striped table-bordered"
                                                     cellspacing="0" width="100%">
                                                     <tbody>
                                                         <?php
@@ -161,7 +160,7 @@ if (!isset($_SESSION['login'])) {
                                                             $series = $_POST['series'];
                                                             $semester = $_POST['semester'];
                                                             $course = $_POST['course'];
-
+                                                            echo "$course";
                                                             // Fetch course credit to determine marks columns
                                                             $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
                                                             $query = $dbh->prepare($sql);
@@ -193,14 +192,14 @@ if (!isset($_SESSION['login'])) {
                     FROM tblstudents s
                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
                     INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
+                    WHERE m.CourseCode = :course";
                                                             } else {
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
                     m.Attendance, m.Quiz, m.BoardViva, m.Performance
                     FROM tblstudents s
                     LEFT JOIN tblsessional m ON s.RollId = m.RollId
                     INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
+                    WHERE m.CourseCode = :course";
                                                             }
 
                                                             // Add filters for department, series, and semester
@@ -231,7 +230,7 @@ if (!isset($_SESSION['login'])) {
                                                                     echo '<td>' . htmlentities($row['RollId']) . '</td>';
 
                                                                     $totalMarks = 0; // Initialize total marks for calculation
-
+                                                        
                                                                     // For courses with credit >= 3 (fetching from tblmarks)
                                                                     if ($courseCredit >= 3.0) {
                                                                         $ctScores = [
@@ -343,7 +342,7 @@ if (!isset($_SESSION['login'])) {
                                                 // Get Roll IDs and Numerical Grades from the table form submission
                                                 $rollIds = $_POST['rollIds']; // Array of Roll IDs from the table
                                                 $numericalGrades = $_POST['numericalGrades']; // Array of Numerical Grades from the table
-
+                                            
                                                 foreach ($rollIds as $index => $rollId) {
                                                     $numericalGrade = $numericalGrades[$index];
 
@@ -388,7 +387,7 @@ if (!isset($_SESSION['login'])) {
             seriesDropdown.innerHTML = '<option value="">Select Series</option>';
 
             if (seriesOptions[department]) {
-                seriesOptions[department].forEach(function(series) {
+                seriesOptions[department].forEach(function (series) {
                     var optionElement = document.createElement("option");
                     optionElement.value = series;
                     optionElement.text = series;
@@ -408,7 +407,7 @@ if (!isset($_SESSION['login'])) {
             var key = department + '|' + series;
 
             if (semesterOptions[key]) {
-                semesterOptions[key].forEach(function(semester) {
+                semesterOptions[key].forEach(function (semester) {
                     var optionElement = document.createElement("option");
                     optionElement.value = semester;
                     optionElement.text = semester;
@@ -429,7 +428,7 @@ if (!isset($_SESSION['login'])) {
 
 
             if (courseOptions[key]) {
-                courseOptions[key].forEach(function(course) {
+                courseOptions[key].forEach(function (course) {
                     var optionElement = document.createElement("option");
                     optionElement.value = course;
                     optionElement.text = course;
@@ -510,7 +509,7 @@ if (!isset($_SESSION['login'])) {
     <script src="js/DataTables/datatables.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-        $(function($) {
+        $(function ($) {
             $('#example').DataTable();
         });
     </script>
