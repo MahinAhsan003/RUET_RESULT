@@ -80,7 +80,7 @@ if (!isset($_SESSION['login'])) {
                                 <ul class="breadcrumb">
                                     <li><a href="teacher-dashboard.php"><i class="fa fa-home"></i> Home</a></li>
                                     <li> Result</li>
-                                    <li class="active">Calculate GPA</li>
+                                    <li class="active">Calculate Backlog GPA</li>
                                 </ul>
                             </div>
                         </div>
@@ -191,14 +191,14 @@ if (!isset($_SESSION['login'])) {
                     m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Attendance, m.Assignment, m.Semester_Final
                     FROM tblstudents s
                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                    INNER JOIN tblbackregistration r ON s.RollId = r.RollId
                     WHERE m.CourseCode = :course";
                                                             } else {
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
                     m.Attendance, m.Quiz, m.BoardViva, m.Performance
                     FROM tblstudents s
                     LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                    INNER JOIN tblregistration r ON s.RollId = r.RollId
+                    INNER JOIN tblbackregistration r ON s.RollId = r.RollId
                     WHERE m.CourseCode = :course";
                                                             }
 
@@ -370,7 +370,7 @@ if (!isset($_SESSION['login'])) {
                                                         $queryDeleteManage->execute();
 
                                                         // Delete from tblregistration
-                                                        $sqlDeleteRegistration = "DELETE FROM tblregistration 
+                                                        $sqlDeleteRegistration = "DELETE FROM tblbackregistration 
                                            WHERE RollId = :rollId AND Semester = :semester AND RegisteredCourse = :course";
                                                         $queryDeleteRegistration = $dbh->prepare($sqlDeleteRegistration);
                                                         $queryDeleteRegistration->bindParam(':rollId', $rollId, PDO::PARAM_STR);

@@ -418,7 +418,7 @@ if (isset($_POST['send_marks'])) {
 
                                                                 echo '</tbody></table>';
                                                             } else {
-                                                                echo '<tr><td colspan="9">No records found</td></tr>';
+                                                                echo '<tr><td colspan="9" align="center">No records found</td></tr>';
                                                             }
                                                         }
                                                         ?>

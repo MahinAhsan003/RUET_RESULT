@@ -14,7 +14,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $courseCode = $_POST['CourseCode']; // Specific course to decline
 
         // Delete the specific registration for the given RollId, Semester, and CourseCode
-        $sql = "DELETE FROM tblregistration WHERE RollId = :rollId AND Semester = :semester AND RegisteredCourse = :courseCode";
+        $sql = "DELETE FROM tblbackregistration WHERE RollId = :rollId AND Semester = :semester AND RegisteredCourse = :courseCode";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
         $query->bindParam(':semester', $semester, PDO::PARAM_STR);
@@ -22,7 +22,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $query->execute();
 
         // Delete the specific registration for the given RollId, Semester, and CourseCode
-        $sql = "DELETE FROM tblmanageregistration WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :courseCode";
+        $sql = "DELETE FROM tblbackmanageregistration WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :courseCode";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
         $query->bindParam(':semester', $semester, PDO::PARAM_STR);
@@ -30,23 +30,23 @@ if (strlen($_SESSION['alogin']) == "") {
         $query->execute();
 
         $_SESSION['msg'] = "Registration Declined Successfully!";
-        header('location: manage-registration.php');
+        header('location: manage-back-registration.php');
     }
 
     // Fetch approved registrations (individual rows for each course)
     $sql = "SELECT 
-                tblmanageregistration.id,
-                tblmanageregistration.RollId,
+                tblbackmanageregistration.id,
+                tblbackmanageregistration.RollId,
                 tblstudents.StudentName,
-                tblmanageregistration.CourseCode,
+                tblbackmanageregistration.CourseCode,
                 tblsubjects.CourseName,
-                tblmanageregistration.Semester,
-                tblmanageregistration.RegistrationTime
-            FROM tblmanageregistration
-            JOIN tblstudents ON tblmanageregistration.RollId = tblstudents.RollId
-            JOIN tblsubjects ON tblmanageregistration.CourseCode = tblsubjects.CourseCode
-            WHERE tblmanageregistration.RegistrationStatus = 1
-            ORDER BY tblmanageregistration.RegistrationTime DESC";
+                tblbackmanageregistration.Semester,
+                tblbackmanageregistration.RegistrationTime
+            FROM tblbackmanageregistration
+            JOIN tblstudents ON tblbackmanageregistration.RollId = tblstudents.RollId
+            JOIN tblsubjects ON tblbackmanageregistration.CourseCode = tblsubjects.CourseCode
+            WHERE tblbackmanageregistration.RegistrationStatus = 1
+            ORDER BY tblbackmanageregistration.RegistrationTime DESC";
 
     $query = $dbh->prepare($sql);
     $query->execute();
@@ -101,7 +101,7 @@ if (strlen($_SESSION['alogin']) == "") {
                         <div class="container-fluid">
                             <div class="row page-title-div">
                                 <div class="col-md-6">
-                                    <h2 class="title">Approved Registration Requests</h2>
+                                    <h2 class="title">Approved Backlog Registration Requests</h2>
                                 </div>
                             </div>
                             <div class="row breadcrumb-div">
@@ -109,7 +109,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                     <ul class="breadcrumb">
                                         <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
                                         <li>Registration Requests</li>
-                                        <li class="active">Manage Registrations</li>
+                                        <li class="active">Manage Backlog Registrations</li>
                                     </ul>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title">
-                                                    <h5>View and Manage Registration Requests</h5>
+                                                    <h5>View and ManageBacklog Registration Requests</h5>
                                                 </div>
                                             </div>
                                             <div class="panel-body">

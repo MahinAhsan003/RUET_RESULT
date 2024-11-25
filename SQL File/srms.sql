@@ -398,6 +398,19 @@ CREATE TABLE `tblmanageregistration` (
 
 -- --------------------------------------------------------
 
+-- Table structure for table `tblmanageregistration`
+CREATE TABLE `tblbackmanageregistration` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `CourseCode` VARCHAR(20) NOT NULL,
+  `RegistrationStatus` INT DEFAULT 0,
+  `RegistrationTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 -- Table structure for table `tblregistration`
 
 CREATE TABLE `tblregistration` (
@@ -2752,6 +2765,20 @@ CREATE TABLE `tblbackregistration` (
 -- Table structure for table `tblregistrationqueue`
 
 CREATE TABLE `tblregistrationqueue` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `RollId` INT(11) NOT NULL,
+  `Semester` VARCHAR(20) NOT NULL,
+  `RequestedCourses` TEXT NOT NULL,
+  `RegistrationStatus` INT DEFAULT 0,
+  `RegistrationTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+-- Table structure for table `tblregistrationqueue`
+
+CREATE TABLE `tblbackregistrationqueue` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,

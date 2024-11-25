@@ -45,8 +45,8 @@ if (strlen($_SESSION['login']) == "") {
         } else {
             $registeredCourses = implode(",", $selected_courses);
 
-            // Check if the registration request already exists in tblregistrationqueue
-            $sql_check_queue = "SELECT * FROM tblregistrationqueue WHERE RollId = :rollId AND Semester = :semester";
+            // Check if the registration request already exists in tblbackregistrationqueue
+            $sql_check_queue = "SELECT * FROM tblbackregistrationqueue WHERE RollId = :rollId AND Semester = :semester";
             $query_check_queue = $dbh->prepare($sql_check_queue);
             $query_check_queue->bindParam(':rollId', $rollId, PDO::PARAM_INT);
             $query_check_queue->bindParam(':semester', $semester, PDO::PARAM_STR);
@@ -67,7 +67,7 @@ if (strlen($_SESSION['login']) == "") {
                 $error = "Registration request for this semester is already in queue!";
             } else {
                 // Insert new registration request into tblregistrationqueue
-                $sql = "INSERT INTO tblregistrationqueue (RollId, Semester, RequestedCourses) 
+                $sql = "INSERT INTO tblbackregistrationqueue (RollId, Semester, RequestedCourses) 
                         VALUES (:rollId, :semester, :registeredCourses)";
                 $query = $dbh->prepare($sql);
                 $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
@@ -195,7 +195,7 @@ if (strlen($_SESSION['login']) == "") {
                                     <ul class="breadcrumb">
                                         <li><a href="student-dash.php"><i class="fa fa-home"></i> Home</a></li>
                                         <li>Course Management</li>
-                                        <li class="active">Course Registration</li>
+                                        <li class="active">Backlog Registration</li>
                                     </ul>
                                 </div>
                             </div>
@@ -208,7 +208,7 @@ if (strlen($_SESSION['login']) == "") {
                                         <div class="panel">
                                             <div class="panel-heading">
                                                 <div class="panel-title">
-                                                    <h5>View Registration Info</h5>
+                                                    <h5>View Backlog Registration Info</h5>
                                                 </div>
                                             </div>
                                             <div class="panel-body p-20">

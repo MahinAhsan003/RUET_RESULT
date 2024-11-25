@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 // Load Composer's autoloader
 require '../vendor/autoload.php';
 
-// Create an instance; passing `true` enables exceptions
+// Create an instance; passing true enables exceptions
 $mail = new PHPMailer(true);
 
 $teacherid = $_SESSION['login'];
@@ -52,7 +52,7 @@ if (isset($_POST['send_marks'])) {
                 m.Assignment, m.Attendance
             FROM tblstudents s
             LEFT JOIN tblmarks m ON s.RollId = m.RollId
-            INNER JOIN tblregistration r ON s.RollId = r.RollId
+            INNER JOIN tblbackregistration r ON s.RollId = r.RollId
             WHERE s.Department = :department 
               AND s.Series = :series 
               AND r.Semester = :semester 
@@ -144,6 +144,7 @@ if (isset($_POST['send_marks'])) {
 
             $mail->send();
             $sentEmails[] = $email; // Add to sent emails list
+            echo "Email Send successfully for Roll ID: $studentName<br>";
         } catch (Exception $e) {
             echo "Failed to send email to $studentName ($email). Error: {$mail->ErrorInfo}<br>";
         }
@@ -151,7 +152,7 @@ if (isset($_POST['send_marks'])) {
         // Clear recipients for the next iteration
         $mail->clearAddresses();
     }
-    header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+    header("Location: manage-results.php?status=success");
     exit();
 }
 ?>
@@ -301,135 +302,129 @@ if (isset($_POST['send_marks'])) {
                                                 <button type="submit" name="filter"
                                                     class="btn btn-primary">Filter</button>
                                             </form>
-                                            <table id="example" class="display table table-striped table-bordered"
-                                                cellspacing="0" width="100%">
-                                                <tbody>
-                                                <tbody>
-                                                    <?php
-                                                    if (isset($_POST['filter'])) {
-                                                        $GLOBALS['department'] = $_POST['department'];
-                                                        $GLOBALS['series'] = $_POST['series'];
-                                                        $GLOBALS['semester'] = $_POST['semester'];
-                                                        $GLOBALS['course'] = $_POST['course'];
-
-                                                        $department = $GLOBALS['department'];
-                                                        $series = $GLOBALS['series'];
-                                                        $semester = $GLOBALS['semester'];
-                                                        $course = $GLOBALS['course'];
-
-
-
-                                                        // Fetch course credit to determine marks columns
-                                                        $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute([':course' => $course]);
-                                                        $courseCredit = $query->fetchColumn();
-
-                                                        // Initialize marks columns and query string
-                                                        if ($courseCredit < 3.0) {
-                                                            // Use tblsessional columns (no Best 3 CT Average)
-                                                            $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
-                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                FROM tblstudents s
-                LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
-                                                        } else {
-                                                            // Use tblmarks columns (include Best 3 CT Average)
-                                                            $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Attendance', 'Assignment', 'Semester_Final'];
-                                                            $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
-                FROM tblstudents s
-                LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
-                                                        }
-
-                                                        // Add filters for department, series, and semester
-                                                        if ($department)
-                                                            $sql .= " AND s.Department = :department";
-                                                        if ($series)
-                                                            $sql .= " AND s.Series = :series";
-                                                        if ($semester)
-                                                            $sql .= " AND m.Semester = :semester";
-
-                                                        // Prepare and execute query
-                                                        $query = $dbh->prepare($sql);
-                                                        $query->execute([
-                                                            ':course' => $course,
-                                                            ':department' => $department,
-                                                            ':series' => $series,
-                                                            ':semester' => $semester
-                                                        ]);
-
-                                                        $results = $query->fetchAll(PDO::FETCH_ASSOC);
-
-                                                        if ($query->rowCount() > 0) {
-                                                            // Table start
-                                                            echo '<table class="table table-bordered">';
-
-                                                            // Table header
-                                                            echo '<thead><tr>';
-                                                            echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
-
-                                                            // Dynamically create table headers for marks columns
-                                                            foreach ($marksColumns as $column) {
-                                                                echo "<th>" . htmlentities($column) . "</th>"; // Display column name in header
-                                                            }
-
-                                                            // Add the "Best 3 CT Average" column header if fetching from tblmarks
-                                                            if ($courseCredit >= 3.0) {
-                                                                echo '<th>Best 3 CT Average</th>';
-                                                            }
-
-                                                            echo '</tr></thead><tbody>';
-
-                                                            // Display data rows dynamically based on marks columns
-                                                            $counter = 1; // Counter for row numbering
-                                                            foreach ($results as $row) {
-                                                                echo '<tr>';
-                                                                echo '<td>' . $counter++ . '</td>'; // Row number
-                                                                echo '<td>' . htmlentities($row['StudentName']) . '</td>';
-                                                                echo '<td>' . htmlentities($row['RollId']) . '</td>';
-
-                                                                // Loop through each marks column and display the corresponding value
-                                                                $ctScores = []; // Array to store CT marks for calculating the average
-                                                                foreach ($marksColumns as $column) {
-                                                                    // If the column is a CT score, add it to the CT scores array
-                                                                    if (in_array($column, ['CT_1', 'CT_2', 'CT_3', 'CT_4'])) {
-                                                                        $ctScores[] = $row[$column] ?? 0; // Use 0 if the value is null
-                                                                    }
-                                                                    echo '<td>' . htmlentities($row[$column] ?? 'N/A') . '</td>'; // Display marks or 'N/A' if not available
-                                                                }
-
-                                                                // Calculate the best 3 average for CT marks if fetching from tblmarks
-                                                                if ($courseCredit >= 3.0 && count($ctScores) > 0) {
-                                                                    // Sort the array in descending order to get the best 3 marks
-                                                                    rsort($ctScores);
-                                                                    // Take the top 3 scores and calculate their average
-                                                                    $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
-                                                                    $bestThreeAverage = ceil($bestThreeAverage);
-                                                                    echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
-                                                                } else {
-                                                                    // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
-                                                                    if ($courseCredit >= 3.0) {
-                                                                        echo '<td></td>'; // This is to ensure no empty cell when course credit is less than 3
-                                                                    }
-                                                                }
-
-                                                                echo '</tr>';
-                                                            }
-
-                                                            echo '</tbody></table>';
-                                                        } else {
-                                                            echo '<tr><td colspan="9">No records found</td></tr>';
-                                                        }
-                                                    }
-                                                    ?>
-                                                </tbody>
-                                            </table>
                                             <form action="" method="post">
+                                                <table id="example" class="display table table-striped table-bordered"
+                                                    cellspacing="0" width="100%">
+                                                    <tbody>
+                                                    <tbody>
+                                                        <?php
+                                                        if (isset($_POST['filter'])) {
+                                                            $department = $_POST['department'];
+                                                            $series = $_POST['series'];
+                                                            $semester = $_POST['semester'];
+                                                            $course = $_POST['course'];
+
+                                                            // Fetch course credit to determine marks columns
+                                                            $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute([':course' => $course]);
+                                                            $courseCredit = $query->fetchColumn();
+
+                                                            // Initialize marks columns and query string
+                                                            if ($courseCredit < 3.0) {
+                                                                // Use tblsessional columns (no Best 3 CT Average)
+                                                                $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
+                                                                $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                                                            m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                                                            INNER JOIN tblbackregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
+                                                            } else {
+                                                                // Use tblmarks columns (include Best 3 CT Average)
+                                                                $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Attendance', 'Assignment', 'Semester_Final'];
+                                                                $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
+                                                            m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                            INNER JOIN tblbackregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
+                                                            }
+
+                                                            // Add filters for department, series, and semester
+                                                            if ($department)
+                                                                $sql .= " AND s.Department = :department";
+                                                            if ($series)
+                                                                $sql .= " AND s.Series = :series";
+                                                            if ($semester)
+                                                                $sql .= " AND m.Semester = :semester";
+
+                                                            // Prepare and execute query
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute([
+                                                                ':course' => $course,
+                                                                ':department' => $department,
+                                                                ':series' => $series,
+                                                                ':semester' => $semester
+                                                            ]);
+
+                                                            $results = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                                                            if ($query->rowCount() > 0) {
+                                                                // Table start
+                                                                echo '<table class="table table-bordered">';
+
+                                                                // Table header
+                                                                echo '<thead><tr>';
+                                                                echo '<th>#</th><th>Student Name</th><th>Roll ID</th>';
+
+                                                                // Dynamically create table headers for marks columns
+                                                                foreach ($marksColumns as $column) {
+                                                                    echo "<th>" . htmlentities($column) . "</th>"; // Display column name in header
+                                                                }
+
+                                                                // Add the "Best 3 CT Average" column header if fetching from tblmarks
+                                                                if ($courseCredit >= 3.0) {
+                                                                    echo '<th>Best 3 CT Average</th>';
+                                                                }
+
+                                                                echo '</tr></thead><tbody>';
+
+                                                                // Display data rows dynamically based on marks columns
+                                                                $counter = 1; // Counter for row numbering
+                                                                foreach ($results as $row) {
+                                                                    echo '<tr>';
+                                                                    echo '<td>' . $counter++ . '</td>'; // Row number
+                                                                    echo '<td>' . htmlentities($row['StudentName']) . '</td>';
+                                                                    echo '<td>' . htmlentities($row['RollId']) . '</td>';
+
+                                                                    // Loop through each marks column and display the corresponding value
+                                                                    $ctScores = []; // Array to store CT marks for calculating the average
+                                                                    foreach ($marksColumns as $column) {
+                                                                        // If the column is a CT score, add it to the CT scores array
+                                                                        if (in_array($column, ['CT_1', 'CT_2', 'CT_3', 'CT_4'])) {
+                                                                            $ctScores[] = $row[$column] ?? 0; // Use 0 if the value is null
+                                                                        }
+                                                                        echo '<td>' . htmlentities($row[$column] ?? 'N/A') . '</td>'; // Display marks or 'N/A' if not available
+                                                                    }
+
+                                                                    // Calculate the best 3 average for CT marks if fetching from tblmarks
+                                                                    if ($courseCredit >= 3.0 && count($ctScores) > 0) {
+                                                                        // Sort the array in descending order to get the best 3 marks
+                                                                        rsort($ctScores);
+                                                                        // Take the top 3 scores and calculate their average
+                                                                        $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
+                                                                        $bestThreeAverage = ceil($bestThreeAverage);
+                                                                        echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
+                                                                    } else {
+                                                                        // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
+                                                                        if ($courseCredit >= 3.0) {
+                                                                            echo '<td></td>'; // This is to ensure no empty cell when course credit is less than 3
+                                                                        }
+                                                                    }
+
+                                                                    echo '</tr>';
+                                                                }
+
+                                                                echo '</tbody></table>';
+                                                            } else {
+                                                                echo '<tr><td colspan="9" align="center">No records found</td></tr>';
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+
                                                 <input type="hidden" name="department"
                                                     value="<?php echo $_POST['department'] ?? ''; ?>">
                                                 <input type="hidden" name="series"

@@ -110,8 +110,8 @@ if (!isset($_SESSION['login'])) {
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <select name="department" id="department"
-                                                        class="form-control" onchange="updateSeries()">
+                                                    <select name="department" id="department" class="form-control"
+                                                        onchange="updateSeries()">
                                                         <option value="">Select Department</option>
                                                         <?php
                                                         $sql = "SELECT DISTINCT Department FROM tblclasses";
@@ -150,8 +150,7 @@ if (!isset($_SESSION['login'])) {
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="marksType">Marks Type</label>
-                                                    <select name="marksType" id="marksType"
-                                                        class="form-control">
+                                                    <select name="marksType" id="marksType" class="form-control">
                                                         <option value="">Select Marks Type</option>
                                                     </select>
                                                 </div>
@@ -165,60 +164,62 @@ if (!isset($_SESSION['login'])) {
                                                     <tbody>
                                                         <?php
                                                         if (isset($_POST['filter'])) {
-                                                            $department = $_POST['department'];
-                                                            $series = $_POST['series'];
-                                                            $semester = $_POST['semester'];
-                                                            $course = $_POST['course'];
-                                                            $marksType = $_POST['marksType']; // Selected marksType
+                                                            $department = $_POST['department'] ?? null;
+                                                            $series = $_POST['series'] ?? null;
+                                                            $semester = $_POST['semester'] ?? null;
+                                                            $course = $_POST['course'] ?? null;
+                                                            $marksType = $_POST['marksType'] ?? null;
 
-                                                            // Determine which table to use for the marks query (tblsessional or tblmarks)
+
+
+                                                            // Construct SQL query
                                                             if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
-                                                                // Using tblsessional for Attendance, Quiz, BoardViva, Performance
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                                    m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                                                                                    FROM tblstudents s
-                                                                                    LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                                                                                    INNER JOIN tblbackregistration r ON s.RollId = r.RollId
-                                                                                    WHERE 1=1";
+                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                        FROM tblstudents s
+                        LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                        INNER JOIN tblbackregistration r ON s.RollId = r.RollId
+                        WHERE m.CourseCode = :course";
                                                             } else {
-                                                                // Using tblmarks for CT_1, CT_2, CT_3, CT_4, Assignment, Semester_Final
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                                                                            m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
-                                                                            FROM tblstudents s
-                                                                            LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                                                                            INNER JOIN tblbackregistration r ON s.RollId = r.RollId
-                                                                            WHERE 1=1";
+                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
+                        FROM tblstudents s
+                        LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                        INNER JOIN tblbackregistration r ON s.RollId = r.RollId
+                        WHERE m.CourseCode = :course";
                                                             }
 
-                                                            // Add conditions for filtering based on department, series, course
-                                                            if ($department)
+                                                            // Add filters
+                                                            $params = [':course' => $course];
+                                                            if ($department) {
                                                                 $sql .= " AND s.Department = :department";
-                                                            if ($series)
+                                                                $params[':department'] = $department;
+                                                            }
+                                                            if ($series) {
                                                                 $sql .= " AND s.Series = :series";
-                                                            if ($semester)
+                                                                $params[':series'] = $series;
+                                                            }
+                                                            if ($semester) {
                                                                 $sql .= " AND m.Semester = :semester";
+                                                                $params[':semester'] = $semester;
+                                                            }
 
-                                                            // Prepare and execute query
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute([
-                                                                ':course' => $course,
-                                                                ':department' => $department,
-                                                                ':series' => $series,
-                                                                ':semester' => $semester
-                                                            ]);
-                                                            // Finalize the query with ordering by RollId
+                                                            // Finalize SQL
                                                             $sql .= " ORDER BY s.RollId";
 
-                                                            // Prepare and execute the query
-                                                            $query = $dbh->prepare($sql);
-
-                                                            // Bind parameters dynamically based on the filters
-
-                                                            $query->execute($params);
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            // Execute query
+                                                            try {
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->execute($params);
+                                                                $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            } catch (PDOException $e) {
+                                                                echo "Error: " . $e->getMessage();
+                                                                $results = [];
+                                                            }
                                                         } else {
                                                             $results = [];
                                                         }
+
                                                         // Dynamically display the marks based on the selected marksType
                                                         $cnt = 1;
                                                         if (count($results) > 0) {
@@ -310,9 +311,10 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':mark', $mark, PDO::PARAM_INT);
 
+                                                    $query->execute();
+
                                                     //Execute the query and handle errors
                                                     // try {
-                                                    //     $query->execute();
                                                     //     echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
                                                     // } catch (PDOException $e) {
                                                     //     echo "Error inserting/updating marks for Roll ID: $rollId - " . $e->getMessage() . "<br>";

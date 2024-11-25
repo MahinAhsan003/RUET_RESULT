@@ -55,8 +55,12 @@
                     <ul class="child-nav">
                         <li><a href="check-registration.php"><i class="fa fa-bars"></i> <span>Check
                                     Registration</span></a></li>
+                        <li><a href="check-back-registration.php"><i class="fa fa-bars"></i> <span>Check
+                                    Baklog Registration</span></a></li>
                         <li><a href="manage-registration.php"><i class="fa fa fa-server"></i> <span>Manage
                                     Registrations</span></a></li>
+                        <li><a href="manage-back-registration.php"><i class="fa fa fa-server"></i> <span>Manage
+                                    Baklog-Registrations</span></a></li>
                     </ul>
                 </li>
                 <li class="has-children">
