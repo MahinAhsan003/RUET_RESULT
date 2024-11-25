@@ -54,7 +54,7 @@ if (strlen($_SESSION['login']) == "") {
             $count_queue = $query_check_queue->rowCount();
 
             // Check if the student is already registered
-            $sql_check = "SELECT * FROM tblregistration WHERE RollId = :rollId AND Semester = :semester";
+            $sql_check = "SELECT * FROM tblbackregistration WHERE RollId = :rollId AND Semester = :semester";
             $query_check = $dbh->prepare($sql_check);
             $query_check->bindParam(':rollId', $rollId, PDO::PARAM_INT);
             $query_check->bindParam(':semester', $semester, PDO::PARAM_STR);
