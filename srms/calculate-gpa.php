@@ -358,7 +358,25 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':GPA', $numericalGrade, PDO::PARAM_STR);
 
+                                                    // Check if GPA is 0.00
+                                                    if ($numericalGrade == 0.00) {
+                                                        // Delete from tblmanageregistration
+                                                        $sqlDeleteManage = "DELETE FROM tblmanageregistration 
+                                    WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :course";
+                                                        $queryDeleteManage = $dbh->prepare($sqlDeleteManage);
+                                                        $queryDeleteManage->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+                                                        $queryDeleteManage->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                        $queryDeleteManage->bindParam(':course', $course, PDO::PARAM_STR);
+                                                        $queryDeleteManage->execute();
 
+                                                        // Delete from tblregistration
+                                                        $sqlDeleteRegistration = "DELETE FROM tblregistration 
+                                           WHERE RollId = :rollId AND Semester = :semester AND RegisteredCourse = :course";
+                                                        $queryDeleteRegistration = $dbh->prepare($sqlDeleteRegistration);
+                                                        $queryDeleteRegistration->bindParam(':rollId', $rollId, PDO::PARAM_STR);
+                                                        $queryDeleteRegistration->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                        $queryDeleteRegistration->bindParam(':course', $course, PDO::PARAM_STR);
+                                                        $queryDeleteRegistration->execute();
 
 
 

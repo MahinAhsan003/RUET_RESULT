@@ -110,8 +110,8 @@ if (!isset($_SESSION['login'])) {
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <select name="department" id="department"
-                                                        class="form-control" onchange="updateSeries()">
+                                                    <select name="department" id="department" class="form-control"
+                                                        onchange="updateSeries()">
                                                         <option value="">Select Department</option>
                                                         <?php
                                                         $sql = "SELECT DISTINCT Department FROM tblclasses";
@@ -151,8 +151,7 @@ if (!isset($_SESSION['login'])) {
                                                     class="btn btn-primary">Filter</button>
                                             </form>
                                             <form id="gpaForm" method="post" action="">
-                                                <table id="example"
-                                                    class="display table table-striped table-bordered"
+                                                <table id="example" class="display table table-striped table-bordered"
                                                     cellspacing="0" width="100%">
                                                     <tbody>
                                                         <?php
@@ -161,7 +160,7 @@ if (!isset($_SESSION['login'])) {
                                                             $series = $_POST['series'];
                                                             $semester = $_POST['semester'];
                                                             $course = $_POST['course'];
-
+                                                            echo "$course";
                                                             // Fetch course credit to determine marks columns
                                                             $sql = "SELECT CourseCredit FROM tblsubjects WHERE CourseCode = :course";
                                                             $query = $dbh->prepare($sql);
@@ -193,14 +192,14 @@ if (!isset($_SESSION['login'])) {
                     FROM tblstudents s
                     LEFT JOIN tblmarks m ON s.RollId = m.RollId
                     INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
+                    WHERE m.CourseCode = :course";
                                                             } else {
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
                     m.Attendance, m.Quiz, m.BoardViva, m.Performance
                     FROM tblstudents s
                     LEFT JOIN tblsessional m ON s.RollId = m.RollId
                     INNER JOIN tblregistration r ON s.RollId = r.RollId
-                    WHERE r.RegisteredCourse = :course";
+                    WHERE m.CourseCode = :course";
                                                             }
 
                                                             // Add filters for department, series, and semester
@@ -311,7 +310,7 @@ if (!isset($_SESSION['login'])) {
                                                                     echo '</tr>';
                                                                 }
                                                             } else {
-                                                                echo '<tr><td colspan="12">No records found</td></tr>';
+                                                                echo '<tr><td colspan="12" align="center">No records found</td></tr>';
                                                             }
 
                                                             echo '</tbody></table>';
@@ -359,6 +358,10 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':GPA', $numericalGrade, PDO::PARAM_STR);
 
+
+
+
+
                                                     // Execute the query and handle errors
                                                     try {
                                                         $query->execute();
@@ -367,8 +370,7 @@ if (!isset($_SESSION['login'])) {
                                                         echo "Error inserting GPA for Roll ID: $rollId - " . $e->getMessage() . "<br>";
                                                     }
                                                 }
-                                            }
-                                            ?>
+                                            } ?>
                                         </div>
                                     </div>
                                 </div>
