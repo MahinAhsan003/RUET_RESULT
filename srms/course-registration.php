@@ -117,7 +117,7 @@ if (strlen($_SESSION['login']) == "") {
             $results = $query->fetchAll(PDO::FETCH_OBJ);
         }
     }
-    ?>
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -221,7 +221,7 @@ if (strlen($_SESSION['login']) == "") {
                                                                         value="<?php echo htmlentities($result->Department); ?>">
                                                                         <?php echo htmlentities($result->Department); ?>
                                                                     </option>
-                                                                <?php }
+                                                            <?php }
                                                             } ?>
                                                         </select>
                                                     </div>
@@ -239,7 +239,7 @@ if (strlen($_SESSION['login']) == "") {
                                                                     <option value="<?php echo htmlentities($result->Semester); ?>">
                                                                         <?php echo htmlentities($result->Semester); ?>
                                                                     </option>
-                                                                <?php }
+                                                            <?php }
                                                             } ?>
                                                         </select>
                                                     </div>
@@ -257,8 +257,10 @@ if (strlen($_SESSION['login']) == "") {
                                                                 <th>Course Code</th>
                                                                 <th>Course Credit</th>
                                                                 <th>Fee</th>
-                                                                <th>Select</th>
-                                                                <th>Action</th>
+                                                                <th>
+                                                                    <input type="checkbox" id="select-all"> Select All
+                                                                </th>
+                                                                <!-- <th>Action</th> -->
                                                             </tr>
                                                         </thead>
 
@@ -275,21 +277,22 @@ if (strlen($_SESSION['login']) == "") {
                                                                         <td><?php echo htmlentities($result->CourseCredit * 20); ?>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="checkbox" name="selected_courses[]"
-                                                                                value="<?php echo htmlentities($result->CourseCode); ?>">
+                                                                            <input type="checkbox" name="selected_courses[]" value="<?php echo htmlentities($result->CourseCode); ?>" class="select-course">
                                                                         </td>
-                                                                        <td>
+                                                                        <!-- <td>
                                                                             <a href="edit-student.php?stid=<?php echo htmlentities($result->id); ?>"
                                                                                 class="btn btn-primary btn-xs"
                                                                                 target="_blank">Edit</a>
                                                                             <a href="edit-result.php?stid=<?php echo htmlentities($result->id); ?>"
                                                                                 class="btn btn-warning btn-xs" target="_blank">View
                                                                                 Result</a>
-                                                                        </td>
+                                                                        </td> -->
+
                                                                     </tr>
-                                                                    <?php $cnt++;
+                                                                <?php $cnt++;
                                                                 }
-                                                            } elseif (isset($_POST['filter'])) { // Check if filter button was pressed ?>
+                                                            } elseif (isset($_POST['filter'])) { // Check if filter button was pressed 
+                                                                ?>
                                                                 <tr>
                                                                     <td colspan="7" style="text-align: center;">No courses found
                                                                     </td>
@@ -323,8 +326,23 @@ if (strlen($_SESSION['login']) == "") {
         <script src="js/DataTables/datatables.min.js"></script>
         <script src="js/main.js"></script>
         <script>
-            $(function ($) {
+            $(function($) {
                 $('#example').DataTable();
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Select All Checkbox
+                $('#select-all').click(function() {
+                    $('.select-course').prop('checked', this.checked);
+                });
+
+                // If a single course checkbox is unchecked, uncheck the "Select All" checkbox
+                $('.select-course').click(function() {
+                    if (!this.checked) {
+                        $('#select-all').prop('checked', false);
+                    }
+                });
             });
         </script>
     </body>
