@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 // Load Composer's autoloader
 require '../vendor/autoload.php';
 
-// Create an instance; passing `true` enables exceptions
+// Create an instance; passing true enables exceptions
 $mail = new PHPMailer(true);
 
 $teacherid = $_SESSION['login'];
@@ -126,12 +126,12 @@ if (isset($_POST['send_marks'])) {
             // Server settings
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'ruetecemailer@gmail.com';
-            $mail->Password   = 'vmwtflzdhqppllum';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ruetecemailer@gmail.com';
+            $mail->Password = 'vmwtflzdhqppllum';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = 465;
+            $mail->Port = 465;
 
             // Recipients
             $mail->setFrom('ruetecemailer@gmail.com', 'RUET ECE');
@@ -140,7 +140,7 @@ if (isset($_POST['send_marks'])) {
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Your CT, Assignment & Attendance Marks';
-            $mail->Body    = $body;
+            $mail->Body = $body;
 
             $mail->send();
             $sentEmails[] = $email; // Add to sent emails list
@@ -151,7 +151,7 @@ if (isset($_POST['send_marks'])) {
         // Clear recipients for the next iteration
         $mail->clearAddresses();
     }
-    header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+    header("Location: manage-results.php?status=success");
     exit();
 }
 ?>
@@ -245,7 +245,8 @@ if (isset($_POST['send_marks'])) {
                                             <form method="post" action="" class="filter-form">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <select name="department" id="department" class="form-control" onchange="updateSeries()">
+                                                    <select name="department" id="department" class="form-control"
+                                                        onchange="updateSeries()">
                                                         <option value="">Select Department</option>
                                                         <?php
                                                         $sql = "SELECT DISTINCT Department FROM tblclasses";
@@ -264,19 +265,25 @@ if (isset($_POST['send_marks'])) {
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="series">Series</label>
-                                                    <select name="series" id="series" class="form-control" onchange="updateSemesters()">
+                                                    <select name="series" id="series" class="form-control"
+                                                        onchange="updateSemesters()">
                                                         <option value="">Select Series</option>
                                                         <?php if (isset($_POST['series'])) { ?>
-                                                            <option value="<?php echo $_POST['series']; ?>" selected><?php echo $_POST['series']; ?></option>
+                                                            <option value="<?php echo $_POST['series']; ?>" selected>
+                                                                <?php echo $_POST['series']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="semester">Semester</label>
-                                                    <select name="semester" id="semester" class="form-control" onchange="updateCourses()">
+                                                    <select name="semester" id="semester" class="form-control"
+                                                        onchange="updateCourses()">
                                                         <option value="">Select Semester</option>
                                                         <?php if (isset($_POST['semester'])) { ?>
-                                                            <option value="<?php echo $_POST['semester']; ?>" selected><?php echo $_POST['semester']; ?></option>
+                                                            <option value="<?php echo $_POST['semester']; ?>" selected>
+                                                                <?php echo $_POST['semester']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
@@ -285,11 +292,14 @@ if (isset($_POST['send_marks'])) {
                                                     <select name="course" id="course" class="form-control">
                                                         <option value="">Select Course</option>
                                                         <?php if (isset($_POST['course'])) { ?>
-                                                            <option value="<?php echo $_POST['course']; ?>" selected><?php echo $_POST['course']; ?></option>
+                                                            <option value="<?php echo $_POST['course']; ?>" selected>
+                                                                <?php echo $_POST['course']; ?>
+                                                            </option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
-                                                <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                                                <button type="submit" name="filter"
+                                                    class="btn btn-primary">Filter</button>
                                             </form>
                                             <table id="example" class="display table table-striped table-bordered"
                                                 cellspacing="0" width="100%">
@@ -320,20 +330,20 @@ if (isset($_POST['send_marks'])) {
                                                             // Use tblsessional columns (no Best 3 CT Average)
                                                             $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
                                                             $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                FROM tblstudents s
-                LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                            m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                                                            INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
                                                         } else {
                                                             // Use tblmarks columns (include Best 3 CT Average)
                                                             $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Attendance', 'Assignment', 'Semester_Final'];
                                                             $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
-                FROM tblstudents s
-                LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                            m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                            INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
                                                         }
 
                                                         // Add filters for department, series, and semester
@@ -342,7 +352,7 @@ if (isset($_POST['send_marks'])) {
                                                         if ($series)
                                                             $sql .= " AND s.Series = :series";
                                                         if ($semester)
-                                                            $sql .= " AND r.Semester = :semester";
+                                                            $sql .= " AND m.Semester = :semester";
 
                                                         // Prepare and execute query
                                                         $query = $dbh->prepare($sql);
@@ -400,7 +410,7 @@ if (isset($_POST['send_marks'])) {
                                                                     // Take the top 3 scores and calculate their average
                                                                     $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
                                                                     $bestThreeAverage = ceil($bestThreeAverage);
-                                                                    echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
+                                                                    echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
                                                                 } else {
                                                                     // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
                                                                     if ($courseCredit >= 3.0) {
@@ -420,11 +430,16 @@ if (isset($_POST['send_marks'])) {
                                                 </tbody>
                                             </table>
                                             <form action="" method="post">
-                                                <input type="hidden" name="department" value="<?php echo $_POST['department'] ?? ''; ?>">
-                                                <input type="hidden" name="series" value="<?php echo $_POST['series'] ?? ''; ?>">
-                                                <input type="hidden" name="semester" value="<?php echo $_POST['semester'] ?? ''; ?>">
-                                                <input type="hidden" name="course" value="<?php echo $_POST['course'] ?? ''; ?>">
-                                                <button type="submit" name="send_marks" class="btn btn-primary">Send Marks</button>
+                                                <input type="hidden" name="department"
+                                                    value="<?php echo $_POST['department'] ?? ''; ?>">
+                                                <input type="hidden" name="series"
+                                                    value="<?php echo $_POST['series'] ?? ''; ?>">
+                                                <input type="hidden" name="semester"
+                                                    value="<?php echo $_POST['semester'] ?? ''; ?>">
+                                                <input type="hidden" name="course"
+                                                    value="<?php echo $_POST['course'] ?? ''; ?>">
+                                                <button type="submit" name="send_marks" class="btn btn-primary">Send
+                                                    Marks</button>
                                             </form>
                                         </div>
                                     </div>
