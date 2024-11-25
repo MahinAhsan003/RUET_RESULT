@@ -124,7 +124,7 @@ if (!isset($_SESSION['login'])) {
                                                                     value="<?php echo htmlentities($result->Department); ?>">
                                                                     <?php echo htmlentities($result->Department); ?>
                                                                 </option>
-                                                            <?php }
+                                                        <?php }
                                                         } ?>
                                                     </select>
                                                 </div>
@@ -230,7 +230,7 @@ if (!isset($_SESSION['login'])) {
 
                                                             // Display dynamic columns based on selected marksType
                                                             echo "<th>" . htmlentities($marksType) . "</th>"; // Display the selected marksType as the header
-                                                        
+
                                                             echo '</tr></thead><tbody>';
 
                                                             // Display data rows dynamically based on the selected marksType
@@ -311,6 +311,8 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':mark', $mark, PDO::PARAM_INT);
 
+                                                    $query->execute();
+
                                                     //Execute the query and handle errors
                                                     // try {
                                                     //     $query->execute();
@@ -340,7 +342,7 @@ if (!isset($_SESSION['login'])) {
             seriesDropdown.innerHTML = '<option value="">--Select a series--</option>';
 
             if (seriesOptions[department]) {
-                seriesOptions[department].forEach(function (series) {
+                seriesOptions[department].forEach(function(series) {
                     var optionElement = document.createElement("option");
                     optionElement.value = series;
                     optionElement.text = series;
@@ -360,7 +362,7 @@ if (!isset($_SESSION['login'])) {
             var key = department + '|' + series;
 
             if (semesterOptions[key]) {
-                semesterOptions[key].forEach(function (semester) {
+                semesterOptions[key].forEach(function(semester) {
                     var optionElement = document.createElement("option");
                     optionElement.value = semester;
                     optionElement.text = semester;
@@ -382,7 +384,7 @@ if (!isset($_SESSION['login'])) {
             var key = department + '|' + semester;
 
             if (courseOptions[key]) {
-                courseOptions[key].forEach(function (course) {
+                courseOptions[key].forEach(function(course) {
                     var optionElement = document.createElement("option");
                     optionElement.value = course;
                     optionElement.text = course;
@@ -391,7 +393,7 @@ if (!isset($_SESSION['login'])) {
             }
 
             // Fetch CourseCredit and update MarksType dynamically
-            courseDropdown.addEventListener('change', function () {
+            courseDropdown.addEventListener('change', function() {
                 var selectedCourse = courseDropdown.value;
 
                 if (selectedCourse) {
@@ -502,7 +504,7 @@ if (!isset($_SESSION['login'])) {
     <script src="js/DataTables/datatables.min.js"></script>
     <script src="js/main.js"></script>
     <script>
-        $(function ($) {
+        $(function($) {
             $('#example').DataTable();
         });
     </script>
