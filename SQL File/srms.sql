@@ -387,11 +387,12 @@ CREATE TABLE `tblmanageregistration` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `RollId` INT(11) NOT NULL,
   `Semester` VARCHAR(20) NOT NULL,
-  `RegisteredCourses` TEXT NOT NULL,
+  `CourseCode` VARCHAR(20) NOT NULL,
   `RegistrationStatus` INT DEFAULT 0,
   `RegistrationTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`), -- Use `id` as the primary key
-  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`RollId`) REFERENCES `tblstudents`(`RollId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`CourseCode`) REFERENCES `tblsubjects`(`CourseCode`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 

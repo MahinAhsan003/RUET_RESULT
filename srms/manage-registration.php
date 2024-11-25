@@ -11,34 +11,42 @@ if (strlen($_SESSION['alogin']) == "") {
     if (isset($_POST['action']) && $_POST['action'] == 'decline') {
         $rollId = intval($_POST['RollId']);
         $semester = $_POST['Semester'];
+        $courseCode = $_POST['CourseCode']; // Specific course to decline
 
-        // Delete the specific registration for the given RollId and Semester
-        $sql = "DELETE FROM tblregistration WHERE RollId = :rollId AND Semester = :semester";
+        // Delete the specific registration for the given RollId, Semester, and CourseCode
+        $sql = "DELETE FROM tblregistration WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :courseCode";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
         $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query->bindParam(':courseCode', $courseCode, PDO::PARAM_STR);
         $query->execute();
 
-        $sql = "DELETE FROM tblmanageregistration WHERE RollId = :rollId AND Semester = :semester";
+        // Delete the specific registration for the given RollId, Semester, and CourseCode
+        $sql = "DELETE FROM tblmanageregistration WHERE RollId = :rollId AND Semester = :semester AND CourseCode = :courseCode";
         $query = $dbh->prepare($sql);
         $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
         $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+        $query->bindParam(':courseCode', $courseCode, PDO::PARAM_STR);
         $query->execute();
 
         $_SESSION['msg'] = "Registration Declined Successfully!";
         header('location: manage-registration.php');
     }
 
-    // Fetch approved registrations
-    $sql = "SELECT tblmanageregistration.RollId, 
-                   tblstudents.StudentName, 
-                   tblmanageregistration.RegisteredCourses, 
-                   tblmanageregistration.RegistrationTime,
-                   tblmanageregistration.Semester
+    // Fetch approved registrations (individual rows for each course)
+    $sql = "SELECT 
+                tblmanageregistration.id,
+                tblmanageregistration.RollId,
+                tblstudents.StudentName,
+                tblmanageregistration.CourseCode,
+                tblsubjects.CourseName,
+                tblmanageregistration.Semester,
+                tblmanageregistration.RegistrationTime
             FROM tblmanageregistration
-            JOIN tblstudents ON tblstudents.RollId = tblmanageregistration.RollId
+            JOIN tblstudents ON tblmanageregistration.RollId = tblstudents.RollId
+            JOIN tblsubjects ON tblmanageregistration.CourseCode = tblsubjects.CourseCode
             WHERE tblmanageregistration.RegistrationStatus = 1
-            ORDER BY tblmanageregistration.RollId DESC";
+            ORDER BY tblmanageregistration.RegistrationTime DESC";
 
     $query = $dbh->prepare($sql);
     $query->execute();
@@ -125,7 +133,9 @@ if (strlen($_SESSION['alogin']) == "") {
                                                             <th>#</th>
                                                             <th>Student Name</th>
                                                             <th>Roll Id</th>
-                                                            <th>Registered Courses</th>
+                                                            <th>Course Code</th>
+                                                            <th>Course Name</th>
+                                                            <th>Semester</th>
                                                             <th>Registration Date</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -138,12 +148,15 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                 <td><?php echo htmlentities($cnt); ?></td>
                                                                 <td><?php echo htmlentities($registration->StudentName); ?></td>
                                                                 <td><?php echo htmlentities($registration->RollId); ?></td>
-                                                                <td><?php echo htmlentities($registration->RegisteredCourses); ?></td>
+                                                                <td><?php echo htmlentities($registration->CourseCode); ?></td>
+                                                                <td><?php echo htmlentities($registration->CourseName); ?></td>
+                                                                <td><?php echo htmlentities($registration->Semester); ?></td>
                                                                 <td><?php echo htmlentities($registration->RegistrationTime); ?></td>
                                                                 <td>
                                                                     <form method="post" action="">
                                                                         <input type="hidden" name="RollId" value="<?php echo htmlentities($registration->RollId); ?>">
                                                                         <input type="hidden" name="Semester" value="<?php echo htmlentities($registration->Semester); ?>">
+                                                                        <input type="hidden" name="CourseCode" value="<?php echo htmlentities($registration->CourseCode); ?>">
                                                                         <button type="submit" name="action" value="decline" class="btn btn-danger btn-xs">Decline</button>
                                                                     </form>
                                                                 </td>

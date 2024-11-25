@@ -28,18 +28,17 @@ if (strlen($_SESSION['alogin']) == "") {
                 $query->bindParam(':semester', $semester, PDO::PARAM_STR);
                 $query->bindParam(':registeredCourse', $course, PDO::PARAM_STR);
                 $query->execute();
+
+
+                // Insert into tblmanageregistration
+                $sql = "INSERT INTO tblmanageregistration (RollId, Semester, CourseCode, RegistrationStatus) 
+                        VALUES (:rollId, :semester, :courseCode, 1)";  // Status 1 = Approved
+                $query = $dbh->prepare($sql);
+                $query->bindParam(':rollId', $rollId, PDO::PARAM_INT);
+                $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                $query->bindParam(':courseCode', $course, PDO::PARAM_STR);
+                $query->execute();
             }
-
-            // Move the approved request to tblmanageregistration
-            $sql = "INSERT INTO tblmanageregistration (RollId, Semester, RegisteredCourses, RegistrationStatus) 
-                    VALUES (:rollId, :semester, :registeredCourses, 1)";  // Status 1 = Approved
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':rollId', $rollId, PDO::PARAM_STR);
-            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-            $query->bindParam(':registeredCourses', $courses, PDO::PARAM_STR);
-            $query->execute();
-
-            
         }
 
         // Remove the request from tblregistrationqueue (after approval or decline)
@@ -184,7 +183,7 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                         </form>
                                                                     </td>
                                                                 </tr>
-                                                                <?php $cnt++;
+                                                        <?php $cnt++;
                                                             }
                                                         } ?>
                                                     </tbody>
@@ -210,11 +209,11 @@ if (strlen($_SESSION['alogin']) == "") {
         <script src="js/DataTables/datatables.min.js"></script>
         <script src="js/main.js"></script>
         <script>
-            $(function ($) {
+            $(function($) {
                 $('#example').DataTable();
             });
 
-            setInterval(function () {
+            setInterval(function() {
                 location.reload();
             }, 30000); // Refresh every 30 seconds
         </script>
