@@ -48,7 +48,7 @@ if (strlen($_SESSION['alogin']) == "") {
         $query->execute();
 
         // Redirect to manage-registration.php to track handled requests
-        header("Location: manage-registration.php");
+        header("Location: manage-back-registration.php");
         exit;
     }
 
