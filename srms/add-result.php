@@ -175,18 +175,18 @@ if (!isset($_SESSION['login'])) {
                                                             // Construct SQL query
                                                             if (in_array($marksType, ['Attendance', 'Quiz', 'BoardViva', 'Performance'])) {
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                        m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                        FROM tblstudents s
-                        LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                        WHERE m.CourseCode = :course";
+                                                                m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                                FROM tblstudents s
+                                                                LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                                                                INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                WHERE m.CourseCode = :course";
                                                             } else {
                                                                 $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                        m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
-                        FROM tblstudents s
-                        LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                        INNER JOIN tblregistration r ON s.RollId = r.RollId
-                        WHERE m.CourseCode = :course";
+                                                                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final
+                                                                FROM tblstudents s
+                                                                LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                                INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                                WHERE m.CourseCode = :course";
                                                             }
 
                                                             // Add filters
@@ -310,8 +310,8 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':semester', $semester, PDO::PARAM_STR);
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':mark', $mark, PDO::PARAM_INT);
-
-                                                    //Execute the query and handle errors
+                                                    $query->execute();
+                                                    // Execute the query and handle errors
                                                     // try {
                                                     //     $query->execute();
                                                     //     echo "Marks successfully inserted/updated for Roll ID: $rollId<br>";
