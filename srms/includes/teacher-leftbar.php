@@ -25,14 +25,12 @@
                     <a href="#"><i class="fa fa-info-circle"></i> <span>Result</span> <i
                             class="fa fa-angle-right arrow"></i></a>
                     <ul class="child-nav">
-                        <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add
-                                    Results</span></a>
-                        </li>
-                        <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage
-                                    Results</span></a></li>
-                        <li><a href="calculate-gpa.php"><i class="fa fa fa-server"></i> <span>Calculate
-                                    GPA</span></a></li>
-
+                        <li><a href="add-result.php"><i class="fa fa-bars"></i> <span>Add Results</span></a>
+                        <li><a href="add-back-result.php"><i class="fa fa-bars"></i> <span>Add Backlog Results</span></a></li>
+                        <li><a href="manage-results.php"><i class="fa fa fa-server"></i> <span>Manage Results</span></a></li>
+                        <li><a href="manage-back-results.php"><i class="fa fa fa-server"></i> <span>Manage Backlog Results</span></a></li>
+                        <li><a href="calculate-gpa.php"><i class="fa fa fa-server"></i> <span>Calculate GPA</span></a></li>
+                        <li><a href="calculate-back-gpa.php"><i class="fa fa fa-server"></i> <span>Calculate Backlog GPA</span></a></li>
                     </ul>
                 </li>
         </div>
