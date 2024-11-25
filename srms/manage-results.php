@@ -144,6 +144,7 @@ if (isset($_POST['send_marks'])) {
 
             $mail->send();
             $sentEmails[] = $email; // Add to sent emails list
+            echo "Email Send successfully for Roll ID: $studentName<br>";
         } catch (Exception $e) {
             echo "Failed to send email to $studentName ($email). Error: {$mail->ErrorInfo}<br>";
         }
