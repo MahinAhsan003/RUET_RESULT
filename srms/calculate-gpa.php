@@ -359,6 +359,10 @@ if (!isset($_SESSION['login'])) {
                                                     $query->bindParam(':course', $course, PDO::PARAM_STR);
                                                     $query->bindParam(':GPA', $numericalGrade, PDO::PARAM_STR);
 
+
+
+
+
                                                     // Execute the query and handle errors
                                                     try {
                                                         $query->execute();
@@ -367,8 +371,7 @@ if (!isset($_SESSION['login'])) {
                                                         echo "Error inserting GPA for Roll ID: $rollId - " . $e->getMessage() . "<br>";
                                                     }
                                                 }
-                                            }
-                                            ?>
+                                            } ?>
                                         </div>
                                     </div>
                                 </div>
