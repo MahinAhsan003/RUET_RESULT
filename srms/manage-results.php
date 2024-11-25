@@ -16,7 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 // Load Composer's autoloader
 require '../vendor/autoload.php';
 
-// Create an instance; passing `true` enables exceptions
+// Create an instance; passing true enables exceptions
 $mail = new PHPMailer(true);
 
 $teacherid = $_SESSION['login'];
@@ -151,7 +151,7 @@ if (isset($_POST['send_marks'])) {
         // Clear recipients for the next iteration
         $mail->clearAddresses();
     }
-    header("Location: " . $_SERVER['PHP_SELF'] . "?status=success");
+    header("Location: manage-results.php?status=success");
     exit();
 }
 ?>
@@ -330,20 +330,20 @@ if (isset($_POST['send_marks'])) {
                                                             // Use tblsessional columns (no Best 3 CT Average)
                                                             $marksColumns = ['Attendance', 'Quiz', 'BoardViva', 'Performance'];
                                                             $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.Attendance, m.Quiz, m.BoardViva, m.Performance
-                FROM tblstudents s
-                LEFT JOIN tblsessional m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                            m.Attendance, m.Quiz, m.BoardViva, m.Performance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblsessional m ON s.RollId = m.RollId
+                                                            INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
                                                         } else {
                                                             // Use tblmarks columns (include Best 3 CT Average)
                                                             $marksColumns = ['CT_1', 'CT_2', 'CT_3', 'CT_4', 'Attendance', 'Assignment', 'Semester_Final'];
                                                             $sql = "SELECT DISTINCT s.StudentName, s.RollId, s.RegistrationId, s.Department, s.Section, s.Series, s.RegDate, s.Status,
-                m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
-                FROM tblstudents s
-                LEFT JOIN tblmarks m ON s.RollId = m.RollId
-                INNER JOIN tblregistration r ON s.RollId = r.RollId
-                WHERE r.RegisteredCourse = :course";
+                                                            m.CT_1, m.CT_2, m.CT_3, m.CT_4, m.Assignment, m.Semester_Final, m.Attendance
+                                                            FROM tblstudents s
+                                                            LEFT JOIN tblmarks m ON s.RollId = m.RollId
+                                                            INNER JOIN tblregistration r ON s.RollId = r.RollId
+                                                            WHERE m.CourseCode = :course";
                                                         }
 
                                                         // Add filters for department, series, and semester
@@ -410,7 +410,7 @@ if (isset($_POST['send_marks'])) {
                                                                     // Take the top 3 scores and calculate their average
                                                                     $bestThreeAverage = array_sum(array_slice($ctScores, 0, 3)) / 3;
                                                                     $bestThreeAverage = ceil($bestThreeAverage);
-                                                                    echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
+                                                                    echo '<td>' . $bestThreeAverage . '</td>'; // Display the average
                                                                 } else {
                                                                     // If no CT marks or fetching from tblsessional, do not add an empty column for Best 3 CT Average
                                                                     if ($courseCredit >= 3.0) {

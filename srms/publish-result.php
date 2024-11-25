@@ -116,45 +116,14 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                 </select>
                                                             </div>
 
-                                                            <button type="button" id="filterBtn"
-                                                                class="btn btn-primary">Filter</button>
+                                                            <button type="submit" name="publishResult" id="publishResult"
+                                                                class="btn btn-warning mt-3">Publish Result</button>
                                                         </form>
 
-                                                        <!-- The Form for calculating result -->
-                                                        <form method="POST" id="calculateForm" style="display:none;">
-                                                            <!-- Hidden inputs to pass filter details -->
-                                                            <input type="hidden" name="department" id="hiddenDepartment">
-                                                            <input type="hidden" name="series" id="hiddenSeries">
-                                                            <input type="hidden" name="semester" id="hiddenSemester">
-
-                                                            <!-- Dropdown for selecting Semester (1-8) for Result Publishing, initially hidden -->
-                                                            <div id="semesterSelectDiv" style="display:none;">
-                                                                <label for="selectSemester">Select Semester for Publishing
-                                                                    Result</label>
-                                                                <select name="selectSemester" id="selectSemester"
-                                                                    class="form-control">
-                                                                    <option value="">Select Semester</option>
-                                                                    <option value="1">Semester 1</option>
-                                                                    <option value="2">Semester 2</option>
-                                                                    <option value="3">Semester 3</option>
-                                                                    <option value="4">Semester 4</option>
-                                                                    <option value="5">Semester 5</option>
-                                                                    <option value="6">Semester 6</option>
-                                                                    <option value="7">Semester 7</option>
-                                                                    <option value="8">Semester 8</option>
-                                                                </select>
-                                                            </div>
-
-                                                            <!-- Show Publish Result button -->
-                                                            <div id="publishResultButtonDiv" style="display:none;">
-                                                                <button type="submit" name="publishResult"
-                                                                    class="btn btn-warning mt-3">Publish Result</button>
-                                                            </div>
-                                                        </form>
                                                         <div id="echoDetails" class="mt-3"></div>
 
                                                         <script>
-                                                            document.getElementById('filterBtn').addEventListener('click',
+                                                            document.getElementById('publishResult').addEventListener('click',
                                                                 function () {
                                                                     // Get selected filter values
                                                                     var department = document.getElementById('department')
@@ -167,160 +136,129 @@ if (strlen($_SESSION['alogin']) == "") {
                                                                     var echoDetails = document.getElementById(
                                                                         'echoDetails');
                                                                     echoDetails.innerHTML = `
-                        <strong>Department:</strong> ${department}<br>
-                        <strong>Series:</strong> ${series}<br>
-                        <strong>Semester:</strong> ${semester}
-                    `;
-
-                                                                    // Show the 'Publish Result' button and semester selection dropdown
-                                                                    document.getElementById('calculateForm').style.display =
-                                                                        'block';
-
-                                                                    // Set the hidden fields with the selected filter values
-                                                                    document.getElementById('hiddenDepartment').value =
-                                                                        department;
-                                                                    document.getElementById('hiddenSeries').value = series;
-                                                                    document.getElementById('hiddenSemester').value =
-                                                                        semester;
-                                                                });
-
-                                                            // Show the semester selection dropdown and publish result button when the form is displayed
-                                                            document.getElementById('calculateForm').addEventListener('submit',
-                                                                function (e) {
-                                                                    e
-                                                                        .preventDefault(); // Prevent form submission to keep the page intact
-
-                                                                    // Show the select semester dropdown and publish result button
-                                                                    document.getElementById('semesterSelectDiv').style
-                                                                        .display = 'block';
-                                                                    document.getElementById('publishResultButtonDiv').style
-                                                                        .display = 'block';
+                                                                                    <strong>Department:</strong> ${department}<br>
+                                                                                    <strong>Series:</strong> ${series}<br>
+                                                                                    <strong>Semester:</strong> ${semester}
+                                                                                `;
                                                                 });
                                                         </script>
                                                         <?php
-
                                                         // Publish Result (Calculate SGPA and CGPA)
                                                         if (isset($_POST['publishResult'])) {
-                                                            // Get filter details from POST variables
-                                                            $semester = $_POST['semester'];
+                                                            // Get filter details (hardcoded or passed dynamically)
                                                             $department = $_POST['department'];
                                                             $series = $_POST['series'];
 
-                                                            // Query to get RollIds for the selected semester, department, and series
-                                                            $sql = "SELECT DISTINCT RollId FROM tblgpa WHERE Semester = :semester";
+                                                            // Fetch distinct semesters from tblgpa to ensure all data is processed
+                                                            $sql = "SELECT DISTINCT Semester FROM tblgpa";
                                                             $query = $dbh->prepare($sql);
-                                                            $query->bindParam(':semester', $semester, PDO::PARAM_STR);
                                                             $query->execute();
-                                                            $rollIds = $query->fetchAll(PDO::FETCH_ASSOC);
+                                                            $semesters = $query->fetchAll(PDO::FETCH_COLUMN);
 
-                                                            foreach ($rollIds as $rollId) {
-                                                                $roll = $rollId['RollId'];
-
-                                                                // Query to calculate SGPA for each student
-                                                                $sql = "SELECT SUM(s.CourseCredit * g.GPA) AS weightedGPA, SUM(s.CourseCredit) AS totalCredits
-                                                                FROM tblgpa g
-                                                                JOIN tblsubjects s ON g.CourseCode = s.CourseCode
-                                                                WHERE g.RollId = :rollId AND g.Semester = :semester
-                                                                GROUP BY g.RollId, g.Semester
-                                                            ";
-
+                                                            foreach ($semesters as $semester) {
+                                                                // Query to get RollIds for the selected semester
+                                                                $sql = "SELECT DISTINCT RollId FROM tblgpa WHERE Semester = :semester";
                                                                 $query = $dbh->prepare($sql);
-                                                                $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
                                                                 $query->bindParam(':semester', $semester, PDO::PARAM_STR);
                                                                 $query->execute();
-
-                                                                // Fetch the weighted GPA and total credits
-                                                                $result = $query->fetch(PDO::FETCH_ASSOC);
-
-                                                                if ($result) {
-                                                                    $weightedGPA = $result['weightedGPA'];
-                                                                    $totalCredits = $result['totalCredits'];
-
-                                                                    // Calculate SGPA
-                                                                    if ($totalCredits > 0) {
-                                                                        $sgpa = $weightedGPA / $totalCredits;
-                                                                    } else {
-                                                                        $sgpa = 0;  // In case of no courses in that semester
-                                                                    }
-
-                                                                    // Insert the calculated SGPA into the tblsgpa table
-                                                                    $sql = "INSERT INTO tblsgpa (RollId, Semester, SGPA) 
-                    VALUES (:rollId, :semester, :sgpa) 
-                    ON DUPLICATE KEY UPDATE SGPA = :sgpa";
-
-                                                                    $query = $dbh->prepare($sql);
-                                                                    $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
-                                                                    $query->bindParam(':semester', $semester, PDO::PARAM_STR);
-                                                                    $query->bindParam(':sgpa', $sgpa, PDO::PARAM_STR);
-
-                                                                    try {
-                                                                        $query->execute();
-                                                                        echo "SGPA successfully calculated and updated for Roll ID: $roll<br>";
-                                                                    } catch (PDOException $e) {
-                                                                        echo "Error updating SGPA for Roll ID: $roll - " . $e->getMessage() . "<br>";
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            // Calculate CGPA (Optional based on selected semester)
-                                                            if (isset($_POST['selectSemester'])) {
-                                                                $selectedSemester = $_POST['selectSemester'];
-
-                                                                // Query to get RollIds for the selected department and semesters
-                                                                $sql = "SELECT DISTINCT RollId 
-                                                                FROM tblgpa 
-                                                                WHERE Semester IN (";
-
-                                                                // Add semesters 1 to selected semester dynamically
-                                                                $semesters = range(1, $selectedSemester);  // Generate array of semesters up to selected
-                                                                $placeholders = implode(',', array_fill(0, count($semesters), '?'));
-                                                                $sql .= $placeholders . ")";
-
-                                                                $query = $dbh->prepare($sql);
-                                                                // Bind the semester values dynamically
-                                                                $query->execute($semesters);
                                                                 $rollIds = $query->fetchAll(PDO::FETCH_ASSOC);
 
                                                                 foreach ($rollIds as $rollId) {
                                                                     $roll = $rollId['RollId'];
 
-                                                                    // Query to calculate total SGPA for all semesters up to the selected semester
+                                                                    // Query to calculate SGPA for each student
                                                                     $sql = "SELECT SUM(s.CourseCredit * g.GPA) AS weightedGPA, SUM(s.CourseCredit) AS totalCredits
-                                                                    FROM tblgpa g
-                                                                    JOIN tblsubjects s ON g.CourseCode = s.CourseCode
-                                                                    WHERE g.RollId = :rollId AND g.Semester IN (";
-
-                                                                    $placeholders = implode(',', array_fill(0, count($semesters), '?'));
-                                                                    $sql .= $placeholders . ") GROUP BY g.RollId";
-
+                    FROM tblgpa g
+                    JOIN tblsubjects s ON g.CourseCode = s.CourseCode
+                    WHERE g.RollId = :rollId AND g.Semester = :semester
+                    GROUP BY g.RollId, g.Semester";
                                                                     $query = $dbh->prepare($sql);
-                                                                    $query->execute(array_merge([$roll], $semesters));
+                                                                    $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                    $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                                    $query->execute();
+
+                                                                    // Fetch the weighted GPA and total credits
                                                                     $result = $query->fetch(PDO::FETCH_ASSOC);
 
                                                                     if ($result) {
                                                                         $weightedGPA = $result['weightedGPA'];
                                                                         $totalCredits = $result['totalCredits'];
 
-                                                                        // Calculate CGPA
-                                                                        if ($totalCredits > 0) {
-                                                                            $cgpa = $weightedGPA / $totalCredits;
-                                                                        } else {
-                                                                            $cgpa = 0; // No courses found
-                                                                        }
+                                                                        // Calculate SGPA
+                                                                        $sgpa = $totalCredits > 0 ? $weightedGPA / $totalCredits : 0;
 
-                                                                        // Insert the calculated CGPA into the tblcgpa table
+                                                                        // Insert the calculated SGPA into the tblsgpa table
+                                                                        $sql = "INSERT INTO tblsgpa (RollId, Semester, SGPA) 
+                        VALUES (:rollId, :semester, :sgpa) 
+                        ON DUPLICATE KEY UPDATE SGPA = :sgpa";
+                                                                        $query = $dbh->prepare($sql);
+                                                                        $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                        $query->bindParam(':semester', $semester, PDO::PARAM_STR);
+                                                                        $query->bindParam(':sgpa', $sgpa, PDO::PARAM_STR);
+
+                                                                        try {
+                                                                            $query->execute();
+                                                                            echo "SGPA successfully calculated and updated for Roll ID: $roll for Semester: $semester<br>";
+                                                                        } catch (PDOException $e) {
+                                                                            echo "Error updating SGPA for Roll ID: $roll - " . $e->getMessage() . "<br>";
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            // Calculate CGPA for all students up to their highest published semester
+                                                            $sql = "SELECT DISTINCT RollId FROM tblstudents";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $rollIds = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                                                            foreach ($rollIds as $rollId) {
+                                                                $roll = $rollId['RollId'];
+
+                                                                // Fetch maximum published semester for the current Roll ID
+                                                                $sql = "SELECT MAX(Semester) AS maxSemester FROM tblsgpa WHERE RollId = :rollId";
+                                                                $query = $dbh->prepare($sql);
+                                                                $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                $query->execute();
+                                                                $maxSemester = $query->fetchColumn();
+
+                                                                if ($maxSemester) {
+                                                                    $semestersToCheck = range(1, $maxSemester);
+
+                                                                    // Check if SGPA for all required semesters exists
+                                                                    $sql = "SELECT COUNT(DISTINCT Semester) FROM tblsgpa WHERE RollId = :rollId AND Semester IN (" . implode(',', $semestersToCheck) . ")";
+                                                                    $query = $dbh->prepare($sql);
+                                                                    $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                    $query->execute();
+                                                                    $countPublished = $query->fetchColumn();
+
+                                                                    if ($countPublished != count($semestersToCheck)) {
+                                                                        echo "Error: Result up to semester $maxSemester not published for Roll ID: $roll.<br>";
+                                                                        continue; // Skip to the next student
+                                                                    }
+
+                                                                    // Calculate total SGPA for the selected semesters
+                                                                    $sql = "SELECT SUM(SGPA) AS totalSGPA FROM tblsgpa WHERE RollId = :rollId AND Semester IN (" . implode(',', $semestersToCheck) . ")";
+                                                                    $query = $dbh->prepare($sql);
+                                                                    $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
+                                                                    $query->execute();
+                                                                    $totalSGPA = $query->fetchColumn();
+
+                                                                    if ($totalSGPA !== false) {
+                                                                        $cgpa = $totalSGPA / $maxSemester; // Calculate CGPA
+                                                    
+                                                                        // Insert or update CGPA into the tblcgpa table
                                                                         $sql = "INSERT INTO tblcgpa (RollId, Semester, CGPA) 
                         VALUES (:rollId, :semester, :cgpa) 
                         ON DUPLICATE KEY UPDATE CGPA = :cgpa";
-
                                                                         $query = $dbh->prepare($sql);
                                                                         $query->bindParam(':rollId', $roll, PDO::PARAM_INT);
-                                                                        $query->bindParam(':semester', $selectedSemester, PDO::PARAM_STR);
+                                                                        $query->bindParam(':semester', $maxSemester, PDO::PARAM_STR);
                                                                         $query->bindParam(':cgpa', $cgpa, PDO::PARAM_STR);
 
                                                                         try {
                                                                             $query->execute();
-                                                                            echo "CGPA successfully calculated and updated for Roll ID: $roll<br>";
+                                                                            echo "CGPA successfully calculated and updated for Roll ID: $roll up to Semester: $maxSemester<br>";
                                                                         } catch (PDOException $e) {
                                                                             echo "Error updating CGPA for Roll ID: $roll - " . $e->getMessage() . "<br>";
                                                                         }
