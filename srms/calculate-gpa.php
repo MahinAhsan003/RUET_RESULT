@@ -311,7 +311,7 @@ if (!isset($_SESSION['login'])) {
                                                                     echo '</tr>';
                                                                 }
                                                             } else {
-                                                                echo '<tr><td colspan="12">No records found</td></tr>';
+                                                                echo '<tr><td colspan="12" align="center">No records found</td></tr>';
                                                             }
 
                                                             echo '</tbody></table>';
